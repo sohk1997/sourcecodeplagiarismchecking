@@ -6,7 +6,43 @@
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption font-red-sunglo">
-                       
+
+                        <span class="caption-subject bold uppercase"> Chart 1</span>
+                    </div>
+
+                </div>
+                <div class="portlet-body form">
+                    <div id="chart1" style=""></div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-md-6 ">
+            <!-- BEGIN SAMPLE FORM PORTLET-->
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption  font-red-sunglo">
+
+                        <span class="caption-subject bold uppercase"> Chart 2</span>
+                    </div>
+
+                </div>
+                <div class="portlet-body form">
+                    <div id="chart2" style=""></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 ">
+            <!-- BEGIN SAMPLE FORM PORTLET-->
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-red-sunglo">
+
                         <span class="caption-subject bold uppercase"> Code 1</span>
                     </div>
 
@@ -23,7 +59,7 @@
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption  font-red-sunglo">
-                        
+
                         <span class="caption-subject bold uppercase"> Code 2</span>
                     </div>
 
@@ -31,8 +67,74 @@
                 <div class="portlet-body form">
                     <textarea id="editor2"></textarea>
                 </div>
-            </div>            
+            </div>
 
         </div>
     </div>
 </div>
+@section Scripts{
+
+    <script type="text/javascript">
+        new Morris.Donut({
+            // ID of the element in which to draw the chart.
+            element: 'chart1',
+            // Chart data records -- each entry in this array corresponds to a point on
+            // the chart.
+            data: [
+                { label: 'PUBG', value: 20 },
+                { label: 'GTA V', value: 10 },
+                { label: 'LOL', value: 5 },
+                { label: 'Fortnite', value: 5 },
+                { label: 'Dota2', value: 20 },
+            ],
+
+            //// The name of the data record attribute that contains x-values.
+            //xkey: 'year',
+            //// A list of names of data record attributes that contain y-values.
+            //ykeys: ['value'],
+            //// Labels for the ykeys -- will be displayed when you hover over the
+            //// chart.
+            //labels: ['Value']
+        });
+        new Morris.Line({
+            // ID of the element in which to draw the chart.
+            element: 'chart2',
+            // Chart data records -- each entry in this array corresponds to a point on
+            // the chart.
+            data: [
+                { y: '2006', a: 100, b: 90 },
+                { y: '2007', a: 75, b: 60 },
+                { y: '2008', a: 50, b: 40 },
+                { y: '2009', a: 75, b: 55 },
+                { y: '2010', a: 50, b: 40 },
+                { y: '2011', a: 75, b: 85 },
+                { y: '2012', a: 100, b: 80 }
+            ],
+            // The name of the data record attribute that contains x-values
+            xkey: 'y',
+            // A list of names of data record attributes that contain y-values.
+            ykeys: ['a', 'b'],
+            // Labels for the ykeys -- will be displayed when you hover over the
+            // chart.
+            labels: ['Series A', 'Series B']
+        });
+
+
+        var editor = CodeMirror.fromTextArea(document.getElementById('editor1'), {
+            mode: "javascript",
+            lineNumbers: true,
+            theme: 'icecoder',
+        });
+
+        var editor = CodeMirror.fromTextArea(document.getElementById('editor2'), {
+            mode: "javascript",
+            lineNumbers: true,
+            theme: 'icecoder',
+        });
+
+    </script>
+
+}
+
+
+

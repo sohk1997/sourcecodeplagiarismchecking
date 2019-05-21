@@ -5685,6 +5685,8 @@
     <Content Include="Views\Shared\Components\_05_Body_Footer.cshtml" />
     <Content Include="Views\Demo\Index.cshtml" />
     <Content Include="Views\Demo\CompareCode.cshtml" />
+    <Content Include="Views\Demo\MyProfile.cshtml" />
+    <Content Include="Views\Demo\MySubmission.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -17,6 +17,13 @@ namespace SourceCodePlagiarismCheckingSystem.Controllers
         {
             return View();
         }
-
+        public ActionResult MyProfile()
+        {
+            return View();
+        }
+        public ActionResult MySubmission()
+        {
+            return View();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿////Load file to code mirror
+﻿
+////Load file to code mirror
 var myTextArea = document.getElementById('code_editor');
 
 var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
