@@ -1,4 +1,4 @@
-﻿
+﻿@model List<DataRecordModel>
 <div class="page-container">
     <div class="row">
         <div class="col-md-6 ">
@@ -75,26 +75,22 @@
 @section Scripts{
 
     <script type="text/javascript">
+        var data = '@Html.Raw(Json.Encode(ViewBag.Data))';
+        var json2js = JSON.parse(data);
+        var abc = json2js.map(function (x) {
+            return {
+                label: x.Drink,
+                value: x.Quantity
+            };
+        });
+       
+
         new Morris.Donut({
             // ID of the element in which to draw the chart.
             element: 'chart1',
             // Chart data records -- each entry in this array corresponds to a point on
             // the chart.
-            data: [
-                { label: 'PUBG', value: 20 },
-                { label: 'GTA V', value: 10 },
-                { label: 'LOL', value: 5 },
-                { label: 'Fortnite', value: 5 },
-                { label: 'Dota2', value: 20 },
-            ],
-
-            //// The name of the data record attribute that contains x-values.
-            //xkey: 'year',
-            //// A list of names of data record attributes that contain y-values.
-            //ykeys: ['value'],
-            //// Labels for the ykeys -- will be displayed when you hover over the
-            //// chart.
-            //labels: ['Value']
+            data: abc
         });
 
         new Morris.Line({

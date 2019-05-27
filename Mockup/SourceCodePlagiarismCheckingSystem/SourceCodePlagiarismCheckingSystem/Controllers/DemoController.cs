@@ -1,4 +1,7 @@
-﻿using System;
+﻿using SourceCodePlagiarismCheckingSystem.Database;
+using SourceCodePlagiarismCheckingSystem.Models;
+using SourceCodePlagiarismCheckingSystem.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,6 +11,7 @@ namespace SourceCodePlagiarismCheckingSystem.Controllers
 {
     public class DemoController : Controller
     {
+        private AppDbContext appDbContext = new AppDbContext();
         // GET: Demo
         public ActionResult Index()
         {
@@ -15,7 +19,17 @@ namespace SourceCodePlagiarismCheckingSystem.Controllers
         }
         public ActionResult CompareCode()
         {
-            return View();
+            var query = appDbContext.Datas.Select(x => new DataRecordModel()
+            {
+                Id = x.Id,
+                Drink = x.Drink,
+                Quantity = x.Quantity
+            }).Distinct().ToList();
+            //Console.WriteLine(query);
+
+            ViewBag.Data = query;
+            return View(query);
+           
         }
         public ActionResult MyProfile()
         {
