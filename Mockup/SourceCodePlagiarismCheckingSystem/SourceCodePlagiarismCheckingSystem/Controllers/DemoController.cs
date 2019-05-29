@@ -25,10 +25,22 @@ namespace SourceCodePlagiarismCheckingSystem.Controllers
                 Drink = x.Drink,
                 Quantity = x.Quantity
             }).Distinct().ToList();
-            //Console.WriteLine(query);
 
+            var queryCode = appDbContext.SourceCodes.Select(x => new SourceCodeRecordModel()
+            {
+                Id=x.Id,
+                Name=x.Name,
+                Code=x.Code,
+                StartLine=x.StartLine,
+                EndLine=x.EndLine,
+                Description=x.Description
+            }).Distinct().ToList();
+            //Console.WriteLine(query);
+            
             ViewBag.Data = query;
-            return View(query);
+            ViewBag.SourceCode = queryCode;
+
+            return View();
            
         }
         public ActionResult MyProfile()

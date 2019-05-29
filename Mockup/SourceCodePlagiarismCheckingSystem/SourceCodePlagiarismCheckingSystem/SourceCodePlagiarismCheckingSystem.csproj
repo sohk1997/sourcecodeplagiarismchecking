@@ -5316,6 +5316,7 @@
     <Compile Include="Controllers\DemoController.cs" />
     <Compile Include="Database\AppDbContext.cs" />
     <Compile Include="Database\Configurations\DataConfiguration.cs" />
+    <Compile Include="Database\Configurations\SourceCodeConfiguration.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -5324,10 +5325,20 @@
     <Compile Include="Migrations\201905250457586_v1.Designer.cs">
       <DependentUpon>201905250457586_v1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905280235251_v2.cs" />
+    <Compile Include="Migrations\201905280235251_v2.Designer.cs">
+      <DependentUpon>201905280235251_v2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905290851477_v3.cs" />
+    <Compile Include="Migrations\201905290851477_v3.Designer.cs">
+      <DependentUpon>201905290851477_v3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Data.cs" />
+    <Compile Include="Models\SourceCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\DataModel.cs" />
+    <Compile Include="ViewModels\SourceCodeModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -5720,6 +5731,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201905250457586_v1.resx">
       <DependentUpon>201905250457586_v1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905280235251_v2.resx">
+      <DependentUpon>201905280235251_v2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905290851477_v3.resx">
+      <DependentUpon>201905290851477_v3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

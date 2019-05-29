@@ -1,7 +1,40 @@
 ﻿@model List<DataRecordModel>
+
+<style>
+</style>
 <div class="page-container">
     <div class="row">
-        <div class="col-md-6 ">
+        <div class="col-md-8 ">
+
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-red-sunglo">
+
+                        <span class="caption-subject bold uppercase">@((ViewBag.SourceCode as List<SourceCodeRecordModel>).First().Name)</span>
+                    </div>
+
+                </div>
+                <div class="portlet-body form">
+                    <textarea id="editor1">@((ViewBag.SourceCode as List<SourceCodeRecordModel>).First().Code)</textarea>
+
+                </div>
+
+
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption  font-red-sunglo">
+
+                            <span class="caption-subject bold uppercase"> Code 2</span>
+                        </div>
+
+                    </div>
+                    <div class="portlet-body form">
+                        <textarea id="editor2"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 ">
             <!-- BEGIN SAMPLE FORM PORTLET-->
             <div class="portlet light bordered">
                 <div class="portlet-title">
@@ -15,11 +48,6 @@
                     <div id="chart1" style=""></div>
                 </div>
             </div>
-
-
-        </div>
-        <div class="col-md-6 ">
-            <!-- BEGIN SAMPLE FORM PORTLET-->
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption  font-red-sunglo">
@@ -34,43 +62,16 @@
             </div>
 
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6 ">
-            <!-- BEGIN SAMPLE FORM PORTLET-->
-            <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption font-red-sunglo">
-
-                        <span class="caption-subject bold uppercase"> Code 1</span>
-                    </div>
-
-                </div>
-                <div class="portlet-body form">
-                    <textarea id="editor1"></textarea>
-                </div>
-            </div>
+        <div class="col-md-8">
 
 
         </div>
-        <div class="col-md-6 ">
-            <!-- BEGIN SAMPLE FORM PORTLET-->
-            <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption  font-red-sunglo">
+        <div class="col-md-4">
 
-                        <span class="caption-subject bold uppercase"> Code 2</span>
-                    </div>
-
-                </div>
-                <div class="portlet-body form">
-                    <textarea id="editor2"></textarea>
-                </div>
-            </div>
 
         </div>
     </div>
+
 </div>
 @section Scripts{
 
@@ -83,7 +84,7 @@
                 value: x.Quantity
             };
         });
-       
+
 
         new Morris.Donut({
             // ID of the element in which to draw the chart.
@@ -114,16 +115,29 @@
             // Labels for the ykeys -- will be displayed when you hover over the
             // chart.
             labels: ['Series A', 'Series B']
-        });
-
+            });
 
         var editor = CodeMirror.fromTextArea(document.getElementById('editor1'), {
             mode: "javascript",
             lineNumbers: true,
             theme: 'icecoder',
-        });
+            readOnly: true
 
-        var editor = CodeMirror.fromTextArea(document.getElementById('editor2'), {
+            });
+        //editor.addLineClass(10, "background", "text-danger");
+        editor.getDoc().markText(
+            { line: @((ViewBag.SourceCode as List<SourceCodeRecordModel>).First().StartLine) },
+            { line: @((ViewBag.SourceCode as List<SourceCodeRecordModel>).First().EndLine) },
+            { css: "background-color : red; color : white;" }
+        );
+
+         editor.getDoc().markText(
+            { line: 33 },
+            { line: 39 },
+            { css: "background-color : red; color : white;" }
+        );
+       
+        var editor1 = CodeMirror.fromTextArea(document.getElementById('editor2'), {
             mode: "javascript",
             lineNumbers: true,
             theme: 'icecoder',
