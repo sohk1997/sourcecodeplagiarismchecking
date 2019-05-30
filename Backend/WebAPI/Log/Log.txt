@@ -1,0 +1,26 @@
+2018-06-05 14:43:12.898 +07:00 [INF] Entity Framework Core 2.1.0-rtm-30799 initialized 'TestContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+2018-06-05 14:43:13.100 +07:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2018-06-05 14:43:13.113 +07:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2018-06-05 14:43:13.126 +07:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2018-06-05 14:43:13.140 +07:00 [INF] No migrations were applied. The database is already up to date.
+2018-06-05 14:43:15.072 +07:00 [INF] User profile is available. Using 'C:\Users\Truong Le Gia Luat\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2018-06-05 14:43:15.934 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:55382/  
+2018-06-05 14:43:16.226 +07:00 [INF] Request finished in 292.3436ms 404 
+2018-06-05 14:43:20.442 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:55382/swagger/  
+2018-06-05 14:43:20.462 +07:00 [INF] Request finished in 20.5849ms 200 text/html
+2018-06-05 14:43:23.577 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:55382/api/test  
+2018-06-05 14:43:23.578 +07:00 [INF] Request finished in 0.8709ms 404 
+2018-06-05 14:43:31.440 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:55382/api/1.0/test  
+2018-06-05 14:43:31.544 +07:00 [INF] Route matched with {action = "Get", controller = "TestControllerV1"}. Executing action WebAPI.Controllers.TestControllerV1.Get (WebAPI)
+2018-06-05 14:43:31.613 +07:00 [INF] Executing action method WebAPI.Controllers.TestControllerV1.Get (WebAPI) - Validation state: "Valid"
+2018-06-05 14:43:31.614 +07:00 [INF] Hello world
+2018-06-05 14:43:31.614 +07:00 [ERR] Error
+2018-06-05 14:43:31.644 +07:00 [INF] Executed action method WebAPI.Controllers.TestControllerV1.Get (WebAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 23.703400000000002ms.
+2018-06-05 14:43:31.682 +07:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[ViewModel.ViewModel.TestViewModel, ViewModel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2018-06-05 14:43:31.711 +07:00 [INF] Executed action WebAPI.Controllers.TestControllerV1.Get (WebAPI) in 156.6608ms
+2018-06-05 14:43:31.712 +07:00 [INF] Request finished in 272.8094ms 200 application/json; charset=utf-8
