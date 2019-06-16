@@ -34,6 +34,12 @@ namespace StringMatcher.Tiling
             if (string.IsNullOrEmpty(s1) || string.IsNullOrEmpty(s2))
                 Console.WriteLine("NoValidArgumentError: input must be of type string not None");
 
+            if(s1.Length > s2.Length)
+            {
+                String tmp = s1;
+                s1 = s2;
+                s2 = tmp;
+            }
             // Compute Tiles
             tiles = RKR_GST(s1, s2, mML, 20);
 
