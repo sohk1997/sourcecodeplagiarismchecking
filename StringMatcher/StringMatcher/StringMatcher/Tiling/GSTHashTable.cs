@@ -22,7 +22,7 @@ namespace StringMatcher.Tiling
             {
                 newlist = dict[h];
                 newlist.Add(obj);
-                dict.Add(h, newlist);
+                dict[h] = newlist;
             }
             else
             {
