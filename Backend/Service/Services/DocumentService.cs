@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using ViewModel.Document;
@@ -21,9 +22,7 @@ namespace Service.Services
     {
         List<DocumentInList> DocumentProcedure(int Id, string Name);
         DocumentInfo Get(int Id);
-        Task<int> UploadToCloud(IFormFile file, string filePath);
-        void Update(IFormFile file);
-        void Delete(int Id);
+        Task<int> UploadToCloud(IFormFile file);
     }
     public class DocumentService : IDocumentService
     {
@@ -42,32 +41,33 @@ namespace Service.Services
             _storeProcedure = storeProcedure;
         }
 
-        public async Task<int> UploadToCloud(IFormFile file, string filePath)
+        public async Task<int> UploadToCloud(IFormFile file)
         {
             Document document = _mapper.Map<Document>(file);
             document.DocumentExtn = (Path.GetExtension(file.FileName).ToLower() == ".java") ? "java" :
                 (Path.GetExtension(file.FileName).ToLower() == ".cs") ? "cs" : "Undefine";
             document.DocumentName = file.FileName;
-            _documentRepository.AddToUpload(document, filePath); // read stream to byte[]
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            {
+                var fileContent = reader.ReadToEnd();
+                //var parsedContentDisposition = ContentDispositionHeaderValue.Parse(file.ContentDisposition);                                
+                document.DocumentContent = Encoding.ASCII.GetBytes(fileContent);
+            }
             _documentRepository.Add(document);
             Commit();
-            //----Upload - To - Azure - Blo----
+            //----Upload - To - Azure - Blob----
             CloudStorageAccount storageAccount = new CloudStorageAccount(new StorageCredentials
                 ("sourceproject", "+03nTRvnSMevowugQfMm5BU7mGCTrs3VDa9SkzNP+qVl7aaVHO6imOnqKMLPwK2fQrsfg3f5CWlUihgvzSu3lA=="), true);
             // Create a blob client.
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-            // Get a reference to a container named "mycontainer."
+            // Get a reference to a container named "project."
             CloudBlobContainer container = blobClient.GetContainerReference("project");
-            // Get a reference to a blob named "myblob".            
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(file.FileName);
-            //await blockBlob.UploadFromByteArrayAsync(document.DocumentContent, 0, document.DocumentContent.Length);
+            // Get a reference to a blob named "file.FileName".
+            Guid guid = Guid.NewGuid();
+            string genKeyName = file.FileName + "-" + guid.ToString();
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(genKeyName);
+            await blockBlob.UploadFromByteArrayAsync(document.DocumentContent, 0, document.DocumentContent.Length);
             return document.DocumentId;
-        }
-
-        public void Delete(int Id)
-        {
-            _documentRepository.Delete(x => x.DocumentId == Id);
-            Commit();
         }
 
         public List<DocumentInList> DocumentProcedure(int Id, string Name)
@@ -79,14 +79,6 @@ namespace Service.Services
         {
             var document = _documentRepository.Get(x => x.DocumentId == Id);
             return _mapper.Map<DocumentInfo>(document);
-        }
-
-        public void Update(IFormFile file)
-        {
-            //var document = _documentRepository.Get(c => c.DocumentId == file.Id);
-            //document = _mapper.Map<IFormFile, Document>(file, document);
-            //_documentRepository.Update(document);
-            //Commit();
         }
 
         private void Commit()

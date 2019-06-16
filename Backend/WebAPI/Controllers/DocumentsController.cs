@@ -31,7 +31,6 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         // GET: api/<controller>
         [HttpGet]
-        //[Authorize(Roles = ("DOCUMENT_V"))]
         [ProducesResponseType(typeof(IEnumerable<DocumentInList>), 200)]
         [ProducesResponseType(typeof(string), 500)]
         public IActionResult Get()
@@ -74,8 +73,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(400, Type = typeof(ModelStateDictionary))]
         [ProducesResponseType(500)]
         public async Task<IActionResult> Post(IFormFile file)
-        {
-            string filePath = Path.GetTempFileName();
+        {            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Where(x => x.Value.Errors.Count > 0).ToDictionary(x => x.Key, x => x.Value));
@@ -85,53 +83,12 @@ namespace WebAPI.Controllers
                 NotFound();
             }
             else
-            {
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-                int id = await _documentService.UploadToCloud(file, filePath);
+            {                
+                int id = await _documentService.UploadToCloud(file);
                 string location = Request.HttpContext.Request.Host + "/api/document/" + id;
                 return Created(location, file);
             }
             return NotFound();
-        }
-
-        /// <summary>
-        /// Update document
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        // PUT api/<controller>/5
-        [HttpPut]
-        //[Authorize(Roles = ("DOCUMENT_U"))]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400, Type = typeof(ModelStateDictionary))]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> Put(IFormFile file)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.Where(x => x.Value.Errors.Count > 0).ToDictionary(x => x.Key, x => x.Value));
-            }
-            _documentService.Update(file);
-            return Ok();
-        }
-
-        /// <summary>
-        /// Delete document with id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        //[Authorize(Roles = ("DOCUMENT_D"))]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> Delete(int id)
-        {
-            _documentService.Delete(id);
-            return Ok();
-        }
+        }        
     }
 }
