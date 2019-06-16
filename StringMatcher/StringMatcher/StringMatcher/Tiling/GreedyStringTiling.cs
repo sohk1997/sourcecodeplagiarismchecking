@@ -34,7 +34,7 @@ namespace StringMatcher.Tiling
             if (string.IsNullOrEmpty(s1) || string.IsNullOrEmpty(s2))
                 Console.WriteLine("NoValidArgumentError: input must be of type string not None");
 
-            if(s1.Length > s2.Length)
+            if(s2.Length > s1.Length)
             {
                 String tmp = s1;
                 s1 = s2;
