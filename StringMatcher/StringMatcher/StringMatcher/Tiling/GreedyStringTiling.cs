@@ -70,12 +70,12 @@ namespace StringMatcher.Tiling
 
                 for (int i = 0; i < tiles.length; i++)
                 {
-                    Console.Write(s1arr[tiles.patternPostion + i]);
+                    Console.Write(s1arr[tiles.patternPostion + i] + " ");
                 }
                 Console.WriteLine("");
                 for (int i = 0; i < tiles.length; i++)
                 {
-                    Console.Write(s2arr[tiles.textPosition + i]);
+                    Console.Write(s2arr[tiles.textPosition + i] + " ");
                 }
                 Console.WriteLine();
             }
