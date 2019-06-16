@@ -46,6 +46,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -103,10 +109,16 @@
     <Content Include="Assets\apps\scripts\demoJS.js" />
     <Content Include="Assets\apps\scripts\inbox.js" />
     <Content Include="Assets\apps\scripts\inbox.min.js" />
+    <Content Include="Assets\apps\scripts\layout-routing.js" />
+    <Content Include="Assets\apps\scripts\sammy-0.7.4.js" />
+    <Content Include="Assets\apps\scripts\sammy-0.7.4.min.js" />
+    <Content Include="Assets\apps\scripts\sammy-0.7.5.js" />
+    <Content Include="Assets\apps\scripts\sammy-0.7.5.min.js" />
     <Content Include="Assets\apps\scripts\todo-2.js" />
     <Content Include="Assets\apps\scripts\todo-2.min.js" />
     <Content Include="Assets\apps\scripts\todo.js" />
     <Content Include="Assets\apps\scripts\todo.min.js" />
+    <Content Include="Assets\apps\scripts\userJS.js" />
     <Content Include="Assets\global\css\components-md.css" />
     <Content Include="Assets\global\css\components-md.min.css" />
     <Content Include="Assets\global\css\components-rounded.css" />
@@ -5308,11 +5320,47 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DemoController.cs" />
+    <Compile Include="Controllers\ScheduleController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Database\AppDbContext.cs" />
+    <Compile Include="Database\Configurations\DataConfiguration.cs" />
+    <Compile Include="Database\Configurations\SourceCodeConfiguration.cs" />
+    <Compile Include="Database\Configurations\UserConfiguration.cs" />
+    <Compile Include="Database\Configurations\CountryConfiguration.cs" />
+    <Compile Include="Database\Seeders\CountrySeeder.cs" />
+    <Compile Include="Database\Seeders\Shared\EntitySeeder.cs" />
+    <Compile Include="Database\Seeders\UserSeeder.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructures\UrlHelperExtension.cs" />
+    <Compile Include="Migrations\201905250457586_v1.cs" />
+    <Compile Include="Migrations\201905250457586_v1.Designer.cs">
+      <DependentUpon>201905250457586_v1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905280235251_v2.cs" />
+    <Compile Include="Migrations\201905280235251_v2.Designer.cs">
+      <DependentUpon>201905280235251_v2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905290851477_v3.cs" />
+    <Compile Include="Migrations\201905290851477_v3.Designer.cs">
+      <DependentUpon>201905290851477_v3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906050434483_v4.cs" />
+    <Compile Include="Migrations\201906050434483_v4.Designer.cs">
+      <DependentUpon>201906050434483_v4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Country.cs" />
+    <Compile Include="Models\Data.cs" />
+    <Compile Include="Models\Gender.cs" />
+    <Compile Include="Models\SourceCode.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\CountryModel.cs" />
+    <Compile Include="ViewModels\DataModel.cs" />
+    <Compile Include="ViewModels\SourceCodeModel.cs" />
+    <Compile Include="ViewModels\UserModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -5687,6 +5735,8 @@
     <Content Include="Views\Demo\CompareCode.cshtml" />
     <Content Include="Views\Demo\MyProfile.cshtml" />
     <Content Include="Views\Demo\MySubmission.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\Schedule\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -5698,10 +5748,29 @@
     <Folder Include="App_Data\" />
     <Folder Include="Assets\apps\img\" />
     <Folder Include="Assets\global\plugins\angularjs\plugins\angular-file-upload\uploads\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201905250457586_v1.resx">
+      <DependentUpon>201905250457586_v1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905280235251_v2.resx">
+      <DependentUpon>201905280235251_v2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905290851477_v3.resx">
+      <DependentUpon>201905290851477_v3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906050434483_v4.resx">
+      <DependentUpon>201906050434483_v4.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Library.Extension\Library.Extension.csproj">
+      <Project>{794833D6-748F-4090-BE23-9DAE5976627C}</Project>
+      <Name>Library.Extension</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
