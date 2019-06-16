@@ -1,19 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Root", "Root\Root.csproj", "{20608D99-34C2-4108-8BFE-A501F956FF00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Root", "Root\Root.csproj", "{20608D99-34C2-4108-8BFE-A501F956FF00}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{B8214432-4C84-44BF-B202-D833233EB3DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{3C70DE36-1742-4570-8C66-5EC654E77656}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{3C70DE36-1742-4570-8C66-5EC654E77656}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModel", "ViewModel\ViewModel.csproj", "{1C75A879-5E34-4EDF-9199-4E2B01855079}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{1C75A879-5E34-4EDF-9199-4E2B01855079}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Website", "Website", "{777C207A-DC7F-45F0-A991-931BED9F009C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{F9A15097-13B6-4E82-9C10-5D7F8E9FC00E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StringMatcher", "..\StringMatcher\StringMatcher\StringMatcher\StringMatcher.csproj", "{487534A5-4739-4DFD-BE48-BE1009284500}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewProject", "NewProject\NewProject.csproj", "{6E49FD78-DA90-40A0-8A88-4B25734057AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,14 @@ Global
 		{F9A15097-13B6-4E82-9C10-5D7F8E9FC00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9A15097-13B6-4E82-9C10-5D7F8E9FC00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9A15097-13B6-4E82-9C10-5D7F8E9FC00E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{487534A5-4739-4DFD-BE48-BE1009284500}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{487534A5-4739-4DFD-BE48-BE1009284500}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{487534A5-4739-4DFD-BE48-BE1009284500}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{487534A5-4739-4DFD-BE48-BE1009284500}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E49FD78-DA90-40A0-8A88-4B25734057AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E49FD78-DA90-40A0-8A88-4B25734057AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E49FD78-DA90-40A0-8A88-4B25734057AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E49FD78-DA90-40A0-8A88-4B25734057AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +58,8 @@ Global
 		{3C70DE36-1742-4570-8C66-5EC654E77656} = {B8214432-4C84-44BF-B202-D833233EB3DD}
 		{1C75A879-5E34-4EDF-9199-4E2B01855079} = {B8214432-4C84-44BF-B202-D833233EB3DD}
 		{F9A15097-13B6-4E82-9C10-5D7F8E9FC00E} = {777C207A-DC7F-45F0-A991-931BED9F009C}
+		{487534A5-4739-4DFD-BE48-BE1009284500} = {B8214432-4C84-44BF-B202-D833233EB3DD}
+		{6E49FD78-DA90-40A0-8A88-4B25734057AB} = {777C207A-DC7F-45F0-A991-931BED9F009C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B465245-5DC7-4E74-B473-1AAA3121ECC8}
