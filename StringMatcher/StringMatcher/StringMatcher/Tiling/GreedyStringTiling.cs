@@ -27,6 +27,11 @@ namespace StringMatcher.Tiling
 	 */
         public static PlagResult Run(String s1, String s2, int mML, float threshold)
         {
+            tiles = new List<MatchVals>();
+            matchList = new List<Queue<MatchVals>>();
+
+
+
             if (mML < 1)
                 Console.WriteLine("OutOfRangeError: minimum Matching Length mML needs to be greater than 0");
             if (!((0 <= threshold) && (threshold <= 1)))
@@ -34,12 +39,6 @@ namespace StringMatcher.Tiling
             if (string.IsNullOrEmpty(s1) || string.IsNullOrEmpty(s2))
                 Console.WriteLine("NoValidArgumentError: input must be of type string not None");
 
-            if(s2.Length > s1.Length)
-            {
-                String tmp = s1;
-                s1 = s2;
-                s2 = tmp;
-            }
             // Compute Tiles
             tiles = RKR_GST(s1, s2, mML, 20);
 
@@ -61,31 +60,32 @@ namespace StringMatcher.Tiling
             result.SetSuspectedPlagiarism(simResult.suspPlag);
 
 
-            Console.WriteLine("Identifiers: " + result.GetIdentifier().id1 + ":" + result.GetIdentifier().id2);
-            Console.WriteLine("Similarity: " + result.GetSimilarity());
-            Console.WriteLine("Plagiriasm tiles: ");
+            //Console.WriteLine("Identifiers: " + result.GetIdentifier().id1 + ":" + result.GetIdentifier().id2);
+            //Console.WriteLine("Similarity: " + result.GetSimilarity());
+            //Console.WriteLine("Plagiriasm tiles: ");
 
             string[] s1arr = splitRegex.Split(s1);
             string[] s2arr = splitRegex.Split(s2);
 
             foreach (MatchVals tiles in result.GetTiles())
             {
+                Console.Write("Match position : ");
                 Console.Write("(" + tiles.patternPostion + ",");
                 Console.Write(tiles.textPosition + ",");
                 Console.WriteLine(tiles.length + ")");
 
-                for (int i = 0; i < tiles.length; i++)
-                {
-                    Console.Write(s1arr[tiles.patternPostion + i] + " ");
-                }
-                Console.WriteLine("");
-                for (int i = 0; i < tiles.length; i++)
-                {
-                    Console.Write(s2arr[tiles.textPosition + i] + " ");
-                }
+                //for (int i = 0; i < tiles.length; i++)
+                //{
+                //    Console.Write(s1arr[tiles.patternPostion + i] + " ");
+                //}
+                //Console.WriteLine("");
+                //for (int i = 0; i < tiles.length; i++)
+                //{
+                //    Console.Write(s2arr[tiles.textPosition + i] + " ");
+                //}
                 Console.WriteLine();
             }
-            Console.WriteLine("\nSuspected Plagirism: " + result.suspectedPlagiarism);
+            //Console.WriteLine("\nSuspected Plagirism: " + result.suspectedPlagiarism);
 
             return result;
         }
