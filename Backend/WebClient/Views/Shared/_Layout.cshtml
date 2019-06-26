@@ -1,0 +1,44 @@
+﻿@{
+    string path = "Components";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @{
+        Html.RenderPartial($"{path}/_01_Header");
+    }
+</head>
+<body >
+    <!--================Header Menu Area =================-->
+    @{
+        Html.RenderPartial($"{path}/_02_Body_FixedNavbar");
+    }
+    <!--================Header Menu Area =================-->
+
+
+    <main class="side-main">
+        @RenderBody()
+
+    </main>
+
+
+    <!-- ================ start footer Area ================= -->
+    @{
+        Html.RenderPartial($"{path}/_03_Body_Footer");
+    }
+    <!-- ================ End footer Area ================= -->
+    @{
+        Html.RenderPartial($"{path}/_04_Body_Scripts");
+    }
+
+
+    @RenderSection("Scripts", false)
+</body>
+</html>
+
+
+
+
+
+
