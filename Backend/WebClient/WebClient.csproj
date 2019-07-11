@@ -122,6 +122,7 @@
     <Content Include="Assets\global\css\plugins-md.min.css" />
     <Content Include="Assets\global\css\plugins.css" />
     <Content Include="Assets\global\css\plugins.min.css" />
+    <Content Include="Assets\apps\css\uploadCustom.css" />
     <Content Include="Assets\global\img\accordion-plusminus.png" />
     <Content Include="Assets\global\img\ajax-loading.gif" />
     <Content Include="Assets\global\img\ajax-modal-loading.gif" />
@@ -4558,6 +4559,7 @@
     <Content Include="Assets\img\home\solution.png" />
     <Content Include="Assets\img\logo.png" />
     <Content Include="Assets\img\testimonial\testimonial1.png" />
+    <Content Include="Assets\js\compareCode.js" />
     <Content Include="Assets\js\contact.js" />
     <Content Include="Assets\js\demoJS.js" />
     <Content Include="Assets\js\jquery.ajaxchimp.min.js" />

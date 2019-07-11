@@ -1,9 +1,5 @@
-﻿
-<div style="height:91px; background-color:#6f42c1"></div>
-<h3 class="page-title">
-    File Upload
+﻿<div style="height:91px; background-color:#6f42c1"></div>
 
-</h3>
 <!-- END PAGE TITLE-->
 <!-- END PAGE HEADER-->
 @*<div class="row">
@@ -15,31 +11,23 @@
             </form>
         </div>
     </div>*@
-<div style="padding:20px;">
+<div style="padding:20px;"> 
+    <h3 class="page-title">
+        File Upload
 
-    <div class="row" style="float:right; margin-right:-45px">
-        <form action="" class="form-inline">
-            <div class="form-body ">
-                <div class="form-group">
-                    <div class="col-md-10"></div>
-                    Language
-                    <div class="col-md-2" style="max-width:100% !important; ">
-                        <select class="bs-select form-control">
-                            <option>C#</option>
-                            <option>Java</option>
-                            <option>Python</option>
-                            <option>Javascript</option>
-                            <option>C</option>
-                            <option>React</option>
-                            <option>C++</option>
-                        </select>
-                    </div>
-                </div>
+    </h3>
+        <div class="dropdown" style="float:right;" id="languageDropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+                Language  
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="menu1">
+                <li role="presentation"><a role="menuitem" href="#">Java</a></li>
+                <li role="presentation"><a role="menuitem" href="#">C#</a></li>
+                <li role="presentation"><a role="menuitem" href="#">Python</a></li>
 
-            </div>
-
-        </form>
-    </div>
+            </ul>
+        </div>
 
     <form method="post" action="http://localhost:55382/api/document" enctype="multipart/form-data" id="#" style="margin-top:25px">
         <div class="form-group files">
@@ -52,7 +40,7 @@
         <div class="row">
             <div class="col-md-11"></div>
             <div class="col-md-1" style="margin-top:5px">
-                <button class="btn green-sharp btn-outline sbold pull-right" onclick="uploadFile();" type="submit" data-toggle="modal" href="#basic" style="display:block"> Next </button>
+               <button class="btn green-sharp btn-outline sbold pull-right" onclick="uploadFile();" type="submit" data-toggle="modal" href="#basic" style="display:block"> Next </button>
 
             </div>
 
@@ -60,11 +48,6 @@
 
     </form>
 </div>
-
-
-@*<textarea id="editor1"></textarea>
-    <textarea id="editor2"></textarea>*@
-
 
 <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true">
     <div class="modal-dialog">
@@ -106,8 +89,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                @*<button type="button" class="btn green"></button>*@
-                @*<link href="@{Html.RenderPartial("CompareCode")}" rel="stylesheet"  />*@
 
 
                 <a href="@Url.Action("CompareCode","Upload")" class="btn green">Check</a>
@@ -120,5 +101,4 @@
 @section Scripts{
     <script src="@Url.Assets("js/demoJS.js")" type="text/javascript"></script>
 
-   
 }
