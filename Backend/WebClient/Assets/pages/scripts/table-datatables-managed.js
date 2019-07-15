@@ -21,7 +21,7 @@ var TableDatatablesManaged = function () {
                 "search": "Search:",
                 "zeroRecords": "No matching records found",
                 "paginate": {
-                    "previous":"Prev",
+                    "previous": "Prev",
                     "next": "Next",
                     "last": "Last",
                     "first": "First"
@@ -40,7 +40,7 @@ var TableDatatablesManaged = function () {
 
             "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
-            "columnDefs": [ {
+            "columnDefs": [{
                 "targets": 0,
                 "orderable": false,
                 "searchable": false
@@ -51,7 +51,7 @@ var TableDatatablesManaged = function () {
                 [5, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 5,            
+            "pageLength": 5,
             "pagingType": "bootstrap_full_number",
             "columnDefs": [{  // set default column settings
                 'orderable': false,
@@ -85,7 +85,7 @@ var TableDatatablesManaged = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
         });
-    }
+    };
 
     var initTable2 = function () {
 

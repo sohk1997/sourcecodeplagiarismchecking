@@ -9,13 +9,14 @@
         Html.RenderPartial($"{path}/_01_Header");
     }
 </head>
-<body >
+<body>
+
     <!--================Header Menu Area =================-->
     @{
         Html.RenderPartial($"{path}/_02_Body_FixedNavbar");
     }
     <!--================Header Menu Area =================-->
-
+   
 
     <main class="side-main">
         @RenderBody()

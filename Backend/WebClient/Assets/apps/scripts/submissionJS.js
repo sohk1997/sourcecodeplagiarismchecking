@@ -1,5 +1,5 @@
 ﻿
-    var table = $('#userDatatable');
+    var table = $('#submissionDatatable');
 
     // begin first table
     table.dataTable({
@@ -62,7 +62,7 @@
         ] // set first column as a default sort by asc
     });
 
-    var tableWrapper = jQuery('#user_datatable_1_wrapper');
+var tableWrapper = jQuery('#submission_datatable_1_wrapper');
 
     table.find('.group-checkable').change(function () {
         var set = jQuery(this).attr("data-set");

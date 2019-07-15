@@ -44,6 +44,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -110,7 +116,7 @@
     <Content Include="Assets\apps\scripts\todo-2.min.js" />
     <Content Include="Assets\apps\scripts\todo.js" />
     <Content Include="Assets\apps\scripts\todo.min.js" />
-    <Content Include="Assets\apps\scripts\userJS.js" />
+    <Content Include="Assets\apps\scripts\submissionJS.js" />
     <Content Include="Assets\css\style.css" />
     <Content Include="Assets\global\css\components-md.css" />
     <Content Include="Assets\global\css\components-md.min.css" />
@@ -6101,12 +6107,30 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SubmissionController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Database\AppDbContext.cs" />
+    <Compile Include="Database\Configurations\SourceCodeConfiguration.cs" />
+    <Compile Include="Database\Configurations\SubmissionConfiguration.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructures\UrlHelperExtension.cs" />
+    <Compile Include="Migrations\201907151002125_v1.cs" />
+    <Compile Include="Migrations\201907151002125_v1.Designer.cs">
+      <DependentUpon>201907151002125_v1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201907151659400_v2.cs" />
+    <Compile Include="Migrations\201907151659400_v2.Designer.cs">
+      <DependentUpon>201907151659400_v2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\SourceCode.cs" />
+    <Compile Include="Models\Status.cs" />
+    <Compile Include="Models\Submission.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\SourceCodeModel.cs" />
+    <Compile Include="ViewModels\SubmissionModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -6514,6 +6538,7 @@
     <Content Include="Views\Shared\Components\_04_Body_Scripts.cshtml" />
     <Content Include="Views\Upload\Index.cshtml" />
     <Content Include="Views\Upload\CompareCode.cshtml" />
+    <Content Include="Views\Submission\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -6525,7 +6550,14 @@
     <Folder Include="App_Data\" />
     <Folder Include="Assets\apps\img\" />
     <Folder Include="Assets\global\plugins\angularjs\plugins\angular-file-upload\uploads\" />
-    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201907151002125_v1.resx">
+      <DependentUpon>201907151002125_v1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907151659400_v2.resx">
+      <DependentUpon>201907151659400_v2.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
