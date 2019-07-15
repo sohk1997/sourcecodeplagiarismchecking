@@ -12,22 +12,18 @@ namespace Root.Data
     public class TestContext : IdentityDbContext<User>
     {
         //public DbSet<TestModel> Test { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Document> Documents { get; set; }
+        public DbSet<SourceCode> Documents { get; set; }
+        public DbSet<Method> Methods { get; set; }
+        public DbSet<Result> Results { get; set; }
         //public DbSet<Feature> Features { get; set; }
         //public DbSet<RoleFeature> RoleFeatures { get; set; }
         public TestContext(DbContextOptions options) : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
-            //modelBuilder.ApplyConfiguration (new TestModelMap ());
-            //modelBuilder.ApplyConfiguration (new UserMap ());
-            modelBuilder.ApplyConfiguration(new CustomerMap());
-            modelBuilder.ApplyConfiguration(new DocumentMap());
-            //modelBuilder.ApplyConfiguration (new RoleMap ());
-            //modelBuilder.ApplyConfiguration (new FeatureMap ());
-            //modelBuilder.ApplyConfiguration (new RoleFeatureMap ());
+            builder.Entity<Result>().ToTable("Result");
+            builder.Entity<Method>().ToTable("Method");
+            base.OnModelCreating(builder);
         }
 
         public void Commit()

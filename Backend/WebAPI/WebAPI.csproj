@@ -13,6 +13,7 @@
   <ItemGroup>
     <Folder Include="Controllers\V1\" />
     <Folder Include="wwwroot\" />
+    <Folder Include="Controllers\V2\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,9 +21,11 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
     <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="2.4.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,4 +38,9 @@
     <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Controllers\CustomerController.cs" />
+    <Compile Remove="Controllers\V1\TestController.cs" />
+    <Compile Remove="Controllers\V2\TestController.cs" />
+  </ItemGroup>
 </Project>

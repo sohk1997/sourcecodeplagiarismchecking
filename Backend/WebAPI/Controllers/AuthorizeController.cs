@@ -20,16 +20,13 @@ namespace WebAPI.Controllers {
     public class AuthorizeController : Controller {
         private UserManager<User> _userManager;
         private ILogger<AuthorizeController> _logger;
-        private IFeatureService _featureService;
 
         private IRoleStore<IdentityRole> _roleStore;
         public AuthorizeController (UserManager<User> userManager, ILogger<AuthorizeController> logger,
-            IFeatureService featureService,
             IRoleStore<IdentityRole> roleStore) {
             _logger = logger;
             _userManager = userManager;
             _roleStore = roleStore;
-            _featureService = featureService;
         }
 
         // GET: api/<controller>
@@ -61,29 +58,29 @@ namespace WebAPI.Controllers {
         [ProducesResponseType (400, Type = typeof (string))]
         [ProducesResponseType (500)]
         public async Task<IActionResult> Post ([FromBody] LoginViewModel user) {
-            var rootUser = await _userManager.FindByNameAsync (user.Username);
-            var login = await _userManager.CheckPasswordAsync (rootUser, user.Password);
-            if (login) {
-                var roleList = _featureService.Get (rootUser.RoleId);
-                var tokenString = rootUser.BuildToken (roleList);
-                return Ok (new { tokenString , role = roleList});
-            } else {
-                _logger.LogError ("Wrong user name or password " + user.Username );
-                return new BadRequestResult();
-            }
+            //var rootUser = await _userManager.FindByNameAsync (user.Username);
+            //var login = await _userManager.CheckPasswordAsync (rootUser, user.Password);
+            //if (login) {
+            //    var tokenString = rootUser.BuildToken (roleList);
+            //    return Ok (new { tokenString , role = roleList});
+            //} else {
+            //    _logger.LogError ("Wrong user name or password " + user.Username );
+            //    return new BadRequestResult();
+            //}
+            return Ok();
         }
 
         // PUT api/<controller>/5
         [HttpPut ("")]
         public async Task<IActionResult> Put ([FromBody] LoginViewModel user) {
-            var roleId = (await _roleStore.FindByNameAsync (user.Role, CancellationToken.None)).Id;
-            var result = await _userManager.CreateAsync (new User () {
-                Id = Guid.NewGuid ().ToString (),
-                    UserName = user.Username,
-                    RoleId = roleId,
-                    RoleName = "random",
-            }, user.Password);
-            return Ok (result);
+            //var roleId = (await _roleStore.FindByNameAsync (user.Role, CancellationToken.None)).Id;
+            //var result = await _userManager.CreateAsync (new User () {
+            //    Id = Guid.NewGuid ().ToString (),
+            //        UserName = user.Username,
+            //        RoleId = roleId,
+            //        RoleName = "random",
+            //}, user.Password);
+            return Ok ();
 
         }
 

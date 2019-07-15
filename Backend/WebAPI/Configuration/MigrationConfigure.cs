@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Pomelo.EntityFrameworkCore.MySql;
+
 
 namespace WebAPI.Configuration
 {
@@ -14,7 +16,7 @@ namespace WebAPI.Configuration
         {
             var serviceProvider = services.BuildServiceProvider();
             var optionBuilder = new DbContextOptionsBuilder();
-            optionBuilder.UseSqlServer(configuration.GetConnectionString("TestDB"));
+            optionBuilder.UseMySql(configuration.GetConnectionString("TestDB"));
             using(var context = serviceProvider.GetService<DbContext>())
             {
                 context.Database.Migrate();

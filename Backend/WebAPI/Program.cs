@@ -30,6 +30,7 @@ namespace WebAPI
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .UseSerilog()
+                .UseUrls("http://localhost:6969")
                 .Build();
     }
 }

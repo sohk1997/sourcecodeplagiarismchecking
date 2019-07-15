@@ -27,6 +27,7 @@ using Swashbuckle.AspNetCore;
 using WebAPI.Configuration;
 using WebAPI.Configuration.Filter;
 using WebAPI.SignalRHub;
+using Pomelo.EntityFrameworkCore.MySql;
 
 namespace WebAPI {
     public class Startup {
@@ -39,7 +40,7 @@ namespace WebAPI {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services) {
             //Add DB context
-            services.AddDbContext<TestContext> (op => op.UseSqlServer (Configuration.GetConnectionString ("TestDB")));
+            services.AddDbContext<TestContext> (op => op.UseMySql (Configuration.GetConnectionString ("TestDB"), b => b.MigrationsAssembly("WebAPI")));
 
             //Add identity
             services.AddIdentityConfigure ();
@@ -48,7 +49,7 @@ namespace WebAPI {
             services.AddInjection ();
 
             //Add auto migration
-            services.AddMigrationConfigure (Configuration);
+            //services.AddMigrationConfigure (Configuration);
 
             services.AddCors (options => {
                 options.AddPolicy ("AllowAnyOrigins", builder => builder.AllowAnyOrigin ().AllowAnyHeader ().AllowAnyMethod ().AllowCredentials ());
@@ -61,7 +62,7 @@ namespace WebAPI {
             services.AddDocumentationConfigure ();
 
             //Add auto mapper config
-            services.AddAutoMapper ();
+            services.AddAutoMapper();
 
             services.AddMvc (option => option.Filters.Add (typeof (ExceptionFilter)));
 

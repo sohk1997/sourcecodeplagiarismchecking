@@ -19,7 +19,7 @@ namespace WebAPI.Controllers.V1
         private ITestService _testService;
         private ILogger<TestController> _logger;
 
-        public TestController(ITestService testService, ILogger<TestController> logger)
+        public TestController(TestService testService, ILogger<TestController> logger)
         {
             _testService = testService;
             _logger = logger;

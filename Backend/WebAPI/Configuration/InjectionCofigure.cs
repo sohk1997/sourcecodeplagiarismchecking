@@ -16,12 +16,12 @@ namespace WebAPI.Configuration
     {
         public static void AddInjection(this IServiceCollection services)
         {
-            var serviceClasses = Assembly.GetAssembly(typeof(ITestService))
+            var serviceClasses = Assembly.GetAssembly(typeof(IDocumentService))
                                           .GetExportedTypes()
                                           .Where(s => s.Name.EndsWith("Service"))
                                           .Where(s => !s.IsInterface)
                                           .ToList();
-            var repositoryClassess = Assembly.GetAssembly(typeof(ITestRepository))
+            var repositoryClassess = Assembly.GetAssembly(typeof(ISourceCodeRepository))
                                              .GetExportedTypes()
                                              .Where(s => s.Name.EndsWith("Repository"))
                                              .Where(s => !s.IsInterface)

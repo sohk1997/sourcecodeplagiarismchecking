@@ -8,9 +8,9 @@ using System.Text;
 
 namespace Root.Model.Map
 {
-    public class DocumentMap : IEntityTypeConfiguration<Document>
+    public class DocumentMap : IEntityTypeConfiguration<SourceCode>
     {
-        public void Configure(EntityTypeBuilder<Document> builder)
+        public void Configure(EntityTypeBuilder<SourceCode> builder)
         {
             builder.HasKey(c => c.Id);
             builder.HasIndex(c => c.DocumentId).IsUnique();

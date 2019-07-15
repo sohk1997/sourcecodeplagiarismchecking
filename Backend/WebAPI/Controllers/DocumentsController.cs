@@ -44,14 +44,14 @@ namespace WebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         // GET api/<controller>/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}/result")]
         //[Authorize(Roles = ("DOCUMENT_V"))]
         [ProducesResponseType(typeof(DocumentInfo), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public IActionResult Get(int id)
         {
-            var document = _documentService.Get(id);
+            var document = _documentService.GetResult(id);
             if (document != null)
             {
                 return Ok(document);

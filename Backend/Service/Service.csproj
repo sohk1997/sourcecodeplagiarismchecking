@@ -7,6 +7,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +20,17 @@
     <Reference Include="Microsoft.WindowsAzure.Storage">
       <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\windowsazure.storage\8.1.4\lib\netstandard1.3\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage">
+      <HintPath>..\..\..\..\..\usr\local\share\dotnet\sdk\NuGetFallbackFolder\windowsazure.storage\8.1.4\lib\netstandard1.3\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Services\CustomerService.cs" />
+    <Compile Remove="Services\FeatureService.cs" />
+    <Compile Remove="Services\TestService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helper\" />
+  </ItemGroup>
 </Project>

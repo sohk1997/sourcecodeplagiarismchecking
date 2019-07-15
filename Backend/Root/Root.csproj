@@ -11,8 +11,25 @@
     <PackageReference Include="Microsoft.CodeAnalysis" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Model\Customer.cs" />
+    <Compile Remove="Model\RoleFeature.cs" />
+    <Compile Remove="Model\TestModel.cs" />
+    <Compile Remove="Model\Map\CustomerMap.cs" />
+    <Compile Remove="Model\Map\RoleFeatureMap.cs" />
+    <Compile Remove="Model\Map\RoleMap.cs" />
+    <Compile Remove="Model\Map\TestModelMap.cs" />
+    <Compile Remove="Model\Map\DocumentMap.cs" />
+    <Compile Remove="Data\Repository\CustomerRepository.cs" />
+    <Compile Remove="Data\Repository\FeatureRepository.cs" />
+    <Compile Remove="Data\Repository\RoleFeatureRepository.cs" />
+    <Compile Remove="Data\Repository\TestRepository.cs" />
+    <Compile Remove="Result.cs" />
+    <Compile Remove="Common.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -28,4 +45,7 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CommonEnum\" />
+  </ItemGroup>
 </Project>
