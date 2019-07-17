@@ -7,7 +7,7 @@ namespace WebCheck
     
     public interface WebCheck
     {
-        Result Check(Guid id, string url);
+        Result Check(string content);
        
     }
 }

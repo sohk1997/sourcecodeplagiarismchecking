@@ -6,10 +6,8 @@ namespace WebCheck
 {
     public class Result
     {
-        public int id1 { get; set; }
-        public int id2 { get; set; }
-        public int position1 { get; set; }
-        public int position2 { get; set; }
-        public int length { get; set; }
+        public string Url { get; set; }
+        public string Content { get; set; }
+        public string FileName { get; set; }
     }
 }
