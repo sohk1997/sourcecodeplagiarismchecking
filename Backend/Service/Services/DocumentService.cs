@@ -23,7 +23,7 @@ namespace Service.Services
         List<DocumentInList> DocumentProcedure(int Id, string Name);
         DocumentInfo Get(int Id);
         DocumentResult GetResult(int id);
-        Task<int> UploadToCloud(IFormFile file);
+        Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck);
         List<DocumentInList> GetAll();
     }
     public class DocumentService : IDocumentService
@@ -49,11 +49,12 @@ namespace Service.Services
             _methodRepository = methodRepository;
         }
 
-        public async Task<int> UploadToCloud(IFormFile file)
+        public async Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck)
         {
             SourceCode document = _mapper.Map<SourceCode>(file);
             document.DocumentName = file.FileName;
             document.Status = Root.CommonEnum.SourceCodeStatus.PENDING;
+            document.Type = Root.CommonEnum.SourceCodeType.PEER;
 
             //----Upload - To - Azure - Blob----
             CloudStorageAccount storageAccount = new CloudStorageAccount(new StorageCredentials
@@ -80,8 +81,13 @@ namespace Service.Services
 
             Guid queryId = document.Id;
             document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(d => d.Id == queryId);
-
-            RabbitMQHelper.SendMessage(document.Id.ToString());
+            var jsonObject = new 
+            {
+                id = document.Id,
+                webCheck = webcheck,
+                peerCheck = peercheck
+            };
+            RabbitMQHelper.SendMessage(JsonConvert.SerializeObject(jsonObject));
             return document.DocumentId;
         }
 
@@ -93,7 +99,7 @@ namespace Service.Services
 
         public List<DocumentInList> GetAll()
         {
-            var list = _sourceCodeRepository.GetAllQueryable().Select(d => new DocumentInList {
+            var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB).Select(d => new DocumentInList {
                 Id = d.DocumentId,
                 Name = d.DocumentName,
                 Status = (int)d.Status
@@ -114,27 +120,33 @@ namespace Service.Services
 
         public DocumentResult GetResult(int id)
         {
-            var query = from r in _resultRepository.GetAllQueryable()
-                        join m in _methodRepository.GetAllQueryable().Where(m => m.SourceCodeId == id) on r.BaseMethodId equals m.Id into rm
-                        from m in rm
+            var query = from m in _methodRepository.GetAllQueryable().Where(m => m.SourceCodeId == id)
+                        join r in _resultRepository.GetAllQueryable() on m.Id equals r.BaseMethodId into rm
+                        from r in rm.DefaultIfEmpty()
                         join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
                         from sm in rmm
                         select new { Result = r, Method = m, SimMethod = sm};
             var document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(r => r.DocumentId == id);
             List<DocumentResultDetail> details = new List<DocumentResultDetail>();
-            Console.WriteLine(query.ToList());
             foreach(var m in query)
             {
-                Console.WriteLine(m.Result.BaseMethodId);
-                Console.WriteLine(m.SimMethod.Id);
-                Console.WriteLine(m.Method);
                 DocumentResultDetail item = new DocumentResultDetail
                 {
+                    MethodName = m.Method.MethodName,
                     BaseMethod = m.Method.MethodString,
-                    SimMethod = m.SimMethod.MethodString,
-                    Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail.Replace("'", "\"")),
-                    SimRatio = m.Result.SimRatio
                 };
+                if(m.Result != null)
+                {
+                    item.SimMethod = m.SimMethod.MethodString;
+                    item.Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail.Replace("'", "\""));
+                    item.SimRatio = m.Result.SimRatio;
+                }
+                else
+                {
+                    item.SimMethod = null;
+                    item.Position = null;
+                    item.SimRatio = 0;
+                }
                 details.Add(item);
             }
             var result = new DocumentResult()

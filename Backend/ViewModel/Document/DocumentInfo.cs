@@ -22,6 +22,7 @@ namespace ViewModel.Document
 
     public class DocumentResultDetail
     {
+        public string MethodName { get; set; }
         public string BaseMethod { get; set; }
         public string SimMethod { get; set; }
         public SimilarityPositions Position { get; set;}
