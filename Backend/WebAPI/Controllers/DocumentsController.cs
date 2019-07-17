@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(typeof(string), 500)]
         public IActionResult Get()
         {
-            return Ok(new { ReturnList = _documentService.DocumentProcedure(1, "") });
+            return Ok(_documentService.GetAll());
         }
 
         /// <summary>

@@ -24,6 +24,7 @@ namespace Service.Services
         DocumentInfo Get(int Id);
         DocumentResult GetResult(int id);
         Task<int> UploadToCloud(IFormFile file);
+        List<DocumentInList> GetAll();
     }
     public class DocumentService : IDocumentService
     {
@@ -52,6 +53,7 @@ namespace Service.Services
         {
             SourceCode document = _mapper.Map<SourceCode>(file);
             document.DocumentName = file.FileName;
+            document.Status = Root.CommonEnum.SourceCodeStatus.PENDING;
 
             //----Upload - To - Azure - Blob----
             CloudStorageAccount storageAccount = new CloudStorageAccount(new StorageCredentials
@@ -85,7 +87,18 @@ namespace Service.Services
 
         public List<DocumentInList> DocumentProcedure(int Id, string Name)
         {
+
             return Mapper.Map<List<SourceCode>, List<DocumentInList>>(_sourceCodeRepository.GetAllQueryable().ToList());
+        }
+
+        public List<DocumentInList> GetAll()
+        {
+            var list = _sourceCodeRepository.GetAllQueryable().Select(d => new DocumentInList {
+                Id = d.DocumentId,
+                Name = d.DocumentName,
+                Status = (int)d.Status
+            });
+            return list.ToList();
         }
 
         public DocumentInfo Get(int Id)

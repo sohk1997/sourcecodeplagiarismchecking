@@ -1,0 +1,110 @@
+﻿@using WebClientCore.Infrastructures
+@using WebClient.Models
+<div style="height:91px; background-color:#22195b"></div>
+
+<div class="page-container" style="margin:10px;">
+    <div class="row">
+        <div class="col-md-4 ">
+            <!-- BEGIN SAMPLE FORM PORTLET-->
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-red-sunglo">
+                        <span class="caption-subject bold uppercase"> Simmiliar Overview</span>
+                    </div>
+                </div>
+                <!-- <div class="portlet-body form">
+                    <div id="chart1" style=""></div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 ">
+            
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-red-sunglo">
+                        <span class="caption-subject bold uppercase">Source Code
+                        </span>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <textarea id="editor1">
+                        @((ViewBag.SourceCode as Result).MergeDetail.BaseMethod)
+                    </textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 ">
+
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption  font-red-sunglo">
+                        <span class="caption-subject bold uppercase"> Similiar Code</span>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <textarea id="editor2">
+                        @((ViewBag.SourceCode as Result).MergeDetail.SimMethod)
+                    </textarea>
+                </div>
+            </div>
+        </div>
+        
+            <!-- <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption  font-red-sunglo">
+
+                        <span class="caption-subject bold uppercase"> Chart 2</span>
+                    </div>
+
+                </div>
+                <div class="portlet-body form">
+                    <div id="chart2" style=""></div>
+                </div>
+            </div> -->
+
+
+    </div>
+    }
+</div>
+@section Scripts{
+
+    <script type="text/javascript">
+       
+
+       
+
+
+        var editor = CodeMirror.fromTextArea(document.getElementById('editor1'), {
+            mode: "javascript",
+            lineNumbers: true,
+            theme: 'icecoder',
+        });
+        var editor1 = CodeMirror.fromTextArea(document.getElementById('editor2'), {
+            mode: "javascript",
+            lineNumbers: true,
+            theme: 'icecoder',
+        });
+        var s1 = document.getElementById('editor1');
+        var s2 = document.getElementById('editor2');
+
+        function select_scroll_1(e) { s2.scrollTop = s1.scrollTop; }
+        function select_scroll_2(e) { s1.scrollTop = s2.scrollTop; }
+
+        s1.addEventListener('scroll', select_scroll_1, false);
+        s2.addEventListener('scroll', select_scroll_2, false);
+        @foreach (var item in (ViewBag.SourceCode as Result).MergeDetail.SourcePositions)
+        {
+            @:editor.getDoc().markText({ line: @item.StartLine },{ line: @item.EndLine },{ css: "background-color : red; color : white;" });
+        };
+        
+        @foreach (var item in (ViewBag.SourceCode as Result).MergeDetail.SimPositions)
+        {
+            @:editor1.getDoc().markText({ line: @item.StartLine },{ line: @item.EndLine },{ css: "background-color : red; color : white;" });
+        }
+    </script>
+}
+
+
+

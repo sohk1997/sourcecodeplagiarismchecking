@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient", "WebClient\WebC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCheck", "WebCheck\WebCheck.csproj", "{A2ABA4C0-F8BF-4D0A-91FA-26A11A11906B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClientCore", "WebClientCore\WebClientCore.csproj", "{FF69BDF4-9036-4963-A774-5C8E2B9302C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{A2ABA4C0-F8BF-4D0A-91FA-26A11A11906B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2ABA4C0-F8BF-4D0A-91FA-26A11A11906B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2ABA4C0-F8BF-4D0A-91FA-26A11A11906B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF69BDF4-9036-4963-A774-5C8E2B9302C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF69BDF4-9036-4963-A774-5C8E2B9302C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF69BDF4-9036-4963-A774-5C8E2B9302C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF69BDF4-9036-4963-A774-5C8E2B9302C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{F9A15097-13B6-4E82-9C10-5D7F8E9FC00E} = {777C207A-DC7F-45F0-A991-931BED9F009C}
 		{E6B6B542-B344-49B1-9D3D-F1C8DC44189B} = {777C207A-DC7F-45F0-A991-931BED9F009C}
 		{A2ABA4C0-F8BF-4D0A-91FA-26A11A11906B} = {777C207A-DC7F-45F0-A991-931BED9F009C}
+		{FF69BDF4-9036-4963-A774-5C8E2B9302C0} = {777C207A-DC7F-45F0-A991-931BED9F009C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B465245-5DC7-4E74-B473-1AAA3121ECC8}
