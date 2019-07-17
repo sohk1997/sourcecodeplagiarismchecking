@@ -154,8 +154,8 @@ public class NodeHandler {
         for (Node childNode : node.getChildNodes()) {
           travel(childNode);
         }
-        if (nodeClass.equals(com.github.javaparser.ast.stmt.BlockStmt.class) ||
-                nodeClass.equals(com.github.javaparser.ast.stmt.SwitchEntry.class)) {
+        if ((nodeClass.equals(com.github.javaparser.ast.stmt.BlockStmt.class) ||
+                nodeClass.equals(com.github.javaparser.ast.stmt.SwitchEntry.class)) && !blocks.empty() &&blocks.peek().equals(node)) {
             //block statement
             blocks.pop();
             BlockStmt block = null;
