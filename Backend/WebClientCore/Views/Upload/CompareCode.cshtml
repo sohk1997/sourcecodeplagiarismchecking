@@ -1,5 +1,7 @@
 ﻿@using WebClientCore.Infrastructures
 @using WebClient.Models
+@using Newtonsoft.Json
+
 <div style="height:91px; background-color:#22195b"></div>
 
 <div class="page-container" style="margin:10px;">
@@ -11,6 +13,9 @@
                     <div class="caption font-red-sunglo">
                         <span class="caption-subject bold uppercase"> Simmiliar Overview</span>
                     </div>
+                </div>
+                <div class="portlet-body form">
+                    <div id="chart2" style=""></div>
                 </div>
                 <!-- <div class="portlet-body form">
                     <div id="chart1" style=""></div>
@@ -70,10 +75,50 @@
 </div>
 @section Scripts{
 
-    <script type="text/javascript">
-       
+<script type="text/javascript">
 
-       
+        var dataObject = @Json.Serialize((ViewBag.SourceCode as Result))
+            console.log(dataObject.details.map(function(element){return {method: element.methodName, sim: element.simRatio * 100}}));
+       new Morris.Line({
+        // ID of the element in which to draw the chart.
+        element: 'chart2',
+        // Chart data records -- each entry in this array corresponds to a point on
+        // the chart.
+        data: dataObject.details.map(function(element){return {method: element.methodName, sim: element.simRatio * 100}}),
+        // The name of the data record attribute that contains x-values
+        xkey: 'method',
+        // A list of names of data record attributes that contain y-values.
+        ykeys: ['sim'],
+        // Labels for the ykeys -- will be displayed when you hover over the
+        // chart.
+        labels: ['Sim'],
+        ymin: 0,
+        ymax: 100,
+        parseTime:false
+        });
+
+            @*new Morris.Line({
+                // ID of the element in which to draw the chart.
+                element: 'chart2',
+                // Chart data records -- each entry in this array corresponds to a point on
+                // the chart.
+                data: [
+                    { y: '2015', a: 100, b: 90 },
+                    { y: '2007', a: 100, b: 60 },
+                    { y: '2008', a: 100, b: 40 },
+                    { y: '2009', a: 100, b: 55 },
+                    { y: '2010', a: 100, b: 40 },
+                    { y: '2011', a: 100, b: 85 },
+                    { y: '2012', a: 100, b: 80 }
+                ],
+                // The name of the data record attribute that contains x-values
+                xkey: 'y',
+                // A list of names of data record attributes that contain y-values.
+                ykeys: ['a', 'b'],
+                // Labels for the ykeys -- will be displayed when you hover over the
+                // chart.
+                labels: ['Series A', 'Series B']
+                });*@
 
 
         var editor = CodeMirror.fromTextArea(document.getElementById('editor1'), {
@@ -96,14 +141,14 @@
         s2.addEventListener('scroll', select_scroll_2, false);
         @foreach (var item in (ViewBag.SourceCode as Result).MergeDetail.SourcePositions)
         {
-            @:editor.getDoc().markText({ line: @item.StartLine },{ line: @item.EndLine },{ css: "background-color : red; color : white;" });
+            @:editor.getDoc().markText({ line: @item.StartLine - 1 },{ line: @item.EndLine },{ css: "background-color : red; color : white;" });
         };
-        
+
         @foreach (var item in (ViewBag.SourceCode as Result).MergeDetail.SimPositions)
         {
-            @:editor1.getDoc().markText({ line: @item.StartLine },{ line: @item.EndLine },{ css: "background-color : red; color : white;" });
+            @:editor1.getDoc().markText({ line: @item.StartLine - 1 },{ line: @item.EndLine },{ css: "background-color : red; color : white;" });
         }
-    </script>
+</script>
 }
 
 

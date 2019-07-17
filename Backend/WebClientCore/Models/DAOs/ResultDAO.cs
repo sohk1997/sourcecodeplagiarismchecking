@@ -24,26 +24,32 @@ namespace WebClient.Models.DAOs
                 List<PositionDetail> sourcePositions = new List<PositionDetail>();
                 List<PositionDetail> simPositions = new List<PositionDetail>();
 
+                Random rand = new Random();
                 int startPosition = 0;
+                int index = 0;
                 foreach(var data in result.Details)
                 {
+                    data.MethodName =  ('a' + index) + "";
+                    index++;
                     var baseLines = new List<String>(data.BaseMethod.Split("\n"));
                     var simLines = new List<String>(data.SimMethod.Split("\n"));
 
                     while(baseLines.Count < simLines.Count) { baseLines.Add("");}
                     while(simLines.Count < baseLines.Count) { simLines.Add("");}
 
-                    baseLines.Add("");
-                    simLines.Add("");
+                    baseLines.Add("break");
+                    simLines.Add("break");
 
-                    baseLines.ForEach(l => baseMethod.AppendLine(l));
-                    simLines.ForEach(l => simMethod.AppendLine(l));
+                    baseLines.ForEach(l => baseMethod.AppendLine(l.Trim()));
+                    simLines.ForEach(l => simMethod.AppendLine(l.Trim()));
 
                     data.Position.SourcePositions.ForEach(l => {l.StartLine += startPosition ; l .EndLine += startPosition;});
                     data.Position.SimPositions.ForEach(l => {l.StartLine += startPosition ; l .EndLine += startPosition;});
 
                     sourcePositions.AddRange(data.Position.SourcePositions);
                     simPositions.AddRange(data.Position.SimPositions);
+
+                    startPosition += baseLines.Count;
 
                 }
                 result.MergeDetail = new MergeDetail{
@@ -54,7 +60,6 @@ namespace WebClient.Models.DAOs
                 };
                 return result;
             }
-            return null;
         }
     }
 }
