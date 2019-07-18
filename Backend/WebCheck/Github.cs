@@ -42,7 +42,7 @@ namespace WebCheck
                 {
                     break;
                 }
-                string jsonData = GET1("https://api.github.com/search/code?access_token=8686354be8f60ec38e5c4138647cda6e4e8c972d&q=" + HttpUtility.UrlEncode(block.Content));
+                string jsonData = GET1("https://api.github.com/search/code?access_token=0fe86aab2f2499a38867a31d90d5fa307daec288&q=" + HttpUtility.UrlEncode(block.Content));
                 if(jsonData.Length > 0){
                     var gitCode = JsonConvert.DeserializeObject<RootObject>(jsonData);
                     foreach (var item in gitCode.items)
@@ -180,7 +180,7 @@ namespace WebCheck
             string language = "java";
 
             HttpWebRequest request =
-                WebRequest.Create("https://api.github.com/search/code?q=" + url + "+language:" + language + "&access_token=da36c48ba6eff519a01e9aee90de8c2380a5c610") as HttpWebRequest;
+                WebRequest.Create("https://api.github.com/search/code?access_token=0fe86aab2f2499a38867a31d90d5fa307daec288&q=" + url + " in:file+language:" + language) as HttpWebRequest;
             request.Method = "GET";
 
 
@@ -204,6 +204,7 @@ namespace WebCheck
                 using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream(), Encoding.UTF8))
                 {
                     var hh = reader.ReadToEnd();
+                    Console.WriteLine(hh);
                 }
                 Console.WriteLine("Ex ");
                 if(ex.Response.Headers["Retry-After"] != null){
