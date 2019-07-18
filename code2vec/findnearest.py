@@ -5,9 +5,11 @@ import heapq
 def nearest(method, methods):
         MAX_SIMILIAR = 5    
         heaparr = []
+        index = 0
         for compareMethod in methods:
                 if(compareMethod['Vector'] == 'None'):
                         continue
+                index += 1
                 x = np.array(compareMethod['Vector'].replace('[[','').replace(']]','').replace('[','').replace(']','').split())
                 y = x.astype(np.float)
 
@@ -18,11 +20,11 @@ def nearest(method, methods):
                 dist = distance.cosine(method['Vector'], y)
 
                 if(len(heaparr) < MAX_SIMILIAR):
-                        heapq.heappush(heaparr,(-dist, compareMethod)) 
+                        heapq.heappush(heaparr,(-dist, index, compareMethod)) 
                 else:
                         if(-heaparr[0][0] > dist and len([el for el in heaparr if el[0] == -dist]) == 0):
                                 heapq.heappop(heaparr)
-                                heapq.heappush(heaparr,(-dist, compareMethod))
+                                heapq.heappush(heaparr,(-dist, index, compareMethod))
         
-        return list(map(lambda element: element[1],heaparr))
+        return list(map(lambda element: element[2],heaparr))
         
