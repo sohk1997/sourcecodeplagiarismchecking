@@ -9,7 +9,7 @@ namespace Service
     {
         private static ConnectionFactory connectionFactory = new ConnectionFactory() { Uri = new Uri("amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr") };
 
-        public static void SendMessage(string id)
+        public static void SendMessage(string data)
         {
             using (var connection = connectionFactory.CreateConnection())
                 using (var channel = connection.CreateModel())
@@ -22,7 +22,7 @@ namespace Service
                     channel.BasicPublish(exchange: "",
                                      routingKey: "sourcecode",
                                      basicProperties: null,
-                                     body: ParseStringToByte(id));
+                                     body: ParseStringToByte(data));
             }
         }
 

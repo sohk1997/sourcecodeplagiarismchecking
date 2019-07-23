@@ -6,7 +6,7 @@ namespace WebCheck
 {
     class StackExchange : WebCheck
     {
-        public Result Check(Guid id, string url)
+        public Result Check(string content)
         {
             throw new NotImplementedException();
         }

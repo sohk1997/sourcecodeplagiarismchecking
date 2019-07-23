@@ -11,6 +11,7 @@ using Root.Data;
 using Root.Model;
 using Service.Services;
 using ViewModel.Document;
+using WebAPI.ViewModel;
 
 namespace WebAPI.Controllers
 {
@@ -65,15 +66,16 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Upload new document
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
         //[Authorize(Roles = ("DOCUMENT_C"))]
         [ProducesResponseType(typeof(IFormFile), 201)]
         [ProducesResponseType(400, Type = typeof(ModelStateDictionary))]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> Post(IFormFile file)
-        {            
+        public async Task<IActionResult> Post(CheckRequest request)
+        {
+            var file = request.File;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Where(x => x.Value.Errors.Count > 0).ToDictionary(x => x.Key, x => x.Value));
@@ -84,7 +86,7 @@ namespace WebAPI.Controllers
             }
             else
             {                
-                int id = await _documentService.UploadToCloud(file);
+                int id = await _documentService.UploadToCloud(file, request.WebCheck, request.PeerCheck);
                 string location = Request.HttpContext.Request.Host + "/api/document/" + id;
                 return Created(location, file);
             }

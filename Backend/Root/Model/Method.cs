@@ -14,5 +14,6 @@ namespace Root.Model
         public string ParseTree { get; set; }
         public string MethodString { get; set; }
         public int SourceCodeId { get; set; }
+        public string MethodName { get; set; }
     }
 }

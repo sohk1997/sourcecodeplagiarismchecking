@@ -25,8 +25,8 @@ namespace WebClient.Models
 
     public class MergeDetail
     {
-        public string BaseMethod{get;set;}
-        public string SimMethod{get;set;}
+        public string BaseMethod{ get;set;}
+        public string SimMethod{ get;set;}
         public List<PositionDetail> SourcePositions { get; set; }
         public List<PositionDetail> SimPositions { get; set; }
    
@@ -34,6 +34,7 @@ namespace WebClient.Models
 
     public class ResultDetail
     {
+        public string MethodName { get; set; }
         public string BaseMethod { get; set; }
         public string SimMethod { get; set; }
         public Positions Position { get; set; }
