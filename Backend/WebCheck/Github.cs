@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 namespace WebCheck
 {
     public class Github : WebCheck
-    {       
+    {
         public Result Check(string content)
         {
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
@@ -34,41 +34,45 @@ namespace WebCheck
             List<Block> blocks = GetBlocks(str);
             List<Item> results = new List<Item>();
             int i = 0;
-            int time = 0;
             foreach (var block in blocks)
             {
-                time++;
-                if (time == 5)
+                while (block.Content.Length > 0)
                 {
-                    break;
-                }
-                string jsonData = GET1("https://api.github.com/search/code?access_token=0fe86aab2f2499a38867a31d90d5fa307daec288&q=" + HttpUtility.UrlEncode(block.Content));
-                if(jsonData.Length > 0){
-                    var gitCode = JsonConvert.DeserializeObject<RootObject>(jsonData);
-                    foreach (var item in gitCode.items)
+                    var searchContent = block.Content.Substring(0, Math.Min(block.Content.Length, 100));
+
+                    string jsonData = GET1(WebUtility.UrlEncode(searchContent));
+                    if (jsonData.Length > 0)
                     {
-                        //Check if item is exist in result
-                        if (results.Contains(item))
+                        var gitCode = JsonConvert.DeserializeObject<RootObject>(jsonData);
+                        foreach (var item in gitCode.items)
                         {
-                            results.Find(it => it.html_url == item.html_url).appearance++;
-                        }
-                        else
-                        {
-                            results.Add(item);
+                            //Check if item is exist in result
+                            if (results.Contains(item))
+                            {
+                                results.Find(it => it.html_url == item.html_url).appearance++;
+                            }
+                            else
+                            {
+                                results.Add(item);
+                            }
                         }
                     }
+
+                    block.Content = block.Content.Remove(0, Math.Min(block.Content.Length, 100));
                 }
             }
-            if(results.Count == 0){
+            if (results.Count == 0)
+            {
                 return null;
             }
             results = results.OrderBy(r => -r.appearance).ThenBy(r => r.score).ToList();
             var matchResult = results[0];
-            var raw = matchResult.html_url.Replace("https://github","https://raw.githubusercontent").ReplaceFirst("/blob/","/");
+            var raw = matchResult.html_url.Replace("https://github", "https://raw.githubusercontent").ReplaceFirst("/blob/", "/");
             var fCode = GET(raw);
-            return new Result{
+            return new Result
+            {
                 Content = fCode,
-                FileName = matchResult.name,
+                FileName = matchResult.html_url,
                 Url = raw
             };
         }
@@ -95,7 +99,7 @@ namespace WebCheck
                 if (expression[i] == '{')
                 {
                     st.Push((int)expression[i]);
-                } 
+                }
                 else if (expression[i] == '}')
                 {
                     st.Pop();
@@ -109,7 +113,7 @@ namespace WebCheck
             return -1;
         }
 
-      
+
 
         private int GetNthIndex(string s, char t, int n)
         {
@@ -150,7 +154,7 @@ namespace WebCheck
                 if (expression[i] == '{')
                 {
                     st.Push(new Block(i));
-                } 
+                }
                 else if (expression[i] == '}')
                 {
 
@@ -178,9 +182,10 @@ namespace WebCheck
         private string GET1(string url)
         {
             string language = "java";
-
+            Regex regex = new Regex("\\+{2,}");
+            url = regex.Replace(url,"+");            
             HttpWebRequest request =
-                WebRequest.Create("https://api.github.com/search/code?access_token=0fe86aab2f2499a38867a31d90d5fa307daec288&q=" + url + " in:file+language:" + language) as HttpWebRequest;
+                WebRequest.Create("https://api.github.com/search/code?access_token=517a9c9228a2a58ca163ebb80d58930ceef7776f&q=" + url + " in:file+language:" + language) as HttpWebRequest;
             request.Method = "GET";
 
 
@@ -191,7 +196,6 @@ namespace WebCheck
             {
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
-                    Console.WriteLine(response.Headers["X-RateLimit-Remaining"]);
                     using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
                     {
                         return reader.ReadToEnd();
@@ -205,9 +209,10 @@ namespace WebCheck
                 {
                     var hh = reader.ReadToEnd();
                     Console.WriteLine(hh);
+                    Console.WriteLine(url);
                 }
-                Console.WriteLine("Ex ");
-                if(ex.Response.Headers["Retry-After"] != null){
+                if (ex.Response.Headers["Retry-After"] != null)
+                {
                     var retry = int.Parse(ex.Response.Headers["Retry-After"]);
                     Console.WriteLine($"Wait: {retry}");
 
@@ -221,6 +226,16 @@ namespace WebCheck
             }
 
         }
+
+        // private string GenerateToken()
+        // {
+        //     var requestParam = new 
+        //     {
+        //         scopes = new string[1]{"public_repo"},
+        //         note = "For request search",
+        //         client_id = "7c9c0232060af0d837e4"
+        //     };
+        // }
 
     }
 }

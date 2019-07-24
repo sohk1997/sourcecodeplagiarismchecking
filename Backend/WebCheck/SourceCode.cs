@@ -14,5 +14,7 @@ namespace WebCheck
         public string FileUrl { get; set; }
         public SourceCodeStatus Status { get; set; }
         public SourceCodeType Type { get; set; }
+        public DateTime? UploadDate { get; set; }
+        public CheckType CheckType { get; set; }
     }
 }
