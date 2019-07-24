@@ -7,10 +7,16 @@ namespace ViewModel.Document
 {
     public class DocumentInfo
     {
-        public int Id { get; set; }        
+        public int Id { get; set; }
         public string Name { get; set; }
         public byte[] Content { get; set; }
         public string Extn { get; set; }
+    }
+
+    public class ResponseResult
+    {
+        public DocumentResult WebCheckResult { get; set; }
+        public DocumentResult PeerCheckResult { get; set; }
     }
 
     public class DocumentResult
@@ -22,10 +28,12 @@ namespace ViewModel.Document
 
     public class DocumentResultDetail
     {
+        public int Id { get; set; }
         public string MethodName { get; set; }
         public string BaseMethod { get; set; }
         public string SimMethod { get; set; }
-        public SimilarityPositions Position { get; set;}
+        public string Url { get; set; }
+        public SimilarityPositions Position { get; set; }
         public float SimRatio { get; set; }
     }
 
