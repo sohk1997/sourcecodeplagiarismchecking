@@ -36,18 +36,21 @@ namespace WebCheck
             int i = 0;
             foreach (var block in blocks)
             {
+                block.Content = WebUtility.UrlEncode(block.Content);
+                Regex regex = new Regex("\\+{2,}");
+                block.Content = regex.Replace(block.Content,"+");      
                 while (block.Content.Length > 0)
                 {
                     var searchContent = block.Content.Substring(0, Math.Min(block.Content.Length, 100));
 
-                    string jsonData = GET1(WebUtility.UrlEncode(searchContent));
+                    string jsonData = GET1(searchContent);
                     if (jsonData.Length > 0)
                     {
                         var gitCode = JsonConvert.DeserializeObject<RootObject>(jsonData);
                         foreach (var item in gitCode.items)
                         {
                             //Check if item is exist in result
-                            if (results.Contains(item))
+                            if (results.Find(it => it.html_url == item.html_url) != null)
                             {
                                 results.Find(it => it.html_url == item.html_url).appearance++;
                             }
@@ -182,10 +185,9 @@ namespace WebCheck
         private string GET1(string url)
         {
             string language = "java";
-            Regex regex = new Regex("\\+{2,}");
-            url = regex.Replace(url,"+");            
+                 
             HttpWebRequest request =
-                WebRequest.Create("https://api.github.com/search/code?access_token=517a9c9228a2a58ca163ebb80d58930ceef7776f&q=" + url + " in:file+language:" + language) as HttpWebRequest;
+                WebRequest.Create("https://api.github.com/search/code?access_token=db43f4fe016c4735ee74b9ec808ad73358236c57&q=" + url + " in:file+language:" + language) as HttpWebRequest;
             request.Method = "GET";
 
 
