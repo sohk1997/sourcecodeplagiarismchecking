@@ -5,7 +5,7 @@ namespace WebClient.Models.DAOs
 {
     public class RequestHelper
     {
-        private const string API_URL = "http://34.87.20.15";
+        private const string API_URL = "http://35.247.189.98";
 
         public static HttpClient GetHttpClient()
         {
