@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package testcase;
 
 import java.io.IOException;
@@ -14,3 +15,21 @@ public abstract class UnknownMethods extends HttpServlet {
 		response.getWriter().println("hello " + data);
 	}
 }
+=======
+package testcase;
+
+import java.io.IOException;
+import javax.servlet.http.*;
+
+public abstract class UnknownMethods extends HttpServlet {
+
+	public void test1(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.getWriter().println("hello world!");
+	}
+
+	public void test2(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String data = "world!";
+		response.getWriter().println("hello " + data);
+	}
+}
+>>>>>>> origin/master

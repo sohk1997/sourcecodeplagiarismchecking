@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import java.io.File;
 
 class TryInSwitch {
@@ -18,3 +19,25 @@ class TryInSwitch {
 		}
 	}
 }
+=======
+import java.io.File;
+
+class TryInSwitch {
+
+	public void foo() {
+		int i = 42;
+
+		switch (i) {
+			default:
+				File file;
+				try {
+					file = new File("...");
+					file.delete();
+				} catch (Exception e) {
+					// ...
+				}
+				break;
+		}
+	}
+}
+>>>>>>> origin/master

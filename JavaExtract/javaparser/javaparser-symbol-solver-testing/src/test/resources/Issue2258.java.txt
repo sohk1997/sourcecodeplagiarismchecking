@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 public class Issue2258 {
 
@@ -8,4 +9,16 @@ public class Issue2258 {
 	public static void main(String[] args) {
 		Issue2258.foo(null);
 	}
+=======
+
+public class Issue2258 {
+
+	public static void foo(Object[] nullable) {
+		System.out.println("Verify program execution."); // This line is not necessary.
+	}
+
+	public static void main(String[] args) {
+		Issue2258.foo(null);
+	}
+>>>>>>> origin/master
 }
