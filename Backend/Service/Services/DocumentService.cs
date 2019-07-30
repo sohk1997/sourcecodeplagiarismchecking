@@ -170,7 +170,7 @@ namespace Service.Services
                          from sm in rmm.DefaultIfEmpty()
                          join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.WEB) on sm.SourceCodeId equals so.DocumentId into som
                          from so in som.DefaultIfEmpty()
-                         select new { Result = r, Method = m, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.FileUrl }).ToList();
+                         select new { Result = r, Method = m, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }).ToList();
             var document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(r => r.DocumentId == id);
             List<DocumentResultDetail> details = new List<DocumentResultDetail>();
             foreach (var m in query)
