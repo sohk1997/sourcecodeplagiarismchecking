@@ -16,8 +16,10 @@
                     </div>
                 </div>
                 <div class="portlet-body form">
-                    <label class="caption-subject">File name:  <b>@((ViewBag.SourceCode as ResultDetail).FileName)</b></label><br/>
-                    <label class="caption-subject">Overall similiar ratio:  <b>@(((ViewBag.SourceCode as ResultDetail).GeneralSimRatio * 100).ToString("N2"))%</b></label><br/>
+                    @if(ViewBag.SourceCode != null){<label class="caption-subject">File name:  <b>@((ViewBag.SourceCode as ResultDetail).FileName)</b></label><br/>}
+                    @if(ViewBag.SourceCode == null){<label class="caption-subject">File name:  <b>@((ViewBag.WebCheckResult as ResultDetail).FileName)</b></label><br/>}
+                    @if(ViewBag.SourceCode != null){<label class="caption-subject">Overall similiar ratio:  <b>@(((ViewBag.SourceCode as ResultDetail).GeneralSimRatio * 100).ToString("N2"))%</b></label><br/>}
+                    @if(ViewBag.SourceCode == null){<label class="caption-subject">Overall similiar ratio:  <b>@(((ViewBag.WebCheckResult as ResultDetail).GeneralSimRatio * 100).ToString("N2"))%</b></label><br/>}
                     @if(ViewBag.SourceCode != null){<label class="caption-subject">Total method:  <b>@((ViewBag.SourceCode as ResultDetail).Details.Count)</b></label><br/>}
                     @if(ViewBag.SourceCode == null){<label class="caption-subject">Total method:  <b>@((ViewBag.WebCheckResult as ResultDetail).Details.Count)</b></label><br/>}
                     @if(ViewBag.SourceCode != null){<label class="caption-subject">Total method has similar fragment in our database:  <b>@((ViewBag.SourceCode as ResultDetail).Details.Count(d => d.SimRatio > 0))</b></label>}
@@ -25,28 +27,29 @@
                 </div>                    
             </div>
         </div>
-        <div class="col-md-4 ">
+        <!-- <div class="col-md-4 "> -->
             <!-- BEGIN SAMPLE FORM PORTLET-->
-            <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption font-red-sunglo">
-                        <span class="caption-subject bold uppercase"> Similiarity Detail Chart</span>
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <div id="chart2" style=""></div>
-                </div>
+            <!-- <div class="portlet light bordered"> -->
+                <!-- <div class="portlet-title"> -->
+                    <!-- <div class="caption font-red-sunglo"> -->
+                        <!-- <span class="caption-subject bold uppercase"> Similiarity Detail Chart</span> -->
+                    <!-- </div> -->
+                <!-- </div> -->
+                <!-- <div class="portlet-body form"> -->
+                    <!-- <div id="chart2" style=""></div> -->
+                <!-- </div> -->
                 <!-- <div class="portlet-body form">
                     <div id="chart1" style=""></div>
                 </div> -->
-            </div>
-        </div>
+            <!-- </div> -->
+        <!-- </div> -->
 
     </div>
          <ul class="nav nav-tabs">
             <li class="active"><a>Peer Result</a></li>
             <li><a>Web Result</a></li>
         </ul>
+         @if(ViewBag.SourceCode != null){
         <div class="row">
             <div class="col-md-6 ">
                 <div class="portlet light bordered">
@@ -57,9 +60,7 @@
                         </div>
                     </div>
                     <div class="portlet-body form">
-                        <textarea id="editor1">
-                            @((ViewBag.SourceCode as ResultDetail).MergeDetail.BaseMethod)
-                        </textarea>
+                        <textarea id="editor1">@((ViewBag.SourceCode as ResultDetail).MergeDetail.BaseMethod)</textarea>
                     </div>
                 </div>
             </div>
@@ -71,63 +72,111 @@
                         </div>
                     </div>
                     <div class="portlet-body form">
-                        <textarea id="editor2">
-                            @((ViewBag.SourceCode as ResultDetail).MergeDetail.SimMethod)
-                        </textarea>
+                        <textarea id="editor2">@((ViewBag.SourceCode as ResultDetail).MergeDetail.SimMethod)</textarea>
                     </div>
                 </div>
             </div>
-        </div>
+        </div>}
+        @if(ViewBag.WebCheckResult != null){
+        <div class="row">
+            <div class="col-md-6 ">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-red-sunglo">
+                            <span class="caption-subject bold uppercase">Source Code
+                            </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <textarea id="editor3">@((ViewBag.WebCheckResult as ResultDetail).MergeDetail.BaseMethod)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 ">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption  font-red-sunglo">
+                            <span class="caption-subject bold uppercase"> Similiar Code Fragments From  <a href="@((ViewBag.WebCheckResult as ResultDetail).Details.First().Url)">Github</a></span>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <textarea id="editor4">@((ViewBag.WebCheckResult as ResultDetail).MergeDetail.SimMethod)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>}
 </div>
 @section Scripts{
 
 <script type="text/javascript">
 
-        var dataObject = @Json.Serialize((ViewBag.SourceCode as ResultDetail))
-        new Morris.Bar({
+        //var dataObject = @Json.Serialize((ViewBag.SourceCode as ResultDetail))
+        //new Morris.Bar({
             // ID of the element in which to draw the chart.
-            element: 'chart2',
+            //element: 'chart2',
             // Chart data records -- each entry in this array corresponds to a point on
             // the chart.
-            data: dataObject.details.map(function(element){return {method: element.methodName, sim: element.simRatio * 100}}),
+            //data: dataObject.details.map(function(element){return {method: element.methodName, sim: element.simRatio * 100}}),
             // The name of the data record attribute that contains x-values
-            xkey: 'method',
+            //xkey: 'method',
             // A list of names of data record attributes that contain y-values.
-            ykeys: ['sim'],
+            //ykeys: ['sim'],
             // Labels for the ykeys -- will be displayed when you hover over the
             // chart.
-            labels: ['Sim'],
-            ymin: 0,
-            ymax: 100,
-            resize : true
-            });
+            //labels: ['Sim'],
+            //ymin: 0,
+            //ymax: 100,
+            //resize : true
+            //});
 
-        var editor = CodeMirror.fromTextArea(document.getElementById('editor1'), {
-            mode: "javascript",
-            lineNumbers: true,
-            theme: 'icecoder',
-        });
-        var editor1 = CodeMirror.fromTextArea(document.getElementById('editor2'), {
-            mode: "javascript",
-            lineNumbers: true,
-            theme: 'icecoder',
-        });
-        var s1 = document.getElementById('editor1');
-        var s2 = document.getElementById('editor2');
+       
+         
+       
+        @if(ViewBag.SourceCode != null){
+            <text>
+            var editor = CodeMirror.fromTextArea(document.getElementById('editor1'), {
+                mode: "javascript",
+                lineNumbers: true,
+                theme: 'icecoder',
+            })
+            var editor1 = CodeMirror.fromTextArea(document.getElementById('editor2'), {
+                mode: "javascript",
+                lineNumbers: true,
+                theme: 'icecoder',
+            })
+            </text>
+            @foreach (var item in (ViewBag.SourceCode as ResultDetail).MergeDetail.SourcePositions)
+            {
+                @:editor.getDoc().markText({ line: @item.StartLine - 2 },{ line: @item.EndLine -1 },{ css: "background-color : red; color : white;" });
+            };
 
-        function select_scroll_1(e) { s2.scrollTop = s1.scrollTop; }
-        function select_scroll_2(e) { s1.scrollTop = s2.scrollTop; }
+            @foreach (var item in (ViewBag.SourceCode as ResultDetail).MergeDetail.SimPositions)
+            {
+                @:editor1.getDoc().markText({ line: @item.StartLine - 2 },{ line: @item.EndLine - 1},{ css: "background-color : red; color : white;" });
+            }
+        }
+        @if(ViewBag.WebCheckResult != null){
+            <text>
+                var editor3 = CodeMirror.fromTextArea(document.getElementById('editor3'), {
+                    mode: "javascript",
+                    lineNumbers: true,
+                    theme: 'icecoder',
+                });
+                var editor4 = CodeMirror.fromTextArea(document.getElementById('editor4'), {
+                    mode: "javascript",
+                    lineNumbers: true,
+                    theme: 'icecoder',
+                });
+            </text>
+            @foreach (var item in (ViewBag.WebCheckResult as ResultDetail).MergeDetail.SourcePositions)
+            {
+                @:editor3.getDoc().markText({ line: @item.StartLine - 2 },{ line: @item.EndLine -1 },{ css: "background-color : red; color : white;" });
+            };
 
-        s1.addEventListener('scroll', select_scroll_1, false);
-        s2.addEventListener('scroll', select_scroll_2, false);
-        @foreach (var item in (ViewBag.SourceCode as ResultDetail).MergeDetail.SourcePositions)
-        {
-            @:editor.getDoc().markText({ line: @item.StartLine - 2 },{ line: @item.EndLine -1 },{ css: "background-color : red; color : white;" });
-        };
-
-        @foreach (var item in (ViewBag.SourceCode as ResultDetail).MergeDetail.SimPositions)
-        {
-            @:editor1.getDoc().markText({ line: @item.StartLine - 2 },{ line: @item.EndLine - 1},{ css: "background-color : red; color : white;" });
+            @foreach (var item in (ViewBag.WebCheckResult as ResultDetail).MergeDetail.SimPositions)
+            {
+                @:editor4.getDoc().markText({ line: @item.StartLine - 2 },{ line: @item.EndLine - 1},{ css: "background-color : red; color : white;" });
+            }
         }
 </script>
 }

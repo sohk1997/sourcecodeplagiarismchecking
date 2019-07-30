@@ -45,17 +45,42 @@ namespace WebClient.Models.DAOs
                     var baseLines = new List<String>(data.BaseMethod.Split("\n"));
                     var simLines = new List<String>(data.SimMethod.Split("\n"));
 
+                    int index = 0;
+
+                    while(index < baseLines.Count){
+                        while(baseLines[index].Trim().StartsWith("/*") || baseLines[index].Trim().StartsWith("//")
+                            || baseLines[index].Trim().StartsWith("*"))
+                        {
+                            baseLines.RemoveAt(index);
+                        }
+                        index++;
+                    }
+
+                    index = 0;
+                    while(index < simLines.Count){
+                        while(simLines[index].Trim().StartsWith("/*") || simLines[index].Trim().StartsWith("//")
+                            || simLines[index].Trim().StartsWith("*"))
+                        {
+                            simLines.RemoveAt(index);
+                        }
+                        index++;
+                    }
                     while (baseLines.Count < simLines.Count) { baseLines.Add(""); }
                     while (simLines.Count < baseLines.Count) { simLines.Add(""); }
 
+                    
                     baseLines.Add("");
                     simLines.Add("");
 
-                    baseLines.ForEach(l => baseMethod.AppendLine(l.Trim()));
-                    simLines.ForEach(l => simMethod.AppendLine(l.Trim()));
+                    baseLines.ForEach(l => baseMethod.AppendLine(l));
+                    simLines.ForEach(l => simMethod.AppendLine(l));
+                    
+                    Console.WriteLine("Start postion  " + startPosition);
+                    Console.WriteLine("Base line "  + baseLines.Count);
+                    Console.WriteLine("Sim line " + simLines.Count);
 
-                    data.Position.SourcePositions.ForEach(l => { l.StartLine += startPosition; l.EndLine += startPosition; });
-                    data.Position.SimPositions.ForEach(l => { l.StartLine += startPosition; l.EndLine += startPosition; });
+                    data.Position.SourcePositions.ForEach(l => { l.StartLine += startPosition + 1; l.EndLine += startPosition + 1; });
+                    data.Position.SimPositions.ForEach(l => { l.StartLine += startPosition + 1; l.EndLine += startPosition + 1; });
 
                     sourcePositions.AddRange(data.Position.SourcePositions);
                     simPositions.AddRange(data.Position.SimPositions);
