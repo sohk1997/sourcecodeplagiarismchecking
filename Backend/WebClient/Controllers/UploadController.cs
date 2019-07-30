@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebClient.ViewModels;
 
 namespace WebClient.Controllers
 {
@@ -16,6 +17,7 @@ namespace WebClient.Controllers
 
         public ActionResult CompareCode()
         {
+            //ViewBag.SourceCode = queryCode;
             return View();
         }
     }

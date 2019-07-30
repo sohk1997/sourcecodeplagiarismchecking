@@ -9,7 +9,7 @@ var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
 });
 
 document.addEventListener('DOMContentLoaded', function (event) {
-    document.getElementById('input-file')
+    document.getElementById('file')
         .addEventListener('change', getFile);
 
 });

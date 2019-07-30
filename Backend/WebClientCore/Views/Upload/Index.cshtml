@@ -17,7 +17,7 @@
         File Upload
 
     </h3>
-    <div class="dropdown" style="float:right;" id="languageDropdown">
+    <!-- <div class="dropdown" style="float:right;" id="languageDropdown">
         <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
             Language
             <i class="fas fa-chevron-down"></i>
@@ -28,12 +28,12 @@
             <li role="presentation"><a role="menuitem" href="#">Python</a></li>
 
         </ul>
-    </div>
+    </div> -->
 
     <form id="submitForm" style="margin-top:25px">
         <div class="form-group files">
             <label>Upload Your File </label>
-            <input type="file" class="form-control center-align" multiple="" id="input-file" name="file">
+            <input type="file" class="form-control center-align" multiple="" id="file" name="file">
         </div>
 
         <textarea id="code_editor1" class=""></textarea>
@@ -55,7 +55,7 @@
         <div class="modal-content">
             <div class="modal-header " style="display:block">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Modal Title</h4>
+                <h4 class="modal-title">Choose type of check</h4>
             </div>
             <div class="modal-body">
 
@@ -64,16 +64,16 @@
 
                         <div class="md-checkbox-list">
                             <div class="md-checkbox">
-                                <input type="checkbox" id="checkbox2" class="md-check" checked>
-                                <label for="checkbox2">
+                                <input type="checkbox" id="webcheck" class="md-check">
+                                <label for="webcheck">
                                     <span></span>
                                     <span class="check"></span>
                                     <span class="box"></span> Web Check
                                 </label>
                             </div>
                             <div class="md-checkbox">
-                                <input type="checkbox" id="checkbox1" class="md-check">
-                                <label for="checkbox1">
+                                <input type="checkbox" id="peercheck" class="md-check">
+                                <label for="peercheck">
                                     <span></span>
                                     <span class="check"></span>
                                     <span class="box"></span> Peer to Peer Check
@@ -91,7 +91,6 @@
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
 
-
                 <button onclick="upload()" class="btn green">Check</button>
             </div>
         </div>
@@ -107,7 +106,12 @@
         function upload() {
             var form = document.getElementById("submitForm");
             var formData = new FormData(form);
-            fetch('http://35.240.150.92/api/document', {
+            var peercheck = document.querySelector('#peercheck').checked;
+            var webcheck = document.querySelector('#webcheck').checked;
+            formData.append("peerCheck", peercheck);
+            formData.append("webCheck", webcheck);
+            console.log(formData);
+            fetch('http://34.87.20.15/api/document', {
                 method: 'POST',
                 body: formData
             }).then(function (re) {

@@ -1,6 +1,7 @@
 ﻿@using WebClientCore.Infrastructures
 @using WebClient.Models
 @using Newtonsoft.Json
+@using System.Linq
 
 <div style="height:91px; background-color:#22195b"></div>
 
@@ -11,7 +12,25 @@
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption font-red-sunglo">
-                        <span class="caption-subject bold uppercase"> Simmiliar Overview</span>
+                        <span class="caption-subject bold uppercase"> Similiarity Overview</span>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <label class="caption-subject">File name:  <b>@((ViewBag.SourceCode as ResultDetail).FileName)</b></label><br/>
+                    <label class="caption-subject">Overall similiar ratio:  <b>@(((ViewBag.SourceCode as ResultDetail).GeneralSimRatio * 100).ToString("N2"))%</b></label><br/>
+                    @if(ViewBag.SourceCode != null){<label class="caption-subject">Total method:  <b>@((ViewBag.SourceCode as ResultDetail).Details.Count)</b></label><br/>}
+                    @if(ViewBag.SourceCode == null){<label class="caption-subject">Total method:  <b>@((ViewBag.WebCheckResult as ResultDetail).Details.Count)</b></label><br/>}
+                    @if(ViewBag.SourceCode != null){<label class="caption-subject">Total method has similar fragment in our database:  <b>@((ViewBag.SourceCode as ResultDetail).Details.Count(d => d.SimRatio > 0))</b></label>}
+                    @if(ViewBag.WebCheckResult != null){<label class="caption-subject">Total method has similar fragment on the internet:  <b>@((ViewBag.WebCheckResult as ResultDetail).Details.Count(d => d.SimRatio > 0))</b></label>}
+                </div>                    
+            </div>
+        </div>
+        <div class="col-md-4 ">
+            <!-- BEGIN SAMPLE FORM PORTLET-->
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-red-sunglo">
+                        <span class="caption-subject bold uppercase"> Similiarity Detail Chart</span>
                     </div>
                 </div>
                 <div class="portlet-body form">
@@ -22,104 +41,66 @@
                 </div> -->
             </div>
         </div>
+
     </div>
-    <div class="row">
-        <div class="col-md-6 ">
-            
-            <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption font-red-sunglo">
-                        <span class="caption-subject bold uppercase">Source Code
-                        </span>
+         <ul class="nav nav-tabs">
+            <li class="active"><a>Peer Result</a></li>
+            <li><a>Web Result</a></li>
+        </ul>
+        <div class="row">
+            <div class="col-md-6 ">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-red-sunglo">
+                            <span class="caption-subject bold uppercase">Source Code
+                            </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <textarea id="editor1">
+                            @((ViewBag.SourceCode as ResultDetail).MergeDetail.BaseMethod)
+                        </textarea>
                     </div>
                 </div>
-                <div class="portlet-body form">
-                    <textarea id="editor1">
-                        @((ViewBag.SourceCode as Result).MergeDetail.BaseMethod)
-                    </textarea>
+            </div>
+            <div class="col-md-6 ">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption  font-red-sunglo">
+                            <span class="caption-subject bold uppercase"> Similiar Code Fragments From Our Database</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <textarea id="editor2">
+                            @((ViewBag.SourceCode as ResultDetail).MergeDetail.SimMethod)
+                        </textarea>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 ">
-
-            <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption  font-red-sunglo">
-                        <span class="caption-subject bold uppercase"> Similiar Code</span>
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <textarea id="editor2">
-                        @((ViewBag.SourceCode as Result).MergeDetail.SimMethod)
-                    </textarea>
-                </div>
-            </div>
-        </div>
-        
-            <!-- <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption  font-red-sunglo">
-
-                        <span class="caption-subject bold uppercase"> Chart 2</span>
-                    </div>
-
-                </div>
-                <div class="portlet-body form">
-                    <div id="chart2" style=""></div>
-                </div>
-            </div> -->
-
-
-    </div>
-    }
 </div>
 @section Scripts{
 
 <script type="text/javascript">
 
-        var dataObject = @Json.Serialize((ViewBag.SourceCode as Result))
-            console.log(dataObject.details.map(function(element){return {method: element.methodName, sim: element.simRatio * 100}}));
-       new Morris.Line({
-        // ID of the element in which to draw the chart.
-        element: 'chart2',
-        // Chart data records -- each entry in this array corresponds to a point on
-        // the chart.
-        data: dataObject.details.map(function(element){return {method: element.methodName, sim: element.simRatio * 100}}),
-        // The name of the data record attribute that contains x-values
-        xkey: 'method',
-        // A list of names of data record attributes that contain y-values.
-        ykeys: ['sim'],
-        // Labels for the ykeys -- will be displayed when you hover over the
-        // chart.
-        labels: ['Sim'],
-        ymin: 0,
-        ymax: 100,
-        parseTime:false
-        });
-
-            @*new Morris.Line({
-                // ID of the element in which to draw the chart.
-                element: 'chart2',
-                // Chart data records -- each entry in this array corresponds to a point on
-                // the chart.
-                data: [
-                    { y: '2015', a: 100, b: 90 },
-                    { y: '2007', a: 100, b: 60 },
-                    { y: '2008', a: 100, b: 40 },
-                    { y: '2009', a: 100, b: 55 },
-                    { y: '2010', a: 100, b: 40 },
-                    { y: '2011', a: 100, b: 85 },
-                    { y: '2012', a: 100, b: 80 }
-                ],
-                // The name of the data record attribute that contains x-values
-                xkey: 'y',
-                // A list of names of data record attributes that contain y-values.
-                ykeys: ['a', 'b'],
-                // Labels for the ykeys -- will be displayed when you hover over the
-                // chart.
-                labels: ['Series A', 'Series B']
-                });*@
-
+        var dataObject = @Json.Serialize((ViewBag.SourceCode as ResultDetail))
+        new Morris.Bar({
+            // ID of the element in which to draw the chart.
+            element: 'chart2',
+            // Chart data records -- each entry in this array corresponds to a point on
+            // the chart.
+            data: dataObject.details.map(function(element){return {method: element.methodName, sim: element.simRatio * 100}}),
+            // The name of the data record attribute that contains x-values
+            xkey: 'method',
+            // A list of names of data record attributes that contain y-values.
+            ykeys: ['sim'],
+            // Labels for the ykeys -- will be displayed when you hover over the
+            // chart.
+            labels: ['Sim'],
+            ymin: 0,
+            ymax: 100,
+            resize : true
+            });
 
         var editor = CodeMirror.fromTextArea(document.getElementById('editor1'), {
             mode: "javascript",
@@ -139,14 +120,14 @@
 
         s1.addEventListener('scroll', select_scroll_1, false);
         s2.addEventListener('scroll', select_scroll_2, false);
-        @foreach (var item in (ViewBag.SourceCode as Result).MergeDetail.SourcePositions)
+        @foreach (var item in (ViewBag.SourceCode as ResultDetail).MergeDetail.SourcePositions)
         {
-            @:editor.getDoc().markText({ line: @item.StartLine - 1 },{ line: @item.EndLine },{ css: "background-color : red; color : white;" });
+            @:editor.getDoc().markText({ line: @item.StartLine - 2 },{ line: @item.EndLine -1 },{ css: "background-color : red; color : white;" });
         };
 
-        @foreach (var item in (ViewBag.SourceCode as Result).MergeDetail.SimPositions)
+        @foreach (var item in (ViewBag.SourceCode as ResultDetail).MergeDetail.SimPositions)
         {
-            @:editor1.getDoc().markText({ line: @item.StartLine - 1 },{ line: @item.EndLine },{ css: "background-color : red; color : white;" });
+            @:editor1.getDoc().markText({ line: @item.StartLine - 2 },{ line: @item.EndLine - 1},{ css: "background-color : red; color : white;" });
         }
 </script>
 }

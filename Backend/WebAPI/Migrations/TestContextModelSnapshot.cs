@@ -124,12 +124,14 @@ namespace WebAPI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Root.Model.Map.Method", b =>
+            modelBuilder.Entity("Root.Model.Method", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("EndLine");
+
+                    b.Property<string>("MethodName");
 
                     b.Property<string>("MethodString");
 
@@ -143,7 +145,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Methods");
+                    b.ToTable("Method");
                 });
 
             modelBuilder.Entity("Root.Model.Result", b =>

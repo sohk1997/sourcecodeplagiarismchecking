@@ -9,7 +9,7 @@ namespace WebClient.Infrastructures
 {
     public static class UrlHelperExtension
     {
-        private static readonly string assetsPath = WebConfigurationManager.AppSettings["AssetsPath"].ToString();
+        private static readonly string assetsPath = "~/Assets/";
 
         public static string Assets(this UrlHelper urlHelper, string path)
         {

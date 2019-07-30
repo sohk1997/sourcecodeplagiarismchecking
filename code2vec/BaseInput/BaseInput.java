@@ -1,78 +1,115 @@
-package com.winterbe.java11;
+package ru.efive.uifaces.filter;
 
-import java.io.IOException;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.Filter;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletResponse;
 
-public class HttpClientExamples {
+/**
+ * Base filter
+ *
+ * @author Pavel Porubov
+ */
+public abstract class AbstractFilter implements Filter {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-//        syncRequest();
-//        asyncRequest();
-//        postData();
-        basicAuth();
+    protected FilterConfig filterConfig = null;
+
+    public FilterConfig getFilterConfig() {
+        return (this.filterConfig);
     }
 
-    private static void syncRequest() throws IOException, InterruptedException {
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create("https://winterbe.com"))
-                .build();
-        var client = HttpClient.newHttpClient();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+    public void setFilterConfig(FilterConfig filterConfig) {
+        this.filterConfig = filterConfig;
     }
 
-    private static void asyncRequest() {
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create("https://winterbe.com"))
-                .build();
-        var client = HttpClient.newHttpClient();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .thenAccept(System.out::println);
+    /** {@inheritDoc} */
+    @Override
+    public void destroy() {
     }
 
-    private static void postData() throws IOException, InterruptedException {
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create("https://postman-echo.com/post"))
-                .timeout(Duration.ofSeconds(30))
-                .version(HttpClient.Version.HTTP_2)
-                .header("Content-Type", "text/plain")
-                .POST(HttpRequest.BodyPublishers.ofString("Hi there!"))
-                .build();
-        var client = HttpClient.newHttpClient();
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.statusCode());      // 200
+    /** {@inheritDoc} */
+    @Override
+    public void init(FilterConfig filterConfig) {
+        this.filterConfig = filterConfig;
     }
 
-    private static void basicAuth() throws IOException, InterruptedException {
-        var client = HttpClient.newHttpClient();
-
-        var request1 = HttpRequest.newBuilder()
-                .uri(URI.create("https://postman-echo.com/basic-auth"))
-                .build();
-        var response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response1.statusCode());      // 401
-
-        var authClient = HttpClient
-                .newBuilder()
-                .authenticator(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("postman", "password".toCharArray());
-                    }
-                })
-                .build();
-        var request2 = HttpRequest.newBuilder()
-                .uri(URI.create("https://postman-echo.com/basic-auth"))
-                .build();
-        var response2 = authClient.send(request2, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response2.statusCode());      // 200
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        if (filterConfig == null) {
+            return (this.getClass().getName() + "()");
+        }
+        StringBuilder sb = new StringBuilder(this.getClass().getName() + "(");
+        sb.append(filterConfig);
+        sb.append(")");
+        return (sb.toString());
     }
 
+    /**
+     * Outputs error message to response.
+     * @param t the error
+     * @param response response used to output error
+     */
+    protected void sendProcessingError(Throwable t, ServletResponse response) {
+        String stackTrace = getStackTrace(t);
+        log(stackTrace);
+
+        if (stackTrace != null && !stackTrace.equals("")) {
+            try {
+                response.setContentType("text/html");
+                PrintStream ps = new PrintStream(response.getOutputStream());
+                PrintWriter pw = new PrintWriter(ps);
+                pw.print("<html>\n<head>\n<title>Error</title>\n</head>\n<body>\n"); //NOI18N
+
+                // PENDING! Localize this for next official release
+                pw.print("<h1>The resource did not process correctly</h1>\n<pre>\n");
+                pw.print(stackTrace);
+                pw.print("</pre></body>\n</html>"); //NOI18N
+                pw.close();
+                ps.close();
+                response.getOutputStream().close();
+            } catch (Exception ex) {
+            }
+        } else {
+            try {
+                PrintStream ps = new PrintStream(response.getOutputStream());
+                t.printStackTrace(ps);
+                ps.close();
+                response.getOutputStream().close();
+            } catch (Exception ex) {
+            }
+        }
+    }
+
+    /**
+     * Returns stacktrace as string.
+     * @param t {@link Throwable} for which stacktrace should be returned
+     * @return stacktrace for {@code t}
+     */
+    public static String getStackTrace(Throwable t) {
+        String stackTrace = null;
+        try {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            t.printStackTrace(pw);
+            pw.close();
+            sw.close();
+            stackTrace = sw.getBuffer().toString();
+        } catch (Exception ex) {
+        }
+        return stackTrace;
+    }
+
+    /** Writes the specified message to a servlet log file.
+     * @param msg message
+     */
+    public void log(String msg) {
+        if (filterConfig != null) {
+            filterConfig.getServletContext().log(msg);
+        } else {
+            System.out.print(msg);
+        }
+    }
 }

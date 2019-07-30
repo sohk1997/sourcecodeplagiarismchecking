@@ -187,7 +187,7 @@ namespace WebCheck
             string language = "java";
                  
             HttpWebRequest request =
-                WebRequest.Create("https://api.github.com/search/code?access_token=db43f4fe016c4735ee74b9ec808ad73358236c57&q=" + url + " in:file+language:" + language) as HttpWebRequest;
+                WebRequest.Create("https://api.github.com/search/code?access_token=b895c4362f5ecaad3d1cc9feb40e4ab3c0c4c794&q=" + url + " in:file+language:" + language) as HttpWebRequest;
             request.Method = "GET";
 
 

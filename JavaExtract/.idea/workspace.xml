@@ -7,23 +7,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="65ac775e-fef3-42e9-b804-b4e80d43fdf7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../Backend/WebAPI/Migrations/20190717115943_addColumn.Designer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Backend/WebAPI/Migrations/20190717115943_addColumn.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Backend/WebCheck/Block.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Backend/WebCheck/Model.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Backend/Root/Model/Method.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/Root/Model/Method.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Backend/Service/RabbitMQHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/Service/RabbitMQHelper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/Service/Services/DocumentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/Service/Services/DocumentService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/ViewModel/Document/DocumentInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/ViewModel/Document/DocumentInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Backend/WebAPI/Controllers/DocumentsController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebAPI/Controllers/DocumentsController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebAPI/Log/Log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebAPI/Log/Log.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebAPI/Migrations/TestContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebAPI/Migrations/TestContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Backend/WebCheck/Class1.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Backend/WebCheck/Github.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebCheck/Github.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Backend/WebCheck/Result.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebCheck/Result.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Backend/WebCheck/StackExchange.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebCheck/StackExchange.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Backend/WebCheck/WebCheck.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebCheck/WebCheck.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Backend/WebCheck/WebCheck.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebCheck/WebCheck.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebClient/Assets/pages/scripts/table-datatables-managed.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClient/Assets/pages/scripts/table-datatables-managed.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebClient/Controllers/UploadController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClient/Controllers/UploadController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebClient/Infrastructures/UrlHelperExtension.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClient/Infrastructures/UrlHelperExtension.cs" afterDir="false" />
@@ -40,19 +27,13 @@
       <change beforePath="$PROJECT_DIR$/../Backend/WebClient/packages.config" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClient/packages.config" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebClientCore/Models/DAOs/RequestHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClientCore/Models/DAOs/RequestHelper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebClientCore/Models/DAOs/ResultDAO.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClientCore/Models/DAOs/ResultDAO.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Backend/WebClientCore/Views/Upload/CompareCode.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClientCore/Views/Upload/CompareCode.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebClientCore/Views/Upload/Index.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClientCore/Views/Upload/Index.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebClientCore/wwwroot/Assets/apps/scripts/demoJS.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClientCore/wwwroot/Assets/apps/scripts/demoJS.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/WebClientCore/wwwroot/Assets/js/demoJS.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/WebClientCore/wwwroot/Assets/js/demoJS.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Backend/sourcecodeplagiarismchecking.sln" beforeDir="false" afterPath="$PROJECT_DIR$/../Backend/sourcecodeplagiarismchecking.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseInput/LocalVariableSyntax.java" beforeDir="false" afterPath="$PROJECT_DIR$/BaseInput/LocalVariableSyntax.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseInput/Misc.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/json.json" beforeDir="false" afterPath="$PROJECT_DIR$/json.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/extract/NodeHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/extract/NodeHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/extract/NodeHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/extract/NodeHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../code2vec/BaseInput/BaseInput.java" beforeDir="false" afterPath="$PROJECT_DIR$/../code2vec/BaseInput/BaseInput.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../code2vec/BaseInput/BaseInput.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../code2vec/Input.java" beforeDir="false" afterPath="$PROJECT_DIR$/../code2vec/Input.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../code2vec/code2vec.py" beforeDir="false" afterPath="$PROJECT_DIR$/../code2vec/code2vec.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../code2vec/json.json" beforeDir="false" afterPath="$PROJECT_DIR$/../code2vec/json.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -123,8 +104,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="51" column="30" selection-start-line="51" selection-start-column="30" selection-end-line="51" selection-end-column="30" />
+            <state relative-caret-position="213">
+              <caret line="43" column="23" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -363,16 +344,15 @@
       <workItem from="1562570098257" duration="7364000" />
       <workItem from="1563356898701" duration="1202000" />
       <workItem from="1563358847825" duration="1149000" />
-      <workItem from="1563389663772" duration="631000" />
+      <workItem from="1563389663772" duration="633000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="39789000" />
+    <option name="totallyTimeSpent" value="39791000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2819063" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -383,7 +363,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32876712" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.16986302" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.16986302" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.43835616" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -692,8 +672,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="51" column="30" selection-start-line="51" selection-start-column="30" selection-end-line="51" selection-end-column="30" />
+        <state relative-caret-position="213">
+          <caret line="43" column="23" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="23" />
         </state>
       </provider>
     </entry>

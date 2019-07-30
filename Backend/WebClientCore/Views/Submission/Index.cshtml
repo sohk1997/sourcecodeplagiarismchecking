@@ -48,6 +48,7 @@
                         <tr>
                             <th> Id </th>
                             <th> File name </th>
+                            <th>Upload Date</th>
                             <th> Status </th>
                         </tr>
                     </thead>
@@ -69,6 +70,9 @@
                                 @item.Name
                             }
                             </td>
+                        <td>
+                            @item.UploadDate
+                        </td>
                         <td id="stt">
                             @if(item.Status == 1)
                             {

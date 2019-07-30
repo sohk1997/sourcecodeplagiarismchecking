@@ -80,7 +80,7 @@ def get_method_peer(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Type = 1 AND D.Id <> %(id)s", {'id' : id})
+        cursor.execute("SELECT M.Id, M.Vector, M.MethodString, M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Type = 1 AND D.Id <> %(id)s", {'id' : id})
         queryResult = map(mapResult,cursor.fetchall())
         result = list(queryResult)
     except mysql.connector.Error as error :
@@ -286,7 +286,9 @@ def callback(ch, method, properties, body):
             "Url" : url,
             "Id" : value
         }
+        print('send message')
         rabbitMQChannel.basic_publish(exchange='',routing_key='webcheck',body = str(sendingObject))
+        print('send message done')
     if('continueWebCheck' in objectData):
         print('Start check on web source')
         id = objectData['continueWebCheck']

@@ -22,7 +22,8 @@ namespace WebClient.Controllers
             var dao = new ResultDAO();
             var result = dao.GetResult(id).Result;
             Console.WriteLine(id);
-            ViewBag.SourceCode = result;
+            ViewBag.SourceCode = result.PeerCheckResult;
+            ViewBag.WebCheckResult = result.WebCheckResult;
             return View();
         }
     }
