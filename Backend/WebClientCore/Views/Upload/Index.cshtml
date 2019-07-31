@@ -111,7 +111,7 @@
             formData.append("peerCheck", peercheck);
             formData.append("webCheck", webcheck);
             console.log(formData);
-            fetch('http://35.247.189.98/api/document', {
+            fetch('http://localhost:6969/api/document', {
                 method: 'POST',
                 body: formData
             }).then(function (re) {
@@ -120,3 +120,5 @@
         }</script>
 
 }
+
+@*fetch('http://35.247.189.98/api/document', {*@

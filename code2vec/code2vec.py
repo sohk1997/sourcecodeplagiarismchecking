@@ -16,10 +16,18 @@ import findnearest
 import json
 import numpy as np
 
+# connectionConfig = {
+#   'user': 'root',
+#   'password': '1234567890',
+#   'host': '35.198.247.133',
+#   'database': 'SourceCodePlagiarism',
+#   'use_pure' : True
+# }
+
 connectionConfig = {
   'user': 'root',
-  'password': '1234567890',
-  'host': '35.198.247.133',
+  'password': '12345687',
+  'host': 'localhost',
   'database': 'SourceCodePlagiarism',
   'use_pure' : True
 }
@@ -80,7 +88,8 @@ def get_method_peer(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id, M.Vector, M.MethodString, M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Type = 1 AND D.Id <> %(id)s", {'id' : id})
+        # cursor.execute("SELECT M.Id, M.Vector, M.MethodString, M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Type = 1 AND D.Id <> %(id)s", {'id' : id})
+        cursor.execute("SELECT M.Id, M.Vector, M.MethodString, M.ParseTree FROM Method M JOIN Documents D ON M.DocumentId = D.DocumentId AND D.Type = 1 AND D.Id <> %(id)s", {'id' : id})
         queryResult = map(mapResult,cursor.fetchall())
         result = list(queryResult)
     except mysql.connector.Error as error :
@@ -96,7 +105,8 @@ def get_method_source(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
+        # cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
+        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM Method M JOIN Documents D ON M.DocumentId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
         queryResult = map(mapDetail,cursor.fetchall())
         result = list(queryResult)
     except mysql.connector.Error as error :
@@ -112,7 +122,8 @@ def get_method_web():
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Type = 2")
+        # cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Type = 2")
+        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM Method M JOIN Documents D ON M.DocumentId = D.DocumentId AND D.Type = 2")
         queryResult = map(mapResult,cursor.fetchall())
         result = list(queryResult)
     except mysql.connector.Error as error :
@@ -190,7 +201,8 @@ def count_method(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
+        # cursor.execute("SELECT COUNT(*) FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
+        cursor.execute("SELECT COUNT(*) FROM Method M JOIN Documents D ON M.DocumentId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
         queryResult = cursor.fetchall()
         result = list(queryResult)[0][0]
         return result
@@ -279,7 +291,8 @@ def callback(ch, method, properties, body):
             if(not webcheck):
                 update_document_no_sim(value)
     if(webcheck):
-        rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr'))
+        # rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr'))
+        rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://xeaqxoyf:G-WMfhAerBMl2Heg0f3E3rSS5QIDD2D_@mustang.rmq.cloudamqp.com/xeaqxoyf'))
         rabbitMQChannel = rabbitMQConnection.channel()  
         rabbitMQChannel.queue_declare(queue='webcheck')
         sendingObject = {
@@ -336,7 +349,8 @@ if __name__ == '__main__':
 
     parser = ArgumentParser()
 
-    rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr'))
+    # rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr'))
+    rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://xeaqxoyf:G-WMfhAerBMl2Heg0f3E3rSS5QIDD2D_@mustang.rmq.cloudamqp.com/xeaqxoyf'))
     rabbitMQChannel = rabbitMQConnection.channel()
 
     parser.add_argument("-d", "--data", dest="data_path",
