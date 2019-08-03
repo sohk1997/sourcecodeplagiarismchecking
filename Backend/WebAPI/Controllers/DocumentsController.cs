@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -27,13 +28,14 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Get list of Document have name contain 'a'
+        /// Get list of Document
         /// </summary>
         /// <returns></returns>
         // GET: api/<controller>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<DocumentInList>), 200)]
         [ProducesResponseType(typeof(string), 500)]
+        // [Authorize]
         public IActionResult Get()
         {
             return Ok(_documentService.GetAll());

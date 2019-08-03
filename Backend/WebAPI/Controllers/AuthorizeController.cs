@@ -18,15 +18,10 @@ namespace WebAPI.Controllers {
     [AllowAnonymous]
     [Route ("token")]
     public class AuthorizeController : Controller {
-        private UserManager<User> _userManager;
-        private ILogger<AuthorizeController> _logger;
+        private IUserService _userService;
 
-        private IRoleStore<IdentityRole> _roleStore;
-        public AuthorizeController (UserManager<User> userManager, ILogger<AuthorizeController> logger,
-            IRoleStore<IdentityRole> roleStore) {
-            _logger = logger;
-            _userManager = userManager;
-            _roleStore = roleStore;
+        public AuthorizeController (IUserService userService) {
+            _userService = userService;
         }
 
         // GET: api/<controller>
@@ -67,7 +62,19 @@ namespace WebAPI.Controllers {
             //    _logger.LogError ("Wrong user name or password " + user.Username );
             //    return new BadRequestResult();
             //}
-            return Ok();
+            var authorizeUser = _userService.GetUser(user);
+            if(authorizeUser != null)
+            {
+                var roleList = new List<string>();
+                roleList.Add("User");
+                var tokenString = authorizeUser.BuildToken (roleList);
+                return Ok (new { token = tokenString , role = roleList});
+
+            }
+            else
+            {
+                return new BadRequestResult();
+            }
         }
 
         // PUT api/<controller>/5
@@ -80,6 +87,7 @@ namespace WebAPI.Controllers {
             //        RoleId = roleId,
             //        RoleName = "random",
             //}, user.Password);
+            _userService.Create(user);
             return Ok ();
 
         }

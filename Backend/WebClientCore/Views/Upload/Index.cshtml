@@ -110,7 +110,6 @@
             var webcheck = document.querySelector('#webcheck').checked;
             formData.append("peerCheck", peercheck);
             formData.append("webCheck", webcheck);
-            console.log(formData);
             fetch('http://localhost:6969/api/document', {
                 method: 'POST',
                 body: formData

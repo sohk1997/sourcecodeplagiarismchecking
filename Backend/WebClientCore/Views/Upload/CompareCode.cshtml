@@ -18,38 +18,95 @@
                 <div class="portlet-body form">
                     @if(ViewBag.SourceCode != null){<label class="caption-subject">File name:  <b>@((ViewBag.SourceCode as ResultDetail).FileName)</b></label><br/>}
                     @if(ViewBag.SourceCode == null){<label class="caption-subject">File name:  <b>@((ViewBag.WebCheckResult as ResultDetail).FileName)</b></label><br/>}
-                    @if(ViewBag.SourceCode != null){<label class="caption-subject">Overall similiar ratio:  <b>@(((ViewBag.SourceCode as ResultDetail).GeneralSimRatio * 100).ToString("N2"))%</b></label><br/>}
-                    @if(ViewBag.SourceCode == null){<label class="caption-subject">Overall similiar ratio:  <b>@(((ViewBag.WebCheckResult as ResultDetail).GeneralSimRatio * 100).ToString("N2"))%</b></label><br/>}
                     @if(ViewBag.SourceCode != null){<label class="caption-subject">Total method:  <b>@((ViewBag.SourceCode as ResultDetail).Details.Count)</b></label><br/>}
                     @if(ViewBag.SourceCode == null){<label class="caption-subject">Total method:  <b>@((ViewBag.WebCheckResult as ResultDetail).Details.Count)</b></label><br/>}
+                    @if(ViewBag.SourceCode != null){<label class="caption-subject">Overall similiar ratio check result from database:  <b>@(((ViewBag.SourceCode as ResultDetail).GeneralSimRatio * 100).ToString("N2"))%</b></label><br/>}
                     @if(ViewBag.SourceCode != null){<label class="caption-subject">Total method has similar fragment in our database:  <b>@((ViewBag.SourceCode as ResultDetail).Details.Count(d => d.SimRatio > 0))</b></label>}
+                    @if(ViewBag.WebCheckResult != null){<label class="caption-subject">Overall similiar ratio check result on the internet:  <b>@(((ViewBag.WebCheckResult as ResultDetail).GeneralSimRatio * 100).ToString("N2"))%</b></label><br/>}
                     @if(ViewBag.WebCheckResult != null){<label class="caption-subject">Total method has similar fragment on the internet:  <b>@((ViewBag.WebCheckResult as ResultDetail).Details.Count(d => d.SimRatio > 0))</b></label>}
                 </div>                    
             </div>
         </div>
-        <!-- <div class="col-md-4 "> -->
+        <div class="col-md-4 ">
             <!-- BEGIN SAMPLE FORM PORTLET-->
-            <!-- <div class="portlet light bordered"> -->
-                <!-- <div class="portlet-title"> -->
-                    <!-- <div class="caption font-red-sunglo"> -->
-                        <!-- <span class="caption-subject bold uppercase"> Similiarity Detail Chart</span> -->
-                    <!-- </div> -->
-                <!-- </div> -->
-                <!-- <div class="portlet-body form"> -->
-                    <!-- <div id="chart2" style=""></div> -->
-                <!-- </div> -->
-                <!-- <div class="portlet-body form">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-red-sunglo">
+                        <span class="caption-subject bold uppercase"> Similiarity Detail Chart</span>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div id="chart2" style=""></div>
+                </div>
+                <div class="portlet-body form">
                     <div id="chart1" style=""></div>
-                </div> -->
-            <!-- </div> -->
-        <!-- </div> -->
-
+                </div>
+            </div>
+        </div>
     </div>
+
+     @if(ViewBag.SourceCode != null && ViewBag.WebCheckResult != null){
          <ul class="nav nav-tabs">
-            <li class="active"><a>Peer Result</a></li>
-            <li><a>Web Result</a></li>
+            <li class="nav-item nav-link active" onclick="peercheck()" id="peerselect">Peer Result</li>
+            <li class="nav-item nav-link" onclick="webcheck()" id="webselect">Web Result</li>
         </ul>
-         @if(ViewBag.SourceCode != null){
+        <div class="row" id="peercheck">
+            <div class="col-md-6 ">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-red-sunglo">
+                            <span class="caption-subject bold uppercase">Source Code
+                            </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <textarea id="editor1">@((ViewBag.SourceCode as ResultDetail).MergeDetail.BaseMethod)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 ">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption  font-red-sunglo">
+                            <span class="caption-subject bold uppercase"> Similiar Code Fragments From Our Database</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <textarea id="editor2">@((ViewBag.SourceCode as ResultDetail).MergeDetail.SimMethod)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="webcheck">
+            <div class="col-md-6 ">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-red-sunglo">
+                            <span class="caption-subject bold uppercase">Source Code
+                            </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <textarea id="editor3">@((ViewBag.WebCheckResult as ResultDetail).MergeDetail.BaseMethod)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 ">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption  font-red-sunglo">
+                            <span class="caption-subject bold uppercase"> Similiar Code Fragments From  <a href="@((ViewBag.WebCheckResult as ResultDetail).Details.First().Url)">Github</a></span>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <textarea id="editor4">@((ViewBag.WebCheckResult as ResultDetail).MergeDetail.SimMethod)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+        @if(ViewBag.SourceCode == null || ViewBag.WebCheckResult == null){
+        @if(ViewBag.SourceCode != null){
         <div class="row">
             <div class="col-md-6 ">
                 <div class="portlet light bordered">
@@ -105,12 +162,66 @@
                 </div>
             </div>
         </div>}
+        }
 </div>
 @section Scripts{
 
 <script type="text/javascript">
 
-        //var dataObject = @Json.Serialize((ViewBag.SourceCode as ResultDetail))
+        var peerCheckResult = @Json.Serialize((ViewBag.SourceCode as ResultDetail));
+        var webCheckResult = @Json.Serialize((ViewBag.WebCheckResult as ResultDetail));
+        var mergeResult = {
+            independentCode : 0,
+            similarRatio : 0,
+            webCheck : 0,
+            details : []
+        };
+        if(peerCheckResult != null)
+        {
+            mergeResult.details = peerCheckResult.details.map(function(element){return {method : element.methodName , peerCheck: element.simRatio * 100}});
+        }
+        if(webCheckResult != null)
+        {
+            if(mergeResult.details.length != 0)
+            {
+                for(i = 0 ; i < mergeResult.details.length ; i ++)
+                {
+                    mergeResult.details[i].webCheck = webCheckResult.details[i].simRatio * 100;
+                }
+            }
+            else 
+            {
+                mergeResult.details = webCheckResult.details.map(function(element){return {method : element.methodName , webCheck: element.simRatio * 100}});
+            }
+        }
+        for(i = 0 ; i < mergeResult.details.length ; i ++)
+        {
+            var item = mergeResult.details[i];
+            if(item.webCheck < item.peerCheck)
+            {
+                mergeResult.similarRatio += item.peerCheck;
+            }
+            else
+            {
+                mergeResult.similarRatio += item.webCheck;
+            }
+        }
+        mergeResult.similarRatio /= mergeResult.details.length;
+        console.log(mergeResult.similarRatio);
+        function peercheck()
+        {
+            $("#peerselect").addClass("active");
+            $("#webselect").removeClass("active");
+            $("#peercheck").removeClass("d-none");
+            $("#webcheck").addClass("d-none");
+        }
+        function webcheck()
+        {
+            $("#peerselect").removeClass("active");
+            $("#webselect").addClass("active");
+            $("#peercheck").addClass("d-none");
+            $("#webcheck").removeClass("d-none");
+        }
         //new Morris.Bar({
             // ID of the element in which to draw the chart.
             //element: 'chart2',
@@ -129,7 +240,18 @@
             //resize : true
             //});
 
-       
+        new Morris.Donut({
+            data : [{
+              label: "Similiar percentage",
+              value : mergeResult.similarRatio 
+            },
+            {
+              label: "Unique code percentage",
+              value : 100 - mergeResult.similarRatio 
+            }],
+            element : 'chart2',
+            colors : ["#eb4034", "#3471eb"],
+        })
          
        
         @if(ViewBag.SourceCode != null){
@@ -178,6 +300,9 @@
                 @:editor4.getDoc().markText({ line: @item.StartLine - 2 },{ line: @item.EndLine - 1},{ css: "background-color : red; color : white;" });
             }
         }
+         @if(ViewBag.WebCheckResult != null && ViewBag.WebCheckResult != null){
+             <text>peercheck()</text>
+         }
 </script>
 }
 
