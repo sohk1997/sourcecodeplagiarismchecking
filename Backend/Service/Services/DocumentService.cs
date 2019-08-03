@@ -56,16 +56,16 @@ namespace Service.Services
             document.Status = Root.CommonEnum.SourceCodeStatus.PENDING;
             document.Type = Root.CommonEnum.SourceCodeType.PEER;
             document.UploadDate = DateTime.Now;
-            
-            if(webcheck && peercheck)
+
+            if (webcheck && peercheck)
             {
                 document.CheckType = CheckType.BOTH;
             }
-            else if(webcheck)
+            else if (webcheck)
             {
                 document.CheckType = CheckType.WEB_CHECK;
             }
-            else if(peercheck)
+            else if (peercheck)
             {
                 document.CheckType = CheckType.PEER_CHECK;
             }
@@ -180,20 +180,23 @@ namespace Service.Services
                     MethodName = m.Method.MethodName,
                     BaseMethod = m.Method.MethodString,
                 };
-                if (m.Result != null && m.Type == Root.CommonEnum.SourceCodeType.WEB)
+                if (m.Type == Root.CommonEnum.SourceCodeType.WEB)
                 {
-                    item.SimMethod = m.SimMethod.MethodString;
-                    item.Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail.Replace("'", "\""));
-                    item.SimRatio = m.Result.SimRatio;
-                    item.Url = m.Url;
+                    if (m.Result != null)
+                    {
+                        item.SimMethod = m.SimMethod.MethodString;
+                        item.Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail.Replace("'", "\""));
+                        item.SimRatio = m.Result.SimRatio;
+                        item.Url = m.Url;
+                    }
+                    else
+                    {
+                        item.SimMethod = null;
+                        item.Position = null;
+                        item.SimRatio = 0;
+                    }
+                    details.Add(item);
                 }
-                else
-                {
-                    item.SimMethod = null;
-                    item.Position = null;
-                    item.SimRatio = 0;
-                }
-                details.Add(item);
             }
             var result = new DocumentResult()
             {
@@ -201,7 +204,6 @@ namespace Service.Services
                 GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
                 Details = details
             };
-
             return result;
         }
         public DocumentResult GetPeerResult(int id)
@@ -225,19 +227,22 @@ namespace Service.Services
                     MethodName = m.Method.MethodName,
                     BaseMethod = m.Method.MethodString,
                 };
-                if (m.Result != null)
+                if (m.Type == Root.CommonEnum.SourceCodeType.PEER)
                 {
-                    item.SimMethod = m.SimMethod.MethodString;
-                    item.Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail.Replace("'", "\""));
-                    item.SimRatio = m.Result.SimRatio;
+                    if (m.Result != null)
+                    {
+                        item.SimMethod = m.SimMethod.MethodString;
+                        item.Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail.Replace("'", "\""));
+                        item.SimRatio = m.Result.SimRatio;
+                    }
+                    else
+                    {
+                        item.SimMethod = null;
+                        item.Position = null;
+                        item.SimRatio = 0;
+                    }
+                    details.Add(item);
                 }
-                else
-                {
-                    item.SimMethod = null;
-                    item.Position = null;
-                    item.SimRatio = 0;
-                }
-                details.Add(item);
             }
             var result = new DocumentResult()
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using WebClient.Models.DAOs;
 
 namespace WebClient.Controllers
@@ -19,6 +20,8 @@ namespace WebClient.Controllers
         [Route("compare/{id}")]
         public ActionResult CompareCode(int id)
         {
+            StringValues token = "";
+            Request.Headers.TryGetValue("Authorization",out token);
             var dao = new ResultDAO();
             var result = dao.GetResult(id).Result;
             Console.WriteLine(id);
