@@ -47,8 +47,8 @@
 
      @if(ViewBag.SourceCode != null && ViewBag.WebCheckResult != null){
          <ul class="nav nav-tabs">
-            <li class="active"><button onclick="peercheck()">Peer Result</button></li>
-            <li><button onclick="webcheck()">Web Result</button></li>
+            <li class="nav-item nav-link active" onclick="peercheck()" id="peerselect">Peer Result</li>
+            <li class="nav-item nav-link" onclick="webcheck()" id="webselect">Web Result</li>
         </ul>
         <div class="row" id="peercheck">
             <div class="col-md-6 ">
@@ -210,11 +210,15 @@
         console.log(mergeResult.similarRatio);
         function peercheck()
         {
+            $("#peerselect").addClass("active");
+            $("#webselect").removeClass("active");
             $("#peercheck").removeClass("d-none");
             $("#webcheck").addClass("d-none");
         }
         function webcheck()
         {
+            $("#peerselect").removeClass("active");
+            $("#webselect").addClass("active");
             $("#peercheck").addClass("d-none");
             $("#webcheck").removeClass("d-none");
         }
