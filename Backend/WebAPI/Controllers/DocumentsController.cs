@@ -85,12 +85,12 @@ namespace WebAPI.Controllers
                 NotFound();
             }
             else
-            {                
+            {
                 int id = await _documentService.UploadToCloud(file, request.WebCheck, request.PeerCheck);
                 string location = Request.HttpContext.Request.Host + "/api/document/" + id;
                 return Created(location, file);
             }
             return NotFound();
-        }        
+        }
     }
 }
