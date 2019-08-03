@@ -5,16 +5,12 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 
 namespace Root.Model {
-    public class User : IdentityUser {
-        [Required]
-        public override string UserName { get; set; }
-
-        [Required]
+    public class User {
+        public int Id { get; set; }
+        public string UserName { get; set; }
+        public string PasswordHash { get; set; }
         public string RoleName { get; set; }
-
-        public string EmployeeC { get; set; }
-
         public string IsActive { get; set; }
-        public string RoleId { get; set; }
+        public int RoleId { get; set; }
     }
 }
