@@ -49,7 +49,7 @@ namespace WebAPI {
             services.AddInjection ();
 
             //Add auto migration
-            //services.AddMigrationConfigure (Configuration);
+            // services.AddMigrationConfigure (Configuration);
 
             services.AddCors (options => {
                 options.AddPolicy ("AllowAnyOrigins", builder => builder.AllowAnyOrigin ().AllowAnyHeader ().AllowAnyMethod ().AllowCredentials ());

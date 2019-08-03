@@ -17,16 +17,7 @@ namespace WebAPI.Configuration
     {
         public static void AddIdentityConfigure(this IServiceCollection services)
         {
-            services.AddIdentity<User, IdentityRole>(op => {
-                op.Password.RequireNonAlphanumeric = false;
-                op.Password.RequireUppercase = false;
-                op.Password.RequireDigit = true;
-                op.Password.RequiredLength = 6;
-                op.Password.RequireLowercase = true;
-            })
-           .AddEntityFrameworkStores<TestContext>()
-           .AddDefaultTokenProviders();
-
+            
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(sharedOptions =>

@@ -9,12 +9,13 @@ using Root.Model.Map;
 
 namespace Root.Data
 {
-    public class TestContext : IdentityDbContext<User>
+    public class TestContext : DbContext
     {
         //public DbSet<TestModel> Test { get; set; }
         public DbSet<SourceCode> Documents { get; set; }
         public DbSet<Method> Methods { get; set; }
         public DbSet<Result> Results { get; set; }
+        public DbSet<User> User { get; set; }
         //public DbSet<Feature> Features { get; set; }
         //public DbSet<RoleFeature> RoleFeatures { get; set; }
         public TestContext(DbContextOptions options) : base(options) { }
