@@ -4,13 +4,14 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using WebClient.Models.DAOs;
+using WebClientCore.Models.DAOs;
 
 namespace WebClient.Controllers
 {
     public class UploadController : Controller
     {
         // GET: Upload
+        [CustomAuthorize]
         public ActionResult Index()
         {
             return View();
@@ -18,6 +19,7 @@ namespace WebClient.Controllers
 
         [HttpGet]
         [Route("compare/{id}")]
+        [CustomAuthorize]
         public ActionResult CompareCode(int id)
         {
             StringValues token = "";

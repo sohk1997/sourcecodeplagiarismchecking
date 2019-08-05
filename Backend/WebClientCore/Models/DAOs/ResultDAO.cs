@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace WebClient.Models.DAOs
+namespace WebClientCore.Models.DAOs
 {
     public class ResultDAO
     {

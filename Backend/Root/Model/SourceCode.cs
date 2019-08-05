@@ -12,6 +12,7 @@ namespace Root.Model
         public Guid Id { get; set; }
         public int DocumentId { get; set; }
         public string DocumentName { get; set; }
+        public int UserId { get; set; }
         public string FileUrl { get; set; }
         public SourceCodeStatus Status { get; set; }
         public SourceCodeType Type { get; set; }

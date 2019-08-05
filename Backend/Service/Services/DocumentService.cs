@@ -23,8 +23,9 @@ namespace Service.Services
         List<DocumentInList> DocumentProcedure(int Id, string Name);
         DocumentInfo Get(int Id);
         ResponseResult GetResult(int id);
-        Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck);
+        Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck, int userId);
         List<DocumentInList> GetAll();
+        List<DocumentInList> GetAll(int userId);
     }
     public class DocumentService : IDocumentService
     {
@@ -49,59 +50,68 @@ namespace Service.Services
             _methodRepository = methodRepository;
         }
 
-        public async Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck)
+        public async Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck, int userId)
         {
-            SourceCode document = _mapper.Map<SourceCode>(file);
-            document.DocumentName = file.FileName;
-            document.Status = Root.CommonEnum.SourceCodeStatus.PENDING;
-            document.Type = Root.CommonEnum.SourceCodeType.PEER;
-            document.UploadDate = DateTime.Now;
+            try
+            {
+                SourceCode document = _mapper.Map<SourceCode>(file);
+                document.DocumentName = file.FileName;
+                document.Status = Root.CommonEnum.SourceCodeStatus.PENDING;
+                document.Type = Root.CommonEnum.SourceCodeType.PEER;
+                document.UploadDate = DateTime.Now;
+                document.UserId = userId;
 
-            if (webcheck && peercheck)
-            {
-                document.CheckType = CheckType.BOTH;
-            }
-            else if (webcheck)
-            {
-                document.CheckType = CheckType.WEB_CHECK;
-            }
-            else if (peercheck)
-            {
-                document.CheckType = CheckType.PEER_CHECK;
-            }
-            //----Upload - To - Azure - Blob----
-            CloudStorageAccount storageAccount = new CloudStorageAccount(new StorageCredentials
-                ("sourceproject", "+03nTRvnSMevowugQfMm5BU7mGCTrs3VDa9SkzNP+qVl7aaVHO6imOnqKMLPwK2fQrsfg3f5CWlUihgvzSu3lA=="), true);
-            // Create a blob client.
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-            // Get a reference to a container named "project."
-            CloudBlobContainer container = blobClient.GetContainerReference("project");
-            // Get a reference to a blob named "file.FileName".
-            Guid guid = Guid.NewGuid();
-            string genKeyName = guid.ToString() + Path.GetExtension(file.FileName).ToLower();
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(genKeyName);
+                if (webcheck && peercheck)
+                {
+                    document.CheckType = CheckType.BOTH;
+                }
+                else if (webcheck)
+                {
+                    document.CheckType = CheckType.WEB_CHECK;
+                }
+                else if (peercheck)
+                {
+                    document.CheckType = CheckType.PEER_CHECK;
+                }
+                //----Upload - To - Azure - Blob----
+                CloudStorageAccount storageAccount = new CloudStorageAccount(new StorageCredentials
+                    ("sourceproject", "+03nTRvnSMevowugQfMm5BU7mGCTrs3VDa9SkzNP+qVl7aaVHO6imOnqKMLPwK2fQrsfg3f5CWlUihgvzSu3lA=="), true);
+                // Create a blob client.
+                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+                // Get a reference to a container named "project."
+                CloudBlobContainer container = blobClient.GetContainerReference("project");
+                // Get a reference to a blob named "file.FileName".
+                Guid guid = Guid.NewGuid();
+                string genKeyName = guid.ToString() + Path.GetExtension(file.FileName).ToLower();
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(genKeyName);
 
-            using (var reader = new StreamReader(file.OpenReadStream()))
-            {
-                var fileContent = reader.ReadToEnd();
-                //var parsedContentDisposition = ContentDispositionHeaderValue.Parse(file.ContentDisposition);                                
-                var content = Encoding.ASCII.GetBytes(fileContent);
-                await blockBlob.UploadFromByteArrayAsync(content, 0, content.Length);
-                document.FileUrl = blockBlob.Uri.AbsoluteUri;
-            }
-            _sourceCodeRepository.Add(document);
-            Commit();
+                using (var reader = new StreamReader(file.OpenReadStream()))
+                {
+                    var fileContent = reader.ReadToEnd();
+                    //var parsedContentDisposition = ContentDispositionHeaderValue.Parse(file.ContentDisposition);                                
+                    var content = Encoding.ASCII.GetBytes(fileContent);
+                    await blockBlob.UploadFromByteArrayAsync(content, 0, content.Length);
+                    document.FileUrl = blockBlob.Uri.AbsoluteUri;
+                }
+                _sourceCodeRepository.Add(document);
+                Commit();
 
-            Guid queryId = document.Id;
-            document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(d => d.Id == queryId);
-            var jsonObject = new
+                Guid queryId = document.Id;
+                document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(d => d.Id == queryId);
+                var jsonObject = new
+                {
+                    id = document.Id,
+                    webCheck = webcheck,
+                    peerCheck = peercheck
+                };
+                RabbitMQHelper.SendMessage(JsonConvert.SerializeObject(jsonObject));
+                return document.DocumentId;
+            }
+            catch (Exception ex)
             {
-                id = document.Id,
-                webCheck = webcheck,
-                peerCheck = peercheck
-            };
-            RabbitMQHelper.SendMessage(JsonConvert.SerializeObject(jsonObject));
-            return document.DocumentId;
+                System.Console.WriteLine(ex.StackTrace);
+                throw ex;
+            }
         }
 
         public List<DocumentInList> DocumentProcedure(int Id, string Name)
@@ -113,6 +123,27 @@ namespace Service.Services
         public List<DocumentInList> GetAll()
         {
             var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB)
+            .Select(d => new
+            {
+                Id = d.DocumentId,
+                Name = d.DocumentName,
+                Status = (int)d.Status,
+                UploadDate = d.UploadDate
+            })
+            .ToList()
+            .Select(d => new DocumentInList
+            {
+                Id = d.Id,
+                Name = d.Name,
+                Status = (int)d.Status,
+                UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:MM")
+            });
+            return list.ToList();
+        }
+
+        public List<DocumentInList> GetAll(int userId)
+        {
+            var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB && d.UserId == userId)
             .Select(d => new
             {
                 Id = d.DocumentId,
