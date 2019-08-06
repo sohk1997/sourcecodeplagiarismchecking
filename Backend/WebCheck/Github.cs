@@ -43,7 +43,7 @@ namespace WebCheck
                 {
                     var searchContent = block.Content.Substring(0, Math.Min(block.Content.Length, 100));
 
-                    string jsonData = GET1(searchContent);
+                    string jsonData = SearchCode(searchContent);
                     if (jsonData.Length > 0)
                     {
                         var gitCode = JsonConvert.DeserializeObject<RootObject>(jsonData);
@@ -80,61 +80,6 @@ namespace WebCheck
             };
         }
 
-        // Function to find index of closing  
-        // bracket for given opening bracket.  
-        private int GetBracketsIndex(String expression, int index)
-        {
-            int i;
-
-            // If index given is invalid and is  
-            // not an opening bracket.  
-            if (expression[index] != '{')
-            {
-                //Console.Write(expression + ", "
-                //        + index + ": -1\n");
-                return -1;
-            }
-
-            Stack st = new Stack();
-
-            for (i = index; i < expression.Length; i++)
-            {
-                if (expression[i] == '{')
-                {
-                    st.Push((int)expression[i]);
-                }
-                else if (expression[i] == '}')
-                {
-                    st.Pop();
-                    if (st.Count == 0)
-                    {
-                        return i;
-                    }
-                }
-            }
-
-            return -1;
-        }
-
-
-
-        private int GetNthIndex(string s, char t, int n)
-        {
-            int count = 0;
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (s[i] == t)
-                {
-                    count++;
-                    if (count == n)
-                    {
-                        return i;
-                    }
-                }
-            }
-            return -1;
-        }
-
         // Returns JSON string
         private string GET(string url)
         {
@@ -147,6 +92,7 @@ namespace WebCheck
             return json;
         }
 
+        //Parse String to list of block code
         private List<Block> GetBlocks(String expression)
         {
             List<Block> blocks = new List<Block>();
@@ -182,7 +128,7 @@ namespace WebCheck
             return blocks;
         }
 
-        private string GET1(string url)
+        private string SearchCode(string url)
         {
             string language = "java";
                  
@@ -219,7 +165,7 @@ namespace WebCheck
                     Console.WriteLine($"Wait: {retry}");
 
                     Thread.Sleep(retry * 1000);
-                    return GET1(url);
+                    return SearchCode(url);
                 }
                 else
                 {
