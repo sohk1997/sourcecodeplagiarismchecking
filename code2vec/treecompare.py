@@ -38,7 +38,7 @@ class TreeCompare:
                 sim_node['sim'] = True
                 self.resultSet.append(((node['startLine'] - self.base_node_1['startLine'],node['endLine'] - self.base_node_1['startLine']),(sim_node['startLine'] - self.base_node_2['startLine'],sim_node['endLine'] - self.base_node_2['startLine'])))
                 self.hashMap[node['hash']].pop(0)
-                if self.hashMap[node['hash']].count() == 0:
+                if len(self.hashMap[node['hash']]) == 0:
                     self.hashMap.pop(node['hash'], None)
                 return node['subtreecount']
             for childNode in node['childNodes']:

@@ -14,30 +14,18 @@ using WebAPI.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace WebAPI.Controllers {
+namespace WebAPI.Controllers
+{
     [AllowAnonymous]
-    [Route ("token")]
-    public class AuthorizeController : Controller {
+    [Route("token")]
+    public class AuthorizeController : Controller
+    {
         private IUserService _userService;
 
-        public AuthorizeController (IUserService userService) {
+        public AuthorizeController(IUserService userService)
+        {
             _userService = userService;
         }
-
-        // GET: api/<controller>
-
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET api/<controller>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
         // POST api/<controller>
         /// <summary>
@@ -49,26 +37,18 @@ namespace WebAPI.Controllers {
         /// <response code = "400">If login fail, return a error message</response>
         /// <response code = "500">If internal server error</response>
         [HttpPost]
-        [ProducesResponseType (200, Type = typeof (object))]
-        [ProducesResponseType (400, Type = typeof (string))]
-        [ProducesResponseType (500)]
-        public async Task<IActionResult> Post ([FromBody] LoginViewModel user) {
-            //var rootUser = await _userManager.FindByNameAsync (user.Username);
-            //var login = await _userManager.CheckPasswordAsync (rootUser, user.Password);
-            //if (login) {
-            //    var tokenString = rootUser.BuildToken (roleList);
-            //    return Ok (new { tokenString , role = roleList});
-            //} else {
-            //    _logger.LogError ("Wrong user name or password " + user.Username );
-            //    return new BadRequestResult();
-            //}
+        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(400, Type = typeof(string))]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Post([FromBody] LoginViewModel user)
+        {
             var authorizeUser = _userService.GetUser(user);
-            if(authorizeUser != null)
+            if (authorizeUser != null)
             {
                 var roleList = new List<string>();
                 roleList.Add("User");
-                var tokenString = authorizeUser.BuildToken (roleList);
-                return Ok (new { token = tokenString , role = roleList});
+                var tokenString = authorizeUser.BuildToken(roleList);
+                return Ok(new { token = tokenString, role = roleList });
 
             }
             else
@@ -78,24 +58,21 @@ namespace WebAPI.Controllers {
         }
 
         // PUT api/<controller>/5
-        [HttpPut ("")]
-        public async Task<IActionResult> Put ([FromBody] LoginViewModel user) {
-            //var roleId = (await _roleStore.FindByNameAsync (user.Role, CancellationToken.None)).Id;
-            //var result = await _userManager.CreateAsync (new User () {
-            //    Id = Guid.NewGuid ().ToString (),
-            //        UserName = user.Username,
-            //        RoleId = roleId,
-            //        RoleName = "random",
-            //}, user.Password);
+        [HttpPut("")]
+        public async Task<IActionResult> Put([FromBody] LoginViewModel user)
+        {
             _userService.Create(user);
-            return Ok ();
+            return Ok();
 
         }
 
-        //// DELETE api/<controller>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        [HttpGet()]
+        [Authorize]
+        public async Task<IActionResult> CheckToken()
+        {
+            return Ok();
+        }
+
+
     }
 }
