@@ -16,10 +16,18 @@ import findnearest
 import json
 import numpy as np
 
+# connectionConfig = {
+#   'user': 'root',
+#   'password': '1234567890',
+#   'host': '35.198.247.133',
+#   'database': 'SourceCodePlagiarism',
+#   'use_pure' : True
+# }
+
 connectionConfig = {
   'user': 'root',
-  'password': '1234567890',
-  'host': '35.198.247.133',
+  'password': '12345687',
+  'host': 'localhost',
   'database': 'SourceCodePlagiarism',
   'use_pure' : True
 }
@@ -279,7 +287,9 @@ def callback(ch, method, properties, body):
             if(not webcheck):
                 update_document_no_sim(value)
     if(webcheck):
-        rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr'))
+        # rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr'))
+        # rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://xeaqxoyf:G-WMfhAerBMl2Heg0f3E3rSS5QIDD2D_@mustang.rmq.cloudamqp.com/xeaqxoyf'))
+        rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tylthbfk:XDGMN59kUlq33vUgxB69g0u633jzaAe8@mustang.rmq.cloudamqp.com/tylthbfk'))
         rabbitMQChannel = rabbitMQConnection.channel()  
         rabbitMQChannel.queue_declare(queue='webcheck')
         sendingObject = {
@@ -336,7 +346,9 @@ if __name__ == '__main__':
 
     parser = ArgumentParser()
 
-    rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr'))
+    # rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr'))
+    # rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://xeaqxoyf:G-WMfhAerBMl2Heg0f3E3rSS5QIDD2D_@mustang.rmq.cloudamqp.com/xeaqxoyf'))
+    rabbitMQConnection = pika.BlockingConnection(pika.URLParameters('amqp://tylthbfk:XDGMN59kUlq33vUgxB69g0u633jzaAe8@mustang.rmq.cloudamqp.com/tylthbfk'))
     rabbitMQChannel = rabbitMQConnection.channel()
 
     parser.add_argument("-d", "--data", dest="data_path",

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -36,13 +35,10 @@ namespace WebAPI.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<DocumentInList>), 200)]
         [ProducesResponseType(typeof(string), 500)]
-        [Authorize]
+        // [Authorize]
         public IActionResult Get()
         {
-            string idInString = this.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-
-            var id = int.Parse(idInString);
-            return Ok(_documentService.GetAll(id));
+            return Ok(_documentService.GetAll());
         }
 
         /// <summary>
@@ -75,17 +71,12 @@ namespace WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
+        //[Authorize(Roles = ("DOCUMENT_C"))]
         [ProducesResponseType(typeof(IFormFile), 201)]
         [ProducesResponseType(400, Type = typeof(ModelStateDictionary))]
         [ProducesResponseType(500)]
         public async Task<IActionResult> Post(CheckRequest request)
         {
-            System.Console.WriteLine("Start check");
-            string idInString = this.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            System.Console.WriteLine(idInString);
-            var userId = int.Parse(idInString);
-            System.Console.WriteLine(userId);
             var file = request.File;
             if (!ModelState.IsValid)
             {
@@ -96,11 +87,12 @@ namespace WebAPI.Controllers
                 NotFound();
             }
             else
-            {                
-                int id = await _documentService.UploadToCloud(file, request.WebCheck, request.PeerCheck, userId);
-                return Ok();
+            {
+                int id = await _documentService.UploadToCloud(file, request.WebCheck, request.PeerCheck);
+                string location = Request.HttpContext.Request.Host + "/api/document/" + id;
+                return Created(location, file);
             }
             return NotFound();
-        }        
+        }
     }
 }

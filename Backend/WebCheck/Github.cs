@@ -38,7 +38,7 @@ namespace WebCheck
             {
                 block.Content = WebUtility.UrlEncode(block.Content);
                 Regex regex = new Regex("\\+{2,}");
-                block.Content = regex.Replace(block.Content,"+");      
+                block.Content = regex.Replace(block.Content, "+");
                 while (block.Content.Length > 0)
                 {
                     var searchContent = block.Content.Substring(0, Math.Min(block.Content.Length, 100));
@@ -185,9 +185,9 @@ namespace WebCheck
         private string GET1(string url)
         {
             string language = "java";
-                 
+
             HttpWebRequest request =
-                WebRequest.Create("https://api.github.com/search/code?access_token=b895c4362f5ecaad3d1cc9feb40e4ab3c0c4c794&q=" + url + " in:file+language:" + language) as HttpWebRequest;
+                WebRequest.Create("https://api.github.com/search/code?access_token=a552b7b63ef408a7d91a1c2bd04df756ad1648c9q=" + url + " in:file+language:" + language) as HttpWebRequest;
             request.Method = "GET";
 
 
