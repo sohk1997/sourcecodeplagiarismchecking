@@ -4,6 +4,7 @@ namespace WebClient.Controllers
 {
     public class HomeController : Controller
     {
+        [CustomAuthorize]
         // GET: Home
         public ActionResult Index()
         {

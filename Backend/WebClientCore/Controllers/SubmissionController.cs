@@ -12,9 +12,12 @@ namespace WebClient.Controllers
     {
         // GET: Submission
         [HttpGet]
+        [CustomAuthorize]
         public ActionResult Index()
         {
-            SubmissionDAO dao = new SubmissionDAO();
+            var token = Request.Cookies["token"];
+            System.Console.WriteLine("token" + token);
+            SubmissionDAO dao = new SubmissionDAO(token);
             var records = dao.GetAllSubmission().Result;
             ViewBag.Submissions = records;
             return View();
