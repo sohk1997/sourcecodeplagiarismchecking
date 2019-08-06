@@ -1,4 +1,5 @@
 ﻿@using WebClientCore.Infrastructures
+@using WebClientCore.Models.DAOs
 <div style="height:91px; background-color:#22195b"></div>
 
 <!-- END PAGE TITLE-->
@@ -110,12 +111,22 @@
             var webcheck = document.querySelector('#webcheck').checked;
             formData.append("peerCheck", peercheck);
             formData.append("webCheck", webcheck);
-            fetch('http://localhost:6969/api/document', {
+            fetch('@RequestHelper.API_URL' + '/api/document', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: {
+                    "Authorization": decodeURIComponent(getCookie("token"))
+                }
             }).then(function (re) {
                 window.location.replace("/Submission");
             })
-        }</script>
+        }
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            console.log("cookie " + value);
+            var parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+        </script>
 
 }

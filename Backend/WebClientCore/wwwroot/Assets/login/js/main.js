@@ -1,3 +1,24 @@
+$("#loginForm").submit(function (e) {
+    e.preventDefault();
+});
+function login()
+{
+    var form = document.getElementById("loginForm");
+    var formData = new FormData(form);
+    console.log(formData);
+    var data = JSON.stringify(Object.fromEntries(formData));
+    fetch('/Login/Login', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        credentials: 'include',
+        body: data
+    }).then(function (re) {
+        window.location.replace("/Submission");
+    });
+}
 
 (function ($) {
     "use strict";

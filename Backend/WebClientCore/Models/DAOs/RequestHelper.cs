@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace WebClient.Models.DAOs
+namespace WebClientCore.Models.DAOs
 {
     public class RequestHelper
     {
-        private const string API_URL = "http://localhost:6969";
+        public const string API_URL = "http://localhost:6969";
 
         public static HttpClient GetHttpClient()
         {
