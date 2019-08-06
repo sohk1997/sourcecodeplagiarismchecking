@@ -73,7 +73,7 @@ namespace WebCheck
             var matchResult = results[0];
             //Parse url code on github to raw file
             var raw = matchResult.html_url.Replace("https://github", "https://raw.githubusercontent").ReplaceFirst("/blob/", "/");
-            var fCode = GET(raw);
+            var fCode = GetCode(raw);
             return new Result
             {
                 Content = fCode,
@@ -83,7 +83,7 @@ namespace WebCheck
         }
 
         // Returns JSON string
-        private string GET(string url)
+        private string GetCode(string url)
         {
             string json = "";
             using (WebClient wc = new WebClient())
