@@ -68,8 +68,10 @@ namespace WebCheck
             {
                 return null;
             }
+            //The first Item in Result List is the most similarity case
             results = results.OrderBy(r => -r.appearance).ThenBy(r => r.score).ToList();
             var matchResult = results[0];
+            //Parse url code on github to raw file
             var raw = matchResult.html_url.Replace("https://github", "https://raw.githubusercontent").ReplaceFirst("/blob/", "/");
             var fCode = GET(raw);
             return new Result
@@ -131,14 +133,10 @@ namespace WebCheck
         private string SearchCode(string url)
         {
             string language = "java";
-                 
             HttpWebRequest request =
                 WebRequest.Create("https://api.github.com/search/code?access_token=b895c4362f5ecaad3d1cc9feb40e4ab3c0c4c794&q=" + url + " in:file+language:" + language) as HttpWebRequest;
             request.Method = "GET";
-
-
             request.Accept = "application/vnd.github.v3.raw+json";
-
             request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36";
             try
             {
