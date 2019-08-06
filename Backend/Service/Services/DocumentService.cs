@@ -123,6 +123,7 @@ namespace Service.Services
         public List<DocumentInList> GetAll()
         {
             var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB)
+            .OrderByDescending(d => d.UploadDate)
             .Select(d => new
             {
                 Id = d.DocumentId,
@@ -144,6 +145,7 @@ namespace Service.Services
         public List<DocumentInList> GetAll(int userId)
         {
             var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB && d.UserId == userId)
+            .OrderByDescending(d => d.UploadDate)
             .Select(d => new
             {
                 Id = d.DocumentId,
@@ -229,13 +231,20 @@ namespace Service.Services
                     details.Add(item);
                 }
             }
-            var result = new DocumentResult()
+            if (details.Count > 0)
             {
-                FileName = document.DocumentName,
-                GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
-                Details = details
-            };
-            return result;
+                var result = new DocumentResult()
+                {
+                    FileName = document.DocumentName,
+                    GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
+                    Details = details
+                };
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
         public DocumentResult GetPeerResult(int id)
         {
@@ -275,14 +284,21 @@ namespace Service.Services
                     details.Add(item);
                 }
             }
-            var result = new DocumentResult()
+            if (details.Count > 0)
             {
-                FileName = document.DocumentName,
-                GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
-                Details = details
-            };
+                var result = new DocumentResult()
+                {
+                    FileName = document.DocumentName,
+                    GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
+                    Details = details
+                };
 
-            return result;
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
