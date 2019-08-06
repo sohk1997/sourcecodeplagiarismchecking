@@ -198,13 +198,20 @@ namespace Service.Services
                     details.Add(item);
                 }
             }
-            var result = new DocumentResult()
+            if (details.Count > 0)
             {
-                FileName = document.DocumentName,
-                GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
-                Details = details
-            };
-            return result;
+                var result = new DocumentResult()
+                {
+                    FileName = document.DocumentName,
+                    GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
+                    Details = details
+                };
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
         public DocumentResult GetPeerResult(int id)
         {
@@ -244,14 +251,21 @@ namespace Service.Services
                     details.Add(item);
                 }
             }
-            var result = new DocumentResult()
+            if (details.Count > 0)
             {
-                FileName = document.DocumentName,
-                GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
-                Details = details
-            };
+                var result = new DocumentResult()
+                {
+                    FileName = document.DocumentName,
+                    GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
+                    Details = details
+                };
 
-            return result;
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -197,6 +197,14 @@
         for(i = 0 ; i < mergeResult.details.length ; i ++)
         {
             var item = mergeResult.details[i];
+            if(item.webCheck === undefined || item.webCheck == null)
+            {
+                item.webCheck = 0;
+            }
+            if(item.peerCheck === undefined || item.peerCheck == null)
+            {
+                item.peerCheck = 0;
+            }
             if(item.webCheck < item.peerCheck)
             {
                 mergeResult.similarRatio += item.peerCheck;
@@ -243,14 +251,15 @@
         new Morris.Donut({
             data : [{
               label: "Similiar percentage",
-              value : mergeResult.similarRatio 
+              value : mergeResult.similarRatio.toFixed(2) 
             },
             {
               label: "Unique code percentage",
-              value : 100 - mergeResult.similarRatio 
+              value : (100 - mergeResult.similarRatio).toFixed(2)
             }],
             element : 'chart2',
             colors : ["#eb4034", "#3471eb"],
+            formatter : function(y,data) {console.log(data) ; return y + "%";}
         })
          
        
