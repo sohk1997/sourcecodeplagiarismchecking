@@ -123,6 +123,7 @@ namespace Service.Services
         public List<DocumentInList> GetAll()
         {
             var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB)
+            .OrderByDescending(d => d.UploadDate)
             .Select(d => new
             {
                 Id = d.DocumentId,
@@ -144,6 +145,7 @@ namespace Service.Services
         public List<DocumentInList> GetAll(int userId)
         {
             var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB && d.UserId == userId)
+            .OrderByDescending(d => d.UploadDate)
             .Select(d => new
             {
                 Id = d.DocumentId,
