@@ -66,7 +66,7 @@ namespace WebCheck
                     RabbitMQHelper.SendMessage(newMessage);
                 };
                 Console.WriteLine("Done set up");
-                channel.BasicConsume("webcheck", autoAck: true, consumer);
+                channel.BasicConsume("webcheck", autoAck: true, consumer: consumer);
                 Console.WriteLine("Open");
                 Console.ReadKey();
             }
