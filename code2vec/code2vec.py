@@ -41,10 +41,10 @@ def mapResult(element):
 def mapDetail(element):
     result = {}
     result['Id'] = element[0]
-    x = np.array(element[1].replace('[[','').replace(']]','').replace('[','').replace(']','').split())
+    x = np.array(json.loads(element[1]))
     y = x.astype(np.float)
     result['Vector'] = y
-    result['tree'] = json.loads(element[3].replace("'",'"'))
+    result['tree'] = json.loads(element[3])
     return result
 
 def mergeResult(baseList):
@@ -66,7 +66,7 @@ def get_file(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("""SELECT DocumentId,FileUrl FROM Documents WHERE Id = %(id)s""",{'id' : id})
+        cursor.execute("""SELECT DocumentId,FileUrl FROM Submission WHERE Id = %(id)s""",{'id' : id})
         queryResult = list(map(mapSingleDocumentResult,cursor.fetchall()))[0]
     except mysql.connector.Error as error :
         print(str(error))
@@ -80,7 +80,7 @@ def get_method_peer(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id, M.Vector, M.MethodString, M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Type = 1 AND D.Id <> %(id)s", {'id' : id})
+        cursor.execute("SELECT M.Id, M.Vector, M.MethodString, M.ParseTree FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Type = 1 AND D.Id <> %(id)s", {'id' : id})
         queryResult = map(mapResult,cursor.fetchall())
         result = list(queryResult)
     except mysql.connector.Error as error :
@@ -96,7 +96,7 @@ def get_method_source(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
+        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
         queryResult = map(mapDetail,cursor.fetchall())
         result = list(queryResult)
     except mysql.connector.Error as error :
@@ -112,7 +112,7 @@ def get_method_web():
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Type = 2")
+        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Type = 2")
         queryResult = map(mapResult,cursor.fetchall())
         result = list(queryResult)
     except mysql.connector.Error as error :
@@ -127,9 +127,9 @@ def get_method_web():
 def insert_method(method, sourceid):
     try:
         connection = mysql.connector.connect(**connectionConfig)
-        sql_insert_query = """ INSERT INTO `Method`
+        sql_insert_query = """ INSERT INTO `CodeDetail`
                                (`StartLine`, `EndLine`, `Vector`, `ParseTree`, `MethodString`, `SourceCodeId`, `MethodName`) VALUES (%s,%s,%s,%s, %s, %s, %s)"""
-        insert_tuple = (method['startLine'], method['endLine'], str(method['Vector']), str(method['tree']), str(method['baseMethod']), str(sourceid), method['methodName'])
+        insert_tuple = (method['startLine'], method['endLine'], json.dumps(method['Vector'].tolist()), json.dumps(method['tree']), str(method['baseMethod']), str(sourceid), method['methodName'])
         cursor = connection.cursor(cursor_class=MySQLCursorPrepared)
         cursor.execute(sql_insert_query,insert_tuple)
         connection.commit()
@@ -147,7 +147,7 @@ def insert_result(method,methodResult,maxMatchRatio, detail):
         cursor = connection.cursor(cursor_class=MySQLCursorPrepared)
         sql_insert_query = """ INSERT INTO `Result`
                                (`BaseMethodId`, `SimMethodId`, `SimRatio`, `ResultDetail`) VALUES (%s,%s,%s,%s)"""
-        insert_tuple = (method['Id'], methodResult['Id'], str(maxMatchRatio), str(detail))
+        insert_tuple = (method['Id'], methodResult['Id'], str(maxMatchRatio), json.dumps(detail))
         cursor.execute(sql_insert_query,insert_tuple)
         connection.commit()
     except mysql.connector.Error as error :
@@ -162,7 +162,7 @@ def update_document(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        sql_update_query = 'UPDATE Documents SET Status=2 WHERE Id=%(id)s'
+        sql_update_query = 'UPDATE Submission SET Status=2 WHERE Id=%(id)s'
         param ={'id' : id}
         cursor.execute(sql_update_query,param)
         connection.commit()
@@ -176,7 +176,7 @@ def update_document_no_sim(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        sql_update_query = 'UPDATE Documents SET Status=3 WHERE Id=%(id)s AND Status = 1'
+        sql_update_query = 'UPDATE Submission SET Status=3 WHERE Id=%(id)s AND Status = 1'
         param ={'id' : id}
         cursor.execute(sql_update_query,param)
         connection.commit()
@@ -190,7 +190,7 @@ def count_method(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM Method M JOIN Documents D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
+        cursor.execute("SELECT COUNT(*) FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
         queryResult = cursor.fetchall()
         result = list(queryResult)[0][0]
         return result
@@ -206,7 +206,6 @@ def count_method(id):
 def callback(ch, method, properties, body):
     objectString = body.decode('ascii')
     objectData = json.loads(objectString)
-    print(objectData)
     value = objectData['id']
     webcheck = objectData['webCheck']
     peercheck = objectData['peerCheck']
@@ -252,7 +251,8 @@ def callback(ch, method, properties, body):
             for nearMethod in nearMethods:
                 treecompare = TreeCompare()
                 tree_1 = method['tree']
-                tree_2 = json.loads(nearMethod['tree'].replace("'",'"')) 
+                print(nearMethod)
+                tree_2 = json.loads(nearMethod['tree']) 
                 ratio, match = treecompare.compare(tree_1,tree_2)
                 if(maxMatchRatio < ratio):
                     maxMatchRatio = ratio
@@ -303,7 +303,8 @@ def callback(ch, method, properties, body):
             for nearMethod in nearMethods:
                 treecompare = TreeCompare()
                 tree_1 = method['tree']
-                tree_2 = json.loads(nearMethod['tree'].replace("'",'"')) 
+                print(nearMethod['Id'])
+                tree_2 = json.loads(nearMethod['tree']) 
                 ratio, match = treecompare.compare(tree_1,tree_2)
                 if(maxMatchRatio < ratio):
                     maxMatchRatio = ratio

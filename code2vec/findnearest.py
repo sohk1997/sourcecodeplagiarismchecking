@@ -1,6 +1,7 @@
 from scipy.spatial import distance
 import numpy as np
 import heapq
+import json
 
 def nearest(method, methods):
         MAX_SIMILIAR = 5    
@@ -10,13 +11,9 @@ def nearest(method, methods):
                 if(compareMethod['Vector'] == 'None'):
                         continue
                 index += 1
-                x = np.array(compareMethod['Vector'].replace('[[','').replace(']]','').replace('[','').replace(']','').split())
+                x = np.array(json.loads(compareMethod['Vector']))
                 y = x.astype(np.float)
 
-                # Anh Hoa 
-                # dist = distance.euclidean(method['Vector'], y)
-
-                # Anh Nhat
                 dist = distance.cosine(method['Vector'], y)
 
                 if(len(heaparr) < MAX_SIMILIAR):
