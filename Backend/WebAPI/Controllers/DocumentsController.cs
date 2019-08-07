@@ -81,11 +81,9 @@ namespace WebAPI.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> Post(CheckRequest request)
         {
-            System.Console.WriteLine("Start check");
             string idInString = this.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
             System.Console.WriteLine(idInString);
             var userId = int.Parse(idInString);
-            System.Console.WriteLine(userId);
             var file = request.File;
             if (!ModelState.IsValid)
             {

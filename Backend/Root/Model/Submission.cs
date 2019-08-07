@@ -7,7 +7,7 @@ using Root.CommonEnum;
 
 namespace Root.Model
 {
-    public class SourceCode
+    public class Submission
     {
         public Guid Id { get; set; }
         public int DocumentId { get; set; }

@@ -350,3 +350,5 @@ MigrationBackup/
 code2vec/models/java14m_trainable/dictionaries.bin
 code2vec/models/java14m_trainable/saved_model_iter8.data-00000-of-00001
 code2vec/models/java14m_trainable/saved_model_iter8.index
+Backend/WebClientCore/.vscode/launch.json
+Backend/WebClientCore/.vscode/tasks.json

@@ -54,7 +54,7 @@ namespace Service.Services
         {
             try
             {
-                SourceCode document = _mapper.Map<SourceCode>(file);
+                Submission document = _mapper.Map<Submission>(file);
                 document.DocumentName = file.FileName;
                 document.Status = Root.CommonEnum.SourceCodeStatus.PENDING;
                 document.Type = Root.CommonEnum.SourceCodeType.PEER;
@@ -117,7 +117,7 @@ namespace Service.Services
         public List<DocumentInList> DocumentProcedure(int Id, string Name)
         {
 
-            return Mapper.Map<List<SourceCode>, List<DocumentInList>>(_sourceCodeRepository.GetAllQueryable().ToList());
+            return Mapper.Map<List<Submission>, List<DocumentInList>>(_sourceCodeRepository.GetAllQueryable().ToList());
         }
 
         public List<DocumentInList> GetAll()
@@ -206,6 +206,7 @@ namespace Service.Services
                          select new { Result = r, Method = m, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }).ToList();
             var document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(r => r.DocumentId == id);
             List<DocumentResultDetail> details = new List<DocumentResultDetail>();
+            string url = "";
             foreach (var m in query)
             {
                 DocumentResultDetail item = new DocumentResultDetail
@@ -213,32 +214,38 @@ namespace Service.Services
                     MethodName = m.Method.MethodName,
                     BaseMethod = m.Method.MethodString,
                 };
-                if (m.Type == Root.CommonEnum.SourceCodeType.WEB)
+                if (m.Result != null)
                 {
-                    if (m.Result != null)
+                    if (m.Type == Root.CommonEnum.SourceCodeType.WEB)
                     {
-                        item.SimMethod = m.SimMethod.MethodString;
-                        item.Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail.Replace("'", "\""));
-                        item.SimRatio = m.Result.SimRatio;
+                        url = m.Url;
                         item.Url = m.Url;
+                        item.SimMethod = m.SimMethod.MethodString;
+                        item.Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail);
+                        item.SimRatio = m.Result.SimRatio;
+                        details.Add(item);
                     }
-                    else
-                    {
-                        item.SimMethod = null;
-                        item.Position = null;
-                        item.SimRatio = 0;
-                    }
+
+                }
+                else
+                {
+                    item.SimMethod = null;
+                    item.Position = null;
+                    item.SimRatio = 0;
                     details.Add(item);
                 }
             }
-            if (details.Count > 0)
+
+            details.ForEach(d => d.Url = url);
+
+            var result = new DocumentResult()
             {
-                var result = new DocumentResult()
-                {
-                    FileName = document.DocumentName,
-                    GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
-                    Details = details
-                };
+                FileName = document.DocumentName,
+                GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
+                Details = details
+            };
+            if (result.Details.Count > 0 && result.GeneralSimRatio > 0)
+            {
                 return result;
             }
             else
@@ -267,32 +274,36 @@ namespace Service.Services
                     MethodName = m.Method.MethodName,
                     BaseMethod = m.Method.MethodString,
                 };
-                if (m.Type == Root.CommonEnum.SourceCodeType.PEER)
+                if (m.Result != null)
                 {
-                    if (m.Result != null)
+                    if (m.Type == Root.CommonEnum.SourceCodeType.PEER)
                     {
+
                         item.SimMethod = m.SimMethod.MethodString;
-                        item.Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail.Replace("'", "\""));
+                        item.Position = JsonConvert.DeserializeObject<SimilarityPositions>(m.Result.ResultDetail);
                         item.SimRatio = m.Result.SimRatio;
+                        details.Add(item);
                     }
-                    else
-                    {
-                        item.SimMethod = null;
-                        item.Position = null;
-                        item.SimRatio = 0;
-                    }
+
+                }
+                else
+                {
+                    item.SimMethod = null;
+                    item.Position = null;
+                    item.SimRatio = 0;
                     details.Add(item);
+
                 }
             }
-            if (details.Count > 0)
+            var result = new DocumentResult()
             {
-                var result = new DocumentResult()
-                {
-                    FileName = document.DocumentName,
-                    GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
-                    Details = details
-                };
+                FileName = document.DocumentName,
+                GeneralSimRatio = details.Sum(d => d.SimRatio) / details.Count,
+                Details = details
+            };
 
+            if (result.Details.Count > 0 && result.GeneralSimRatio > 0)
+            {
                 return result;
             }
             else
