@@ -9,11 +9,11 @@ using System.Text;
 
 namespace Root.Data.Repository
 {
-    public interface ISourceCodeRepository : IRepository<SourceCode>
+    public interface ISourceCodeRepository : IRepository<Submission>
     {
     }
 
-    public class SourceCodeRepository : Repository<SourceCode>, ISourceCodeRepository
+    public class SourceCodeRepository : Repository<Submission>, ISourceCodeRepository
     {
         public SourceCodeRepository(IDatabaseFactory databaseFactory) : base(databaseFactory)
         {

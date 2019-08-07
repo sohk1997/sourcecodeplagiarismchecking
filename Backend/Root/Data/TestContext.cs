@@ -12,8 +12,8 @@ namespace Root.Data
     public class TestContext : DbContext
     {
         //public DbSet<TestModel> Test { get; set; }
-        public DbSet<SourceCode> Documents { get; set; }
-        public DbSet<Method> Methods { get; set; }
+        public DbSet<Submission> Documents { get; set; }
+        public DbSet<CodeDetail> Methods { get; set; }
         public DbSet<Result> Results { get; set; }
         public DbSet<User> User { get; set; }
         //public DbSet<Feature> Features { get; set; }
@@ -22,8 +22,9 @@ namespace Root.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Submission>().ToTable("Submission");
             builder.Entity<Result>().ToTable("Result");
-            builder.Entity<Method>().ToTable("Method");
+            builder.Entity<CodeDetail>().ToTable("CodeDetail");
             base.OnModelCreating(builder);
         }
 
