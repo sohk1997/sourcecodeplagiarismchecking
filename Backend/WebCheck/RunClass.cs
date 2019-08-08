@@ -36,7 +36,7 @@ namespace WebCheck
                     var source = GET(messageContent.Url);
                     var result = checker.Check(source);
                     Console.WriteLine("Done search");
-                    SourceCode sourceCode = new SourceCode{
+                    Submission sourceCode = new Submission{
                             Status = SourceCodeStatus.PENDING,
                             Type = SourceCodeType.WEB,
                             DocumentName = result.FileName,

@@ -19,7 +19,7 @@ public class MethodClass {
     public MethodClass(int startLine, int toLine, Node baseMethod) {
         this.startLine = startLine;
         this.endLine = toLine;
-        this.baseMethod = baseMethod.toString();
+        this.baseMethod = baseMethod.removeComment().toString();
         this.methodName = ((MethodDeclaration)baseMethod).getNameAsString();
     }
 

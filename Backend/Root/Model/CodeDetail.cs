@@ -1,9 +1,9 @@
 ﻿using System;
 namespace Root.Model
 {
-    public class Method
+    public class CodeDetail
     {
-        public Method()
+        public CodeDetail()
         {
         }
 

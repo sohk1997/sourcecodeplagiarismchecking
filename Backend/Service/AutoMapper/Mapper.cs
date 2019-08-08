@@ -16,7 +16,7 @@ namespace Service.AutoMapper
 
             //Document            
             //CreateMap<DocumentUpload, Document>();
-            CreateMap<IFormFile, SourceCode>();
+            CreateMap<IFormFile, Submission>();
         }
     }
 }

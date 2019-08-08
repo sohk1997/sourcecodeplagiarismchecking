@@ -3,13 +3,13 @@ using Root.Model;
 
 namespace Root.Data.Repository
 {
-    public class MethodRepository : Repository<Method>, IMethodRepository
+    public class MethodRepository : Repository<CodeDetail>, IMethodRepository
     {
         public MethodRepository(IDatabaseFactory databaseFactory) : base(databaseFactory)
         {
         }
     }
-    public interface IMethodRepository : IRepository<Method>
+    public interface IMethodRepository : IRepository<CodeDetail>
     {
     }
 }
