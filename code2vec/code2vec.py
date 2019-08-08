@@ -221,8 +221,10 @@ def callback(ch, method, properties, body):
     files = glob.glob('BaseInput/*')
     for f in files:
         os.remove(f)
-    documentid,url = get_file(value)
+    documentid,url = get_file(value)    
     exist = count_method(value)
+    #exits: check - If the method has a record already (with the SourceCodeID = DocumentId && Id of Document = GuilID of the uploaded file)
+    #The new file alway has NO ==> It mean exits == 0
     if(exist == 0):
         print(url)
         # fake user agent of Safari
@@ -232,7 +234,7 @@ def callback(ch, method, properties, body):
         wf = open('BaseInput/BaseInput.java','w+b')
         wf.write(f.read())
         wf.close()
-
+        
         listMethod = rawParser.parse()
         matchList = []
         sim = False

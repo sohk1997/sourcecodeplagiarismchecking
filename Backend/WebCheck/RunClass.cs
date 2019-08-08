@@ -36,27 +36,30 @@ namespace WebCheck
                     var source = GET(messageContent.Url);
                     var result = checker.Check(source);
                     Console.WriteLine("Done search");
-                    SourceCode sourceCode = new SourceCode{
-                            Status = SourceCodeStatus.PENDING,
-                            Type = SourceCodeType.WEB,
-                            DocumentName = result.FileName,
-                            FileUrl = result.Url,
-                            UploadDate = DateTime.Now
+                    SourceCode sourceCode = new SourceCode
+                    {
+                        Status = SourceCodeStatus.PENDING,
+                        Type = SourceCodeType.WEB,
+                        DocumentName = result.FileName,
+                        FileUrl = result.Url,
+                        UploadDate = DateTime.Now
                     };
                     using (var context = new MyContext())
                     {
                         var findResult = context.SourceCode.Where(s => s.FileUrl == result.Url).FirstOrDefault();
-                        if(findResult == null)
+                        if (findResult == null)
                         {
                             context.SourceCode.Add(sourceCode);
                             context.SaveChanges();
                         }
-                        else{
+                        else
+                        {
                             sourceCode = findResult;
                         }
                     }
                     Console.WriteLine("Done insert");
-                    var newMessage = JsonConvert.SerializeObject(new {
+                    var newMessage = JsonConvert.SerializeObject(new
+                    {
                         id = sourceCode.Id,
                         webCheck = false,
                         peerCheck = false,
@@ -71,6 +74,16 @@ namespace WebCheck
                 Console.ReadKey();
             }
         }
+
+        //public static void Main(string[] args)
+        //{
+        //    WebCheck checker = new Github();
+        //    //var source = GET("https://raw.githubusercontent.com/doquocnhatcntt/GiaiPhuongTrinhBac2/master/src/ptbac2/PTBAC2.java");
+        //    var source = GET("https://raw.githubusercontent.com/hoaiem22/cps/master/LaptopSuggestion/src/java/emvh/utils/Utils.java");
+        //    var result = checker.Check(source);
+        //    Console.WriteLine(result.Content);
+        //    Console.ReadKey();
+        //}
 
         private static string GET(string url)
         {
