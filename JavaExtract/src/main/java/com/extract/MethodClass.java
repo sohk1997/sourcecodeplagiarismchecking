@@ -3,6 +3,7 @@ package com.extract;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 
 public class MethodClass {
     @JsonProperty
@@ -19,7 +20,7 @@ public class MethodClass {
     public MethodClass(int startLine, int toLine, Node baseMethod) {
         this.startLine = startLine;
         this.endLine = toLine;
-        this.baseMethod = baseMethod.removeComment().toString();
+        this.baseMethod = baseMethod.toString();
         this.methodName = ((MethodDeclaration)baseMethod).getNameAsString();
     }
 
@@ -37,5 +38,9 @@ public class MethodClass {
 
     public void setProcessedContent(String processedContent) {
         this.processedContent = processedContent;
+    }
+
+    public void setBaseMethod(String baseMethod) {
+        this.baseMethod = baseMethod;
     }
 }

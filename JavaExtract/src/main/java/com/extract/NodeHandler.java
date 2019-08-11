@@ -3,9 +3,11 @@ package com.extract;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.SwitchEntry;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -111,6 +113,8 @@ public class NodeHandler {
         Class nodeClass = getNodeClass(node);
         if (nodeClass.equals(com.github.javaparser.ast.body.MethodDeclaration.class)) {
             isInMethod = true;
+            MethodDeclaration method = (MethodDeclaration)node;
+            method.setName("METHOD");
         }
         if (isInMethod) {
             if (nodeClass.equals(com.github.javaparser.ast.stmt.BlockStmt.class) ||

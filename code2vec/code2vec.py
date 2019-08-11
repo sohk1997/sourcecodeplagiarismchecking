@@ -303,7 +303,6 @@ def callback(ch, method, properties, body):
             for nearMethod in nearMethods:
                 treecompare = TreeCompare()
                 tree_1 = method['tree']
-                print(nearMethod['Id'])
                 tree_2 = json.loads(nearMethod['tree']) 
                 ratio, match = treecompare.compare(tree_1,tree_2)
                 if(maxMatchRatio < ratio):
