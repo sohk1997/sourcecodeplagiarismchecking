@@ -22,6 +22,7 @@ import java.util.Map;
 public class TestAST {
 
     public static void main(String[] args) {
+        System.out.println("Start Project");
         try {
             List<MethodClass> listMethods = new ArrayList<>();
             File folder = new File("BaseInput");
@@ -39,6 +40,9 @@ public class TestAST {
                         while ((line = isr.readLine()) != null) {
                             code.append(line);
                             code.append("\n");
+
+                            //Nhat comment
+                            System.out.println(line);
                         }
                         CompilationUnit compilationUnit = StaticJavaParser.parse(code.toString());
                         NodeHandler handler = new NodeHandler();
@@ -71,6 +75,8 @@ public class TestAST {
             ex.printStackTrace();
         }
 //        handler.print();
+
+        System.out.println("End project");
     }
 
     static String serialize(Node node, boolean prettyPrint) {
@@ -117,6 +123,6 @@ public class TestAST {
             travel(childNode);
         }
 
-//        System.out.println("node value " + node.getBegin() + " end " + node.getEnd());
+//        System.out.println("node value " + nodgin() + " end " + node.getEnd());
     }
 }

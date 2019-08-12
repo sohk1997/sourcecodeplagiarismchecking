@@ -10,11 +10,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonIgnoreProperties(value = { "baseNode" })
+@JsonIgnoreProperties(value = {"baseNode"})
 public class NodeSerialize implements Serializable {
+
     private String type;
+
     private int startLine;
+
     private int endLine;
+
     private String contextValue;
 
     private Node baseNode;
@@ -24,17 +28,16 @@ public class NodeSerialize implements Serializable {
 
     public NodeSerialize(Node baseNode) {
         this.baseNode = baseNode;
-
         this.contextValue = "";
         this.type = baseNode.getMetaModel().getTypeName();
-        if(com.github.javaparser.ast.expr.LiteralStringValueExpr.class.isAssignableFrom(baseNode.getClass()))
-        {
-            LiteralStringValueExpr literalStringValueExpr = (LiteralStringValueExpr)baseNode;
+
+        if (com.github.javaparser.ast.expr.LiteralStringValueExpr.class.isAssignableFrom(baseNode.getClass())) {
+            LiteralStringValueExpr literalStringValueExpr = (LiteralStringValueExpr) baseNode;
             this.type += literalStringValueExpr.getValue();
         }
-        if(com.github.javaparser.ast.expr.BinaryExpr.class.equals(baseNode.getClass()))
-        {
-            BinaryExpr binaryExpr = (BinaryExpr)baseNode;
+
+        if (com.github.javaparser.ast.expr.BinaryExpr.class.equals(baseNode.getClass())) {
+            BinaryExpr binaryExpr = (BinaryExpr) baseNode;
             this.type += binaryExpr.getOperator().asString();
         }
 
@@ -81,7 +84,7 @@ public class NodeSerialize implements Serializable {
         return childNodes.get(index);
     }
 
-    public int countChild(){
+    public int countChild() {
         return childNodes.size();
     }
 

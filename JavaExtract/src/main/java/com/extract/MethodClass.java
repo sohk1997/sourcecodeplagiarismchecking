@@ -5,14 +5,20 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class MethodClass {
+
     @JsonProperty
     private int startLine;
+
     @JsonProperty
     private int endLine;
+
     private NodeSerialize tree;
+
     private String processedContent;
+
     @JsonProperty
     private String baseMethod;
+
     @JsonProperty
     private String methodName;
 
@@ -20,7 +26,7 @@ public class MethodClass {
         this.startLine = startLine;
         this.endLine = toLine;
         this.baseMethod = baseMethod.toString();
-        this.methodName = ((MethodDeclaration)baseMethod).getNameAsString();
+        this.methodName = ((MethodDeclaration) baseMethod).getNameAsString();
     }
 
     public NodeSerialize getTree() {
