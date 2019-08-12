@@ -28,21 +28,32 @@ public class TestAST {
             File[] listOfFile = folder.listFiles();
             String traceFilename = "";
             for (File file : listOfFile) {
-                if (!file.getName().contains(".java")) {
+                if (!file.getName().endsWith(".java")) {
                     continue;
                 }
                 try {
+                    List<String> lineList = new ArrayList<>();
                     traceFilename = file.getName();
                     try (BufferedReader isr = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
                         StringBuilder code = new StringBuilder();
                         String line = null;
                         while ((line = isr.readLine()) != null) {
                             code.append(line);
+                            lineList.add(line);
                             code.append("\n");
                         }
                         CompilationUnit compilationUnit = StaticJavaParser.parse(code.toString());
                         NodeHandler handler = new NodeHandler();
                         handler.importNode(compilationUnit);
+                        for (MethodClass method : handler.getMethodList()) {
+                            StringBuilder methodString = new StringBuilder();
+                            for(int i = method.getTree().getStartLine() - 1; i < method.getTree().getEndLine() ; i++)
+                            {
+                                methodString.append(lineList.get(i));
+                                methodString.append("\n");
+                            }
+                            method.setBaseMethod(methodString.toString());
+                        }
                         listMethods.addAll(handler.getMethodList());
                     }
                 } catch (Exception ex) {
@@ -70,7 +81,6 @@ public class TestAST {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-//        handler.print();
     }
 
     static String serialize(Node node, boolean prettyPrint) {
