@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.452
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Root", "Root\Root.csproj", "{20608D99-34C2-4108-8BFE-A501F956FF00}"
 EndProject
@@ -17,11 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient", "WebClient\WebClient.csproj", "{E6B6B542-B344-49B1-9D3D-F1C8DC44189B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCheck", "WebCheck\WebCheck.csproj", "{A2ABA4C0-F8BF-4D0A-91FA-26A11A11906B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebCheck", "WebCheck\WebCheck.csproj", "{A2ABA4C0-F8BF-4D0A-91FA-26A11A11906B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClientCore", "WebClientCore\WebClientCore.csproj", "{FF69BDF4-9036-4963-A774-5C8E2B9302C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebClientCore", "WebClientCore\WebClientCore.csproj", "{FF69BDF4-9036-4963-A774-5C8E2B9302C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewProject", "NewProject\NewProject.csproj", "{8C72AE46-311F-4977-93D2-53EFB8B85F72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAdmin", "WebAdmin\WebAdmin.csproj", "{6EB7F9F4-8E64-49A9-9C27-532D0F3FB63F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{8C72AE46-311F-4977-93D2-53EFB8B85F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C72AE46-311F-4977-93D2-53EFB8B85F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C72AE46-311F-4977-93D2-53EFB8B85F72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EB7F9F4-8E64-49A9-9C27-532D0F3FB63F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EB7F9F4-8E64-49A9-9C27-532D0F3FB63F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EB7F9F4-8E64-49A9-9C27-532D0F3FB63F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EB7F9F4-8E64-49A9-9C27-532D0F3FB63F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{A2ABA4C0-F8BF-4D0A-91FA-26A11A11906B} = {777C207A-DC7F-45F0-A991-931BED9F009C}
 		{FF69BDF4-9036-4963-A774-5C8E2B9302C0} = {777C207A-DC7F-45F0-A991-931BED9F009C}
 		{8C72AE46-311F-4977-93D2-53EFB8B85F72} = {777C207A-DC7F-45F0-A991-931BED9F009C}
+		{6EB7F9F4-8E64-49A9-9C27-532D0F3FB63F} = {777C207A-DC7F-45F0-A991-931BED9F009C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B465245-5DC7-4E74-B473-1AAA3121ECC8}
