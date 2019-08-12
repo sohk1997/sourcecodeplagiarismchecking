@@ -197,13 +197,16 @@ namespace Service.Services
         public DocumentResult GetWebResult(int id)
         {
             var query = (from m in _methodRepository.GetAllQueryable().Where(m => m.SourceCodeId == id)
-                         join r in _resultRepository.GetAllQueryable() on m.Id equals r.BaseMethodId into rm
-                         from r in rm.DefaultIfEmpty()
+                         join rr in
+                         (from r in _resultRepository.GetAllQueryable()
                          join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
-                         from sm in rmm.DefaultIfEmpty()
+                         from sm in rmm
                          join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.WEB) on sm.SourceCodeId equals so.DocumentId into som
-                         from so in som.DefaultIfEmpty()
-                         select new { Result = r, Method = m, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }).ToList();
+                         from so in som
+                         select new { Result = r, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }
+                         ) on m.Id equals rr.Result.BaseMethodId into mrr
+                         from rr in mrr.DefaultIfEmpty()
+                         select new { Result = rr.Result, Method = m, SimMethod = rr.SimMethod, Type = rr == null ? 0 : rr.Type, Url = rr == null ? "" : rr.Url }).OrderBy(r => r.Method.Id).ToList();
             var document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(r => r.DocumentId == id);
             List<DocumentResultDetail> details = new List<DocumentResultDetail>();
             string url = "";
@@ -256,13 +259,16 @@ namespace Service.Services
         public DocumentResult GetPeerResult(int id)
         {
             var query = (from m in _methodRepository.GetAllQueryable().Where(m => m.SourceCodeId == id)
-                         join r in _resultRepository.GetAllQueryable() on m.Id equals r.BaseMethodId into rm
-                         from r in rm.DefaultIfEmpty()
-                         join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
-                         from sm in rmm.DefaultIfEmpty()
-                         join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.PEER) on sm.SourceCodeId equals so.DocumentId into som
-                         from so in som.DefaultIfEmpty()
-                         select new { Result = r, Method = m, SimMethod = sm, Type = so == null ? 0 : so.Type }).ToList();
+                         join rr in
+                         (from r in _resultRepository.GetAllQueryable()
+                          join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
+                          from sm in rmm
+                          join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.PEER) on sm.SourceCodeId equals so.DocumentId into som
+                          from so in som
+                          select new { Result = r, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }
+                         ) on m.Id equals rr.Result.BaseMethodId into mrr
+                         from rr in mrr.DefaultIfEmpty()
+                         select new { Result = rr.Result, Method = m, SimMethod = rr.SimMethod, Type = rr == null ? 0 : rr.Type, Url = rr == null ? "" : rr.Url }).OrderBy(r => r.Method.Id).ToList();
             var document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(r => r.DocumentId == id);
             List<DocumentResultDetail> details = new List<DocumentResultDetail>();
 

@@ -19,6 +19,8 @@ namespace Service.Services
     {
         int Create(LoginViewModel cus);
         User GetUser(LoginViewModel model);
+        void ChangeUserStatus(int id);
+        List<User> GetAll();
     }
 
     public class UserService : IUserService
@@ -54,10 +56,33 @@ namespace Service.Services
         public User GetUser(LoginViewModel model)
         {
             var user = _userRepository.GetAllQueryable()
-                                    .Where(u => u.UserName == model.Username && u.PasswordHash == GetHashString(model.Password))
+                                    .Where(u => u.UserName == model.Username && u.PasswordHash == GetHashString(model.Password) && u.IsActive == "true")
                                     .FirstOrDefault();
             return user;
         }
+
+        public void ChangeUserStatus(int id)
+        {
+            var user = _userRepository.GetAllQueryable()
+                                   .Where(u => u.Id == id)
+                                   .FirstOrDefault();
+            if (user.IsActive == "true")
+            {
+                user.IsActive = "false";
+            }
+            else
+            {
+                user.IsActive = "true";
+            }
+            _userRepository.Update(user);
+            Commit();
+        }
+
+        public List<User> GetAll()
+        {
+            return _userRepository.GetAllQueryable().Select(u => new User { Id = u.Id, IsActive = u.IsActive, RoleId = u.RoleId, UserName = u.UserName }).ToList();
+        }
+
         private byte[] GetHash(string inputString)
         {
             HashAlgorithm algorithm = SHA256.Create();
