@@ -43,7 +43,7 @@ namespace WebCheck
                 {
                     var searchContent = block.Content.Substring(0, Math.Min(block.Content.Length, 100));
 
-                    string jsonData = GET1(searchContent);
+                    string jsonData = SearchCode(searchContent);
                     if (jsonData.Length > 0)
                     {
                         var gitCode = JsonConvert.DeserializeObject<RootObject>(jsonData);
@@ -68,10 +68,12 @@ namespace WebCheck
             {
                 return null;
             }
+            //The first Item in Result List is the most similarity case
             results = results.OrderBy(r => -r.appearance).ThenBy(r => r.score).ToList();
             var matchResult = results[0];
+            //Parse url code on github to raw file
             var raw = matchResult.html_url.Replace("https://github", "https://raw.githubusercontent").ReplaceFirst("/blob/", "/");
-            var fCode = GET(raw);
+            var fCode = GetCode(raw);
             return new Result
             {
                 Content = fCode,
@@ -80,63 +82,8 @@ namespace WebCheck
             };
         }
 
-        // Function to find index of closing  
-        // bracket for given opening bracket.  
-        private int GetBracketsIndex(String expression, int index)
-        {
-            int i;
-
-            // If index given is invalid and is  
-            // not an opening bracket.  
-            if (expression[index] != '{')
-            {
-                //Console.Write(expression + ", "
-                //        + index + ": -1\n");
-                return -1;
-            }
-
-            Stack st = new Stack();
-
-            for (i = index; i < expression.Length; i++)
-            {
-                if (expression[i] == '{')
-                {
-                    st.Push((int)expression[i]);
-                }
-                else if (expression[i] == '}')
-                {
-                    st.Pop();
-                    if (st.Count == 0)
-                    {
-                        return i;
-                    }
-                }
-            }
-
-            return -1;
-        }
-
-
-
-        private int GetNthIndex(string s, char t, int n)
-        {
-            int count = 0;
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (s[i] == t)
-                {
-                    count++;
-                    if (count == n)
-                    {
-                        return i;
-                    }
-                }
-            }
-            return -1;
-        }
-
         // Returns JSON string
-        private string GET(string url)
+        private string GetCode(string url)
         {
             string json = "";
             using (WebClient wc = new WebClient())
@@ -147,6 +94,7 @@ namespace WebCheck
             return json;
         }
 
+        //Parse String to list of block code
         private List<Block> GetBlocks(String expression)
         {
             List<Block> blocks = new List<Block>();
@@ -182,17 +130,13 @@ namespace WebCheck
             return blocks;
         }
 
-        private string GET1(string url)
+        private string SearchCode(string url)
         {
             string language = "java";
-                 
             HttpWebRequest request =
                 WebRequest.Create("https://api.github.com/search/code?access_token=20fa761fc1204cc6871cb7447db3a28ae40a94e5&q=" + url + " in:file+language:" + language) as HttpWebRequest;
             request.Method = "GET";
-
-
             request.Accept = "application/vnd.github.v3.raw+json";
-
             request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36";
             try
             {
@@ -219,7 +163,7 @@ namespace WebCheck
                     Console.WriteLine($"Wait: {retry}");
 
                     Thread.Sleep(retry * 1000);
-                    return GET1(url);
+                    return SearchCode(url);
                 }
                 else
                 {

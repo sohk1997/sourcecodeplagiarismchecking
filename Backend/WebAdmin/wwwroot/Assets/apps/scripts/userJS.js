@@ -37,12 +37,6 @@
 
         "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
-        "columnDefs": [{
-            "targets": 0,
-            "orderable": false,
-            "searchable": false
-        }],
-
         "lengthMenu": [
             [10, 20, 30, -1],
             [10, 20, 30, "All"] // change per page values here
@@ -50,16 +44,6 @@
         // set the initial value
         "pageLength": 10,
         "pagingType": "bootstrap_full_number",
-        "columnDefs": [{  // set default column settings
-            'orderable': false,
-            'targets': [0]
-        }, {
-            "searchable": false,
-            "targets": [0]
-        }],
-        "order": [
-            [1, "asc"]
-        ] // set first column as a default sort by asc
     });
 
     var tableWrapper = jQuery('#user_datatable_1_wrapper');
