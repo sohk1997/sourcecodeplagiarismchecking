@@ -46,6 +46,7 @@ namespace WebClientCore.Models.DAOs
                     var baseLines = new List<String>(data.BaseMethod.Split("\n"));
                     var simLines = new List<String>(data.SimMethod.Split("\n"));
 
+                    //Compare 2 method lenght
                     while (baseLines.Count < simLines.Count) { baseLines.Add(""); }
                     while (simLines.Count < baseLines.Count) { simLines.Add(""); }
 

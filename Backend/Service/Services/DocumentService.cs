@@ -49,7 +49,7 @@ namespace Service.Services
             _resultRepository = resultRepository;
             _methodRepository = methodRepository;
         }
-
+        //upload file to azure
         public async Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck, int userId)
         {
             try
@@ -119,7 +119,7 @@ namespace Service.Services
 
             return Mapper.Map<List<Submission>, List<DocumentInList>>(_sourceCodeRepository.GetAllQueryable().ToList());
         }
-
+        //get all submission
         public List<DocumentInList> GetAll()
         {
             var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB)
@@ -141,7 +141,7 @@ namespace Service.Services
             });
             return list.ToList();
         }
-
+        //get all submission by user
         public List<DocumentInList> GetAll(int userId)
         {
             var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB && d.UserId == userId)
