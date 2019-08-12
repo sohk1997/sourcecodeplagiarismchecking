@@ -1,11 +1,7 @@
-/**
- * Writes the specified message to a servlet log file.
- * @param msg message
- */
-public void log(String VARIABLE_3) {
-    if (VARIABLE_2 != null) {
-        VARIABLE_2.getServletContext().log(VARIABLE_3);
-    } else {
-        VARIABLE_1.out.print(VARIABLE_3);
-    }
+// A basic print method which prints all the contents of the array
+public static void printAmount(int[] VARIABLE_3) {
+    for (int VARIABLE_2 = 0; VARIABLE_2 < VARIABLE_3.length; VARIABLE_2++) {
+        VARIABLE_1.out.print(VARIABLE_3[VARIABLE_2] + " ");
+    }
+    VARIABLE_1.out.println();
 }
