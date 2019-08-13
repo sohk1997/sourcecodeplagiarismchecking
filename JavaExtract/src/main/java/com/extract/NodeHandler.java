@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.SwitchEntry;
@@ -53,6 +54,10 @@ public class NodeHandler {
 
     public void importNode(Node node) {
         node = node.removeComment();
+        //Remove comment
+//        for (Comment child : node.getAllContainedComments()) {
+//            child.remove();
+//        }
         processedTree = buildNodeSerialize(node);
         travel(node);
 

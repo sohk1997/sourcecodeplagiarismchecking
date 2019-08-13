@@ -43,6 +43,7 @@ public class TestLogXF extends TestCase {
      * Post test clean up.
      */
     public void tearDown() {
+    	//Comment
         LogManager.resetConfiguration();
     }
 

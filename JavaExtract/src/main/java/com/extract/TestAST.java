@@ -2,6 +2,7 @@ package com.extract;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
@@ -25,12 +26,17 @@ public class TestAST {
         try {
             List<MethodClass> listMethods = new ArrayList<>();
             File folder = new File("BaseInput");
+            
+            //get list file in baseinput folder
             File[] listOfFile = folder.listFiles();
+            
             String traceFilename = "";
             for (File file : listOfFile) {
+            	//Only check with java file
                 if (!file.getName().endsWith(".java")) {
                     continue;
                 }
+                
                 try {
                     List<String> lineList = new ArrayList<>();
                     traceFilename = file.getName();
@@ -49,6 +55,7 @@ public class TestAST {
                             StringBuilder methodString = new StringBuilder();
                             for(int i = method.getTree().getStartLine() - 1; i < method.getTree().getEndLine() ; i++)
                             {
+                            	//get line code at i index in <lineList>
                                 methodString.append(lineList.get(i));
                                 methodString.append("\n");
                             }

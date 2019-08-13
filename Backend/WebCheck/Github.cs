@@ -112,6 +112,7 @@ namespace WebCheck
                     Block block = st.Pop();
                     block.CloseBracket = i;
                     int preBracket = 0;
+                    //get from after pre bracket to close bracket because of cutting include function name and modifier
                     for (int j = block.OpenBracket - 1; j > 0; j--)
                     {
                         if (expression[j] == '{' || expression[j] == '}')
