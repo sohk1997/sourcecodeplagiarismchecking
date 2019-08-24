@@ -1,65 +1,82 @@
-﻿
-    var table = $('#submissionDatatable');
+﻿var table = $('#submissionDatatable');
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    console.log("cookie " + value);
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+};
+// begin first table
+table.dataTable({
 
-    // begin first table
-    table.dataTable({
+    // Internationalisation. For more info refer to http://datatables.net/manual/i18n
+    serverSide: true,
+    "searching": false,
+    "ordering": false,
+    lengthChange: false,
+    ajax: {
+        url: API_URL + '/api/document',
+        headers: {
+            "Authorization": decodeURIComponent(getCookie("token"))
+        },
+        method: 'GET',
 
-        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
-        "language": {
-            "aria": {
-                "sortAscending": ": activate to sort column ascending",
-                "sortDescending": ": activate to sort column descending"
-            },
-            "emptyTable": "No data available in table",
-            "info": "Showing _START_ to _END_ of _TOTAL_ records",
-            "infoEmpty": "No records found",
-            "infoFiltered": "(filtered1 from _MAX_ total records)",
-            "lengthMenu": "Show _MENU_",
-            "search": "Search:",
-            "zeroRecords": "No matching records found",
-            "paginate": {
-                "previous": "Prev",
-                "next": "Next",
-                "last": "Last",
-                "first": "First"
+        data: function (d) {
+            delete d.order;
+            delete d.columns;
+            delete d.search;
+        },
+        dataFilter: function (data) {
+            data = JSON.parse(data);
+            data.data.forEach(function (d) {
+                if (d.status == '1') {
+                    d.status = "PROCESSING";
+                }
+                if (d.status == '2') {
+                    d.status = "SIMILAR";
+                }
+                if (d.status == '3') {
+                    d.status = "NO SIMILAR";
+                }
+                return d;
+            })
+
+            return JSON.stringify(data); // return JSON string
+        }
+    },
+    "columns": [
+        {
+            "data": "name",
+            render: function (data, type, row, meta) {
+                return meta.row + meta.settings._iDisplayStart + 1;
             }
         },
+        {
+            "data": "name",
+            render: function (data, type, full, meta) {
+                if (full.status == 'SIMILAR') {
+                    return '<a href="/compare/' + full.id + '">' + data + '</a>';
+                }
+                return data;
+            }
+        },
+        { "data": "uploadDate" },
+        {
+            "data": "status",
+            "render": function (data, type, full, meta) {
+                if (full.status == 'PROCESSING') {
+                    return '<span class="badge badge-warning"> PROCESSING </span>';
+                }
+                if (full.status == 'SIMILAR') {
 
-        // Or you can use remote translation file
-        //"language": {
-        //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
-        //},
-
-        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
-        // So when dropdowns used the scrollable div should be removed. 
-        //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
-
-        "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-        "columnDefs": [{
-            "targets": 0,
-            "orderable": false,
-            "searchable": false
-        }],
-
-        "lengthMenu": [
-            [10, 20, 30, -1],
-            [10, 20, 30, "All"] // change per page values here
-        ],
-        // set the initial value
-        "pageLength": 10,
-        "pagingType": "bootstrap_full_number",
-        "columnDefs": [{  // set default column settings
-            'orderable': true,
-            'targets': [0]
-        }, {
-            "searchable": false,
-            "targets": [0]
-        }],
-        "order": [
-        ] // set first column as a default sort by asc
-    });
+                    return '<span class="badge badge-success"> SIMILAR </span>';
+                }
+                if (full.status == 'NO SIMILAR') {
+                    return ' <span class="badge badge-primary"> NO SIMILAR </span>';
+                }
+            },
+        },
+    ]
+});
 
 //var tableWrapper = jQuery('#submission_datatable_1_wrapper');
 //

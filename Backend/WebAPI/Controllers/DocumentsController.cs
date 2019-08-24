@@ -37,12 +37,14 @@ namespace WebAPI.Controllers
         [ProducesResponseType(typeof(IEnumerable<DocumentInList>), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [Authorize]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery]int start = 0, [FromQuery]int length = 10, string _ = "", int draw = 1)
         {
             string idInString = this.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
 
             var id = int.Parse(idInString);
-            return Ok(_documentService.GetAll(id));
+            var result = _documentService.GetAll(id, start, length);
+            result.Draw = draw + 1;
+            return Ok(result);
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿@using WebClientCore.Infrastructures
 @using WebClient.Models
 @model List<DocumentInList>
+@using WebClientCore.Models.DAOs
 <div style="height:91px; background-color:#22195b"></div>
 
 
@@ -53,44 +54,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @{int index = 1;}
-                        @foreach (var item in (ViewBag.Submissions as List<DocumentInList>))
-                       {
-                    <tr class="odd gradeX" style="">
-                        <td>
-                            @index
-                        </td>
-                        <td> 
-                            @if(item.Status == 2)
-                            {
-                                <a href="compare/@item.Id"> @item.Name </a>
-                            }
-                            @if(item.Status != 2)
-                            {
-                                @item.Name
-                            }
-                            </td>
-                        <td>
-                            @item.UploadDate
-                        </td>
-                        <td id="stt">
-                            @if(item.Status == 1)
-                            {
-                                <span class="badge badge-warning"> PROCESSING </span>
-                            }
-                            @if(item.Status == 2)
-                            {
-                                <span class="badge badge-success"> SIMILAR </span>
-                            }
-                            @if(item.Status == 3)
-                            {
-                                <span class="badge badge-primary"> NO SIMILAR </span>
-                            }
-                        </td>
-                        
-                    </tr>
-                    index++;
-                    }
+                       
 
                     </tbody>
                 </table>
@@ -101,7 +65,11 @@
 </div>
 
 @section Scripts{
+    <script type"text/javascript">
+        var API_URL = '@RequestHelper.API_URL';
+    </script>
     <script src="@Url.Assets("apps/scripts/submissionJS.js")" type="text/javascript"></script>   
+    
 }
 
 
