@@ -242,7 +242,6 @@ def callback(ch, method, properties, body):
         current_methods = get_method_peer(value)
         #Peer check
         for method in listMethod:
-            # print(method)
             if('Vector' not in method):
                 continue    
             nearMethods = findnearest.nearest(method, current_methods)
@@ -251,7 +250,6 @@ def callback(ch, method, properties, body):
             for nearMethod in nearMethods:
                 treecompare = TreeCompare()
                 tree_1 = method['tree']
-                print(nearMethod)
                 tree_2 = json.loads(nearMethod['tree']) 
                 ratio, match = treecompare.compare(tree_1,tree_2)
                 if(maxMatchRatio < ratio):

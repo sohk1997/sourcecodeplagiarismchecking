@@ -24,8 +24,8 @@ namespace Service.Services
         DocumentInfo Get(int Id);
         ResponseResult GetResult(int id);
         Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck, int userId);
-        List<DocumentInList> GetAll();
-        List<DocumentInList> GetAll(int userId);
+        ReturnDocumentViewModel GetAll();
+        ReturnDocumentViewModel GetAll(int userId, int start, int length);
     }
     public class DocumentService : IDocumentService
     {
@@ -120,9 +120,9 @@ namespace Service.Services
             return Mapper.Map<List<Submission>, List<DocumentInList>>(_sourceCodeRepository.GetAllQueryable().ToList());
         }
 
-        public List<DocumentInList> GetAll()
+        public ReturnDocumentViewModel GetAll()
         {
-            var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB)
+            var query = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB)
             .OrderByDescending(d => d.UploadDate)
             .Select(d => new
             {
@@ -130,8 +130,8 @@ namespace Service.Services
                 Name = d.DocumentName,
                 Status = (int)d.Status,
                 UploadDate = d.UploadDate
-            })
-            .ToList()
+            });
+            var list = query.ToList()
             .Select(d => new DocumentInList
             {
                 Id = d.Id,
@@ -139,12 +139,18 @@ namespace Service.Services
                 Status = (int)d.Status,
                 UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:MM")
             });
-            return list.ToList();
+            return new ReturnDocumentViewModel()
+            {
+                Data = list.ToList(),
+                Draw = 1,
+                RecordsFiltered = query.Count(),
+                RecordsTotal = query.Count()
+            };
         }
 
-        public List<DocumentInList> GetAll(int userId)
+        public ReturnDocumentViewModel GetAll(int userId, int start, int length)
         {
-            var list = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB && d.UserId == userId)
+            var query = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB && d.UserId == userId)
             .OrderByDescending(d => d.UploadDate)
             .Select(d => new
             {
@@ -152,8 +158,8 @@ namespace Service.Services
                 Name = d.DocumentName,
                 Status = (int)d.Status,
                 UploadDate = d.UploadDate
-            })
-            .ToList()
+            });
+            var list = query.Skip(start).Take(length).ToList()
             .Select(d => new DocumentInList
             {
                 Id = d.Id,
@@ -161,7 +167,13 @@ namespace Service.Services
                 Status = (int)d.Status,
                 UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:MM")
             });
-            return list.ToList();
+            return new ReturnDocumentViewModel()
+            {
+                Data = list.ToList(),
+                Draw = 1,
+                RecordsFiltered = query.Count(),
+                RecordsTotal = query.Count()
+            };
         }
 
         public DocumentInfo Get(int Id)
