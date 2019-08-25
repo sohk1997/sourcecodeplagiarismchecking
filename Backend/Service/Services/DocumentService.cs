@@ -15,6 +15,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using ViewModel.Document;
+using Microsoft.Extensions.Configuration;
 
 namespace Service.Services
 {
@@ -26,10 +27,11 @@ namespace Service.Services
         Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck, int userId);
         ReturnDocumentViewModel GetAll();
         ReturnDocumentViewModel GetAll(int userId, int start, int length);
+        string Test();
     }
     public class DocumentService : IDocumentService
     {
-        //private string baseUriOfBlob = "https://sourceproject.blob.core.windows.net/";        
+        public IConfiguration _configuration;
         private ISourceCodeRepository _sourceCodeRepository;
         private readonly IResultRepository _resultRepository;
         private readonly IMethodRepository _methodRepository;
@@ -40,7 +42,8 @@ namespace Service.Services
         public DocumentService(ISourceCodeRepository documentRepository, IUnitOfWork unitOfWork, IMapper mapper,
             IResultRepository resultRepository,
             IMethodRepository methodRepository,
-            IStoreProcedureRepository storeProcedure)
+            IStoreProcedureRepository storeProcedure,
+            IConfiguration configuration)
         {
             _sourceCodeRepository = documentRepository;
             _unitOfWork = unitOfWork;
@@ -48,6 +51,7 @@ namespace Service.Services
             _storeProcedure = storeProcedure;
             _resultRepository = resultRepository;
             _methodRepository = methodRepository;
+            _configuration = configuration;
         }
 
         public async Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck, int userId)
@@ -74,8 +78,10 @@ namespace Service.Services
                     document.CheckType = CheckType.PEER_CHECK;
                 }
                 //----Upload - To - Azure - Blob----
+                var azureAccount = _configuration.GetValue<string>("AzureAccount");
+                var keyValue = _configuration.GetValue<string>("AzureKey");
                 CloudStorageAccount storageAccount = new CloudStorageAccount(new StorageCredentials
-                    ("sourceproject", "+03nTRvnSMevowugQfMm5BU7mGCTrs3VDa9SkzNP+qVl7aaVHO6imOnqKMLPwK2fQrsfg3f5CWlUihgvzSu3lA=="), true);
+                    (azureAccount, keyValue), true);
                 // Create a blob client.
                 CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
                 // Get a reference to a container named "project."
@@ -104,7 +110,8 @@ namespace Service.Services
                     webCheck = webcheck,
                     peerCheck = peercheck
                 };
-                RabbitMQHelper.SendMessage(JsonConvert.SerializeObject(jsonObject));
+
+                RabbitMQHelper.SendMessage(JsonConvert.SerializeObject(jsonObject), _configuration.GetValue<string>("RabbitMQUrl"));
                 return document.DocumentId;
             }
             catch (Exception ex)
@@ -328,6 +335,12 @@ namespace Service.Services
             {
                 return null;
             }
+        }
+
+        public string Test()
+        {
+            var keyValue = _configuration.GetValue<string>("AzureKey");
+            return keyValue;
         }
     }
 }

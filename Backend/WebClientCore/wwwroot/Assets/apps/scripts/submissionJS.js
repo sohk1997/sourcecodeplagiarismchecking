@@ -14,7 +14,7 @@ table.dataTable({
     "ordering": false,
     lengthChange: false,
     ajax: {
-        url: API_URL + '/api/document',
+        url: API_URL + '/api/submission',
         headers: {
             "Authorization": decodeURIComponent(getCookie("token"))
         },

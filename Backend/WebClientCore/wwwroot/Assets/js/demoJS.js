@@ -8,12 +8,6 @@ var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
     readoreadOnly: true
 });
 
-document.addEventListener('DOMContentLoaded', function (event) {
-    document.getElementById('file')
-        .addEventListener('change', getFile);
-
-});
-
 function getFile(event) {
     const input = event.target;
     if ('files' in input && input.files.length > 0) {

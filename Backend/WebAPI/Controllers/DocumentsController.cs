@@ -18,7 +18,7 @@ using WebAPI.ViewModel;
 namespace WebAPI.Controllers
 {
     //[Authorize]
-    [Route("api/document")]
+    [Route("api/submission")]
     public class DocumentsController : Controller
     {
         private IDocumentService _documentService;
@@ -29,12 +29,11 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Get list of Document
+        /// Get list of Submission
         /// </summary>
         /// <returns></returns>
-        // GET: api/<controller>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<DocumentInList>), 200)]
+        [ProducesResponseType(typeof(ReturnDocumentViewModel), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [Authorize]
         public IActionResult Get([FromQuery]int start = 0, [FromQuery]int length = 10, string _ = "", int draw = 1)
@@ -48,14 +47,13 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Get document have id
+        /// Get check result of a submission
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        // GET api/<controller>/5
         [HttpGet("{id}/result")]
         //[Authorize(Roles = ("DOCUMENT_V"))]
-        [ProducesResponseType(typeof(DocumentInfo), 200)]
+        [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public IActionResult Get(int id)
@@ -72,14 +70,15 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Upload new document
+        /// Upload new submission
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        [ProducesResponseType(typeof(IFormFile), 201)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(400, Type = typeof(ModelStateDictionary))]
+        [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> Post(CheckRequest request)
         {
@@ -96,11 +95,12 @@ namespace WebAPI.Controllers
                 NotFound();
             }
             else
-            {                
+            {
                 int id = await _documentService.UploadToCloud(file, request.WebCheck, request.PeerCheck, userId);
                 return Ok();
             }
             return NotFound();
-        }        
+        }
+
     }
 }

@@ -70,7 +70,7 @@
                         </div>
                     </div>
                     <div class="portlet-body form">
-                        <div >
+                        <div>
                             <textarea id="editor1">@((ViewBag.SourceCode as ResultDetail).MergeDetail.BaseMethod)</textarea>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                                 <span class="caption-subject bold uppercase"> Similar Code Fragments From Our Database</span>
                             </div>
                         </div>
-                        <div class="portlet-body form" >
+                        <div class="portlet-body form">
                             <textarea id="editor2">@((ViewBag.SourceCode as ResultDetail).MergeDetail.SimMethod)</textarea>
                         </div>
                     </div>
@@ -183,7 +183,10 @@
     }
 </div>
 @section Scripts{
-    
+    <script type="text/javascript" src="@Url.Assets("global/plugins/codemirror/lib/codemirror.js")"></script>
+    <script type="text/javascript" src="@Url.Assets("global/plugins/codemirror/mode/javascript/javascript.js")"></script>
+    <script type="text/javascript" src="@Url.Assets("global/plugins/morris/morris.min.js")"></script>
+    <script type="text/javascript" src="@Url.Assets("global/plugins/morris/raphael-min.js")"></script>
 
     <script type="text/javascript">
 
