@@ -1,20 +1,19 @@
-﻿var table = $('#submissionDatatable');
+﻿
+var table = $('#sourceCodeDatatable');
+
 function getCookie(name) {
     var value = "; " + document.cookie;
-    console.log("cookie " + value);
     var parts = value.split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
 };
 // begin first table
 table.dataTable({
-
-    // Internationalisation. For more info refer to http://datatables.net/manual/i18n
     serverSide: true,
     "searching": false,
     "ordering": false,
     lengthChange: false,
     ajax: {
-        url: API_URL + '/api/submission',
+        url: API_URL + '/api/submission/admin',
         headers: {
             "Authorization": decodeURIComponent(getCookie("token"))
         },
@@ -77,25 +76,4 @@ table.dataTable({
         },
     ]
 });
-
-//var tableWrapper = jQuery('#submission_datatable_1_wrapper');
-//
-//    table.find('.group-checkable').change(function () {
-//        var set = jQuery(this).attr("data-set");
-//        var checked = jQuery(this).is(":checked");
-//        jQuery(set).each(function () {
-//            if (checked) {
-//                $(this).prop("checked", true);
-//                $(this).parents('tr').addClass("active");
-//            } else {
-//                $(this).prop("checked", false);
-//                $(this).parents('tr').removeClass("active");
-//            }
-//        });
-//        jQuery.uniform.update(set);
-//    });
-
-//    table.on('change', 'tbody tr .checkboxes', function () {
-//        $(this).parents('tr').toggleClass("active");
-//    });
 

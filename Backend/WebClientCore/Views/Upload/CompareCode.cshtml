@@ -70,7 +70,7 @@
                         </div>
                     </div>
                     <div class="portlet-body form">
-                        <div >
+                        <div>
                             <textarea id="editor1">@((ViewBag.SourceCode as ResultDetail).MergeDetail.BaseMethod)</textarea>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                                 <span class="caption-subject bold uppercase"> Similar Code Fragments From Our Database</span>
                             </div>
                         </div>
-                        <div class="portlet-body form" >
+                        <div class="portlet-body form">
                             <textarea id="editor2">@((ViewBag.SourceCode as ResultDetail).MergeDetail.SimMethod)</textarea>
                         </div>
                     </div>
@@ -183,12 +183,20 @@
     }
 </div>
 @section Scripts{
-    
+    <script type="text/javascript" src="@Url.Assets("global/plugins/codemirror/lib/codemirror.js")"></script>
+    <script type="text/javascript" src="@Url.Assets("global/plugins/codemirror/mode/javascript/javascript.js")"></script>
+    <script type="text/javascript" src="@Url.Assets("global/plugins/morris/morris.min.js")"></script>
+    <script type="text/javascript" src="@Url.Assets("global/plugins/morris/raphael-min.js")"></script>
 
     <script type="text/javascript">
 
 
-
+        var codemirrorClasss = {
+            mode: "javascript",
+            lineNumbers: true,
+            theme: 'default',
+        }
+        var highlight = { css: "background-color : #FFDC00; opacity: 0.8;  font-weight: bold;" }
         var peerCheckResult = @Json.Serialize((ViewBag.SourceCode as ResultDetail));
         var webCheckResult = @Json.Serialize((ViewBag.WebCheckResult as ResultDetail));
         var mergeResult = {
@@ -237,7 +245,6 @@
             }
         }
         mergeResult.similarRatio /= mergeResult.details.length;
-        console.log(mergeResult.similarRatio);
         function peercheck()
         {
             $("#peerselect").addClass("active");
@@ -288,52 +295,36 @@
         @if(ViewBag.SourceCode != null){
 
             <text>
-        var editor = CodeMirror.fromTextArea(document.getElementById('editor1'), {
-            mode: "javascript",
-            lineNumbers: true,
-            theme: 'icecoder',
-        });
+        var editor = CodeMirror.fromTextArea(document.getElementById('editor1'), codemirrorClasss);
 
-        var editor1 = CodeMirror.fromTextArea(document.getElementById('editor2'), {
-            mode: "javascript",
-            lineNumbers: true,
-            theme: 'icecoder',
-        });
+        var editor1 = CodeMirror.fromTextArea(document.getElementById('editor2'), codemirrorClasss);
 
             </text>
             @foreach (var item in (ViewBag.SourceCode as ResultDetail).MergeDetail.SourcePositions)
             {
-                @:editor.getDoc().markText({ line: @item.StartLine - 2 }, { line: @item.EndLine -1 }, { css: "background-color : red; opacity: 0.8; color: white;" });
+                @:editor.getDoc().markText({ line: @item.StartLine - 2 }, { line: @item.EndLine -1 }, highlight);
             };
 
             @foreach (var item in (ViewBag.SourceCode as ResultDetail).MergeDetail.SimPositions)
             {
-                @:editor1.getDoc().markText({ line: @item.StartLine - 2 }, { line: @item.EndLine - 1 }, { css: "background-color : red; opacity: 0.8; color: white; " });
+                @:editor1.getDoc().markText({ line: @item.StartLine - 2 }, { line: @item.EndLine - 1 }, highlight);
             }
         }
         @if(ViewBag.WebCheckResult != null){
             <text>
-                var editor3 = CodeMirror.fromTextArea(document.getElementById('editor3'), {
-                    mode: "javascript",
-                    lineNumbers: true,
-                    theme: 'icecoder',
-        });
+        var editor3 = CodeMirror.fromTextArea(document.getElementById('editor3'), codemirrorClasss);
 
-                var editor4 = CodeMirror.fromTextArea(document.getElementById('editor4'), {
-                    mode: "javascript",
-                    lineNumbers: true,
-                    theme: 'icecoder',
-        });
+        var editor4 = CodeMirror.fromTextArea(document.getElementById('editor4'), codemirrorClasss);
 
             </text>
             @foreach (var item in (ViewBag.WebCheckResult as ResultDetail).MergeDetail.SourcePositions)
             {
-                @:editor3.getDoc().markText({ line: @item.StartLine - 2 }, { line: @item.EndLine -1 }, { css: "background-color : red; opacity: 0.8; color: white;" });
+                @:editor3.getDoc().markText({ line: @item.StartLine - 2 }, { line: @item.EndLine -1 }, highlight);
             };
 
             @foreach (var item in (ViewBag.WebCheckResult as ResultDetail).MergeDetail.SimPositions)
             {
-                @:editor4.getDoc().markText({ line: @item.StartLine - 2 }, { line: @item.EndLine - 1 }, { css: "background-color : red; opacity: 0.8; color: white;" });
+                @:editor4.getDoc().markText({ line: @item.StartLine - 2 }, { line: @item.EndLine - 1 }, highlight);
             }
         }
          @if(ViewBag.WebCheckResult != null && ViewBag.WebCheckResult != null){

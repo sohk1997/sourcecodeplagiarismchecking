@@ -27,10 +27,14 @@ namespace WebClientCore.Controllers
             {
                 return BadRequest();
             }
-            var session = HttpContext.Session;
             var token = "Bearer " + result.Token;
             Response.Cookies.Append("token",token, new Microsoft.AspNetCore.Http.CookieOptions{
-                Expires = DateTime.Now.AddMinutes(10),
+                Expires = DateTime.Now.AddMinutes(90),
+                HttpOnly = false
+            });
+            Response.Cookies.Append("Username", model.Username, new Microsoft.AspNetCore.Http.CookieOptions
+            {
+                Expires = DateTime.Now.AddMinutes(90),
                 HttpOnly = false
             });
             return Redirect("/Submission");

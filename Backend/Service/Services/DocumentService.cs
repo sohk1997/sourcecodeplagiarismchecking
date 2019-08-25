@@ -15,21 +15,20 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using ViewModel.Document;
+using Microsoft.Extensions.Configuration;
 
 namespace Service.Services
 {
     public interface IDocumentService
     {
-        List<DocumentInList> DocumentProcedure(int Id, string Name);
-        DocumentInfo Get(int Id);
         ResponseResult GetResult(int id);
         Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck, int userId);
-        ReturnDocumentViewModel GetAll();
+        ReturnDocumentViewModel GetAll(int start, int length);
         ReturnDocumentViewModel GetAll(int userId, int start, int length);
     }
     public class DocumentService : IDocumentService
     {
-        //private string baseUriOfBlob = "https://sourceproject.blob.core.windows.net/";        
+        public IConfiguration _configuration;
         private ISourceCodeRepository _sourceCodeRepository;
         private readonly IResultRepository _resultRepository;
         private readonly IMethodRepository _methodRepository;
@@ -40,7 +39,8 @@ namespace Service.Services
         public DocumentService(ISourceCodeRepository documentRepository, IUnitOfWork unitOfWork, IMapper mapper,
             IResultRepository resultRepository,
             IMethodRepository methodRepository,
-            IStoreProcedureRepository storeProcedure)
+            IStoreProcedureRepository storeProcedure,
+            IConfiguration configuration)
         {
             _sourceCodeRepository = documentRepository;
             _unitOfWork = unitOfWork;
@@ -48,6 +48,7 @@ namespace Service.Services
             _storeProcedure = storeProcedure;
             _resultRepository = resultRepository;
             _methodRepository = methodRepository;
+            _configuration = configuration;
         }
 
         public async Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck, int userId)
@@ -56,9 +57,9 @@ namespace Service.Services
             {
                 Submission document = _mapper.Map<Submission>(file);
                 document.DocumentName = file.FileName;
-                document.Status = Root.CommonEnum.SourceCodeStatus.PENDING;
+                document.Status = Root.CommonEnum.SourceCodeStatus.PROCESSING;
                 document.Type = Root.CommonEnum.SourceCodeType.PEER;
-                document.UploadDate = DateTime.Now;
+                document.UploadDate = DateTime.UtcNow.AddHours(7);
                 document.UserId = userId;
 
                 if (webcheck && peercheck)
@@ -74,8 +75,10 @@ namespace Service.Services
                     document.CheckType = CheckType.PEER_CHECK;
                 }
                 //----Upload - To - Azure - Blob----
+                var azureAccount = _configuration.GetValue<string>("AzureAccount");
+                var keyValue = _configuration.GetValue<string>("AzureKey");
                 CloudStorageAccount storageAccount = new CloudStorageAccount(new StorageCredentials
-                    ("sourceproject", "+03nTRvnSMevowugQfMm5BU7mGCTrs3VDa9SkzNP+qVl7aaVHO6imOnqKMLPwK2fQrsfg3f5CWlUihgvzSu3lA=="), true);
+                    (azureAccount, keyValue), true);
                 // Create a blob client.
                 CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
                 // Get a reference to a container named "project."
@@ -104,7 +107,8 @@ namespace Service.Services
                     webCheck = webcheck,
                     peerCheck = peercheck
                 };
-                RabbitMQHelper.SendMessage(JsonConvert.SerializeObject(jsonObject));
+
+                RabbitMQHelper.SendMessage(JsonConvert.SerializeObject(jsonObject), _configuration.GetValue<string>("RabbitMQUrl"));
                 return document.DocumentId;
             }
             catch (Exception ex)
@@ -114,13 +118,7 @@ namespace Service.Services
             }
         }
 
-        public List<DocumentInList> DocumentProcedure(int Id, string Name)
-        {
-
-            return Mapper.Map<List<Submission>, List<DocumentInList>>(_sourceCodeRepository.GetAllQueryable().ToList());
-        }
-
-        public ReturnDocumentViewModel GetAll()
+        public ReturnDocumentViewModel GetAll(int start, int length)
         {
             var query = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB)
             .OrderByDescending(d => d.UploadDate)
@@ -131,13 +129,16 @@ namespace Service.Services
                 Status = (int)d.Status,
                 UploadDate = d.UploadDate
             });
-            var list = query.ToList()
+            var list = query
+                .Skip(start)
+                .Take(length)
+            .ToList()
             .Select(d => new DocumentInList
             {
                 Id = d.Id,
                 Name = d.Name,
                 Status = (int)d.Status,
-                UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:MM")
+                UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:mm")
             });
             return new ReturnDocumentViewModel()
             {
@@ -165,7 +166,7 @@ namespace Service.Services
                 Id = d.Id,
                 Name = d.Name,
                 Status = (int)d.Status,
-                UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:MM")
+                UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:mm")
             });
             return new ReturnDocumentViewModel()
             {
@@ -174,12 +175,6 @@ namespace Service.Services
                 RecordsFiltered = query.Count(),
                 RecordsTotal = query.Count()
             };
-        }
-
-        public DocumentInfo Get(int Id)
-        {
-            var document = _sourceCodeRepository.Get(x => x.DocumentId == Id);
-            return _mapper.Map<DocumentInfo>(document);
         }
 
         private void Commit()
@@ -209,13 +204,16 @@ namespace Service.Services
         public DocumentResult GetWebResult(int id)
         {
             var query = (from m in _methodRepository.GetAllQueryable().Where(m => m.SourceCodeId == id)
-                         join r in _resultRepository.GetAllQueryable() on m.Id equals r.BaseMethodId into rm
-                         from r in rm.DefaultIfEmpty()
-                         join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
-                         from sm in rmm.DefaultIfEmpty()
-                         join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.WEB) on sm.SourceCodeId equals so.DocumentId into som
-                         from so in som.DefaultIfEmpty()
-                         select new { Result = r, Method = m, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }).ToList();
+                         join rr in
+                         (from r in _resultRepository.GetAllQueryable()
+                          join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
+                          from sm in rmm
+                          join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.WEB) on sm.SourceCodeId equals so.DocumentId into som
+                          from so in som
+                          select new { Result = r, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }
+                         ) on m.Id equals rr.Result.BaseMethodId into mrr
+                         from rr in mrr.DefaultIfEmpty()
+                         select new { Result = rr.Result, Method = m, SimMethod = rr.SimMethod, Type = rr == null ? 0 : rr.Type, Url = rr == null ? "" : rr.Url }).OrderBy(r => r.Method.Id).ToList();
             var document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(r => r.DocumentId == id);
             List<DocumentResultDetail> details = new List<DocumentResultDetail>();
             string url = "";
@@ -268,13 +266,16 @@ namespace Service.Services
         public DocumentResult GetPeerResult(int id)
         {
             var query = (from m in _methodRepository.GetAllQueryable().Where(m => m.SourceCodeId == id)
-                         join r in _resultRepository.GetAllQueryable() on m.Id equals r.BaseMethodId into rm
-                         from r in rm.DefaultIfEmpty()
-                         join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
-                         from sm in rmm.DefaultIfEmpty()
-                         join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.PEER) on sm.SourceCodeId equals so.DocumentId into som
-                         from so in som.DefaultIfEmpty()
-                         select new { Result = r, Method = m, SimMethod = sm, Type = so == null ? 0 : so.Type }).ToList();
+                         join rr in
+                         (from r in _resultRepository.GetAllQueryable()
+                          join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
+                          from sm in rmm
+                          join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.PEER) on sm.SourceCodeId equals so.DocumentId into som
+                          from so in som
+                          select new { Result = r, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }
+                         ) on m.Id equals rr.Result.BaseMethodId into mrr
+                         from rr in mrr.DefaultIfEmpty()
+                         select new { Result = rr.Result, Method = m, SimMethod = rr.SimMethod, Type = rr == null ? 0 : rr.Type, Url = rr == null ? "" : rr.Url }).OrderBy(r => r.Method.Id).ToList();
             var document = _sourceCodeRepository.GetAllQueryable().FirstOrDefault(r => r.DocumentId == id);
             List<DocumentResultDetail> details = new List<DocumentResultDetail>();
 
@@ -323,5 +324,6 @@ namespace Service.Services
                 return null;
             }
         }
+
     }
 }

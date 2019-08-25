@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Root.CommonEnum;
 using Root.Model;
 using Service.Services;
 using ViewModel.ViewModel;
@@ -46,7 +47,15 @@ namespace WebAPI.Controllers
             if (authorizeUser != null)
             {
                 var roleList = new List<string>();
-                roleList.Add("User");
+                if (authorizeUser.RoleId == (int)RoleType.ADMIN)
+                {
+                    roleList.Add("Admin");
+                }
+                else
+                {
+                    roleList.Add("User");
+                }
+
                 var tokenString = authorizeUser.BuildToken(roleList);
                 return Ok(new { token = tokenString, role = roleList });
 
@@ -68,9 +77,13 @@ namespace WebAPI.Controllers
 
         [HttpGet()]
         [Authorize]
-        public async Task<IActionResult> CheckToken()
+        public async Task<IActionResult> CheckToken([FromQuery]string role = "User")
         {
-            return Ok();
+            if (User.IsInRole(role))
+            {
+                return Ok();
+            }
+            return Unauthorized();
         }
 
 

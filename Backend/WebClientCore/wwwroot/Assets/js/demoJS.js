@@ -3,15 +3,9 @@ var myTextArea = document.getElementById('code_editor1');
 
 var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
     lineNumbers: true,
-    theme: 'icecoder',
-    mode: 'javascript',
+    theme: 'default',
+    mode: "text/typescript",
     readoreadOnly: true
-});
-
-document.addEventListener('DOMContentLoaded', function (event) {
-    document.getElementById('file')
-        .addEventListener('change', getFile);
-
 });
 
 function getFile(event) {

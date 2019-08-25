@@ -78,6 +78,14 @@ namespace WebCheck
                         DocumentName = result.FileName,
                         FileUrl = result.Url,
                         UploadDate = DateTime.Now
+                    var result = checker.Check(source);
+                    Console.WriteLine("Done search");
+                    Submission sourceCode = new Submission{
+                            Status = SourceCodeStatus.PROCESSING,
+                            Type = SourceCodeType.WEB,
+                            DocumentName = result.FileName,
+                            FileUrl = result.Url,
+                            UploadDate = DateTime.Now
                     };
                     using (var context = new MyContext())
                     {

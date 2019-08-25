@@ -68,3 +68,6 @@
 .highlight {
     background-color: red;
 }
+.max-width-2000{
+    max-width : 2000px!important;
+}

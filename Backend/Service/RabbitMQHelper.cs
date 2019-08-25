@@ -7,10 +7,13 @@ namespace Service
 {
     public class RabbitMQHelper
     {
-        private static ConnectionFactory connectionFactory = new ConnectionFactory() { Uri = new Uri("amqp://tojbmlqr:fO9Tcz9MRDmzl1J0B_56LBT3BO1VPxWB@mustang.rmq.cloudamqp.com/tojbmlqr") };
+        private static ConnectionFactory connectionFactory = null;
 
-        public static void SendMessage(string data)
+        public static void SendMessage(string data, string uri)
         {
+            if (connectionFactory == null) {
+                connectionFactory = new ConnectionFactory() { Uri = new Uri(uri) };
+            }
             using (var connection = connectionFactory.CreateConnection())
                 using (var channel = connection.CreateModel())
                 {

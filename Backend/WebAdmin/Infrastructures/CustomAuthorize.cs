@@ -15,7 +15,12 @@ public class CustomAuthorize: ActionFilterAttribute
             var client = RequestHelper.GetHttpClient();
             client.DefaultRequestHeaders.Add("Authorization", token);
             try{
-                var result = client.GetAsync("/token").Result;
+                var result = client.GetAsync("/token?role=Admin").Result;
+                if(result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    context.HttpContext.Response.Cookies.Delete("token");
+                    context.Result = new RedirectToRouteResult(GetLoginRouting());
+                }
             }
             catch(Exception ex)
             {
