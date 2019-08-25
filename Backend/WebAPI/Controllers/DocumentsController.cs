@@ -120,7 +120,7 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Upload new submission
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="requests"></param>
         /// <returns></returns>
         [HttpPost("multi")]
         [Authorize]
@@ -135,9 +135,8 @@ namespace WebAPI.Controllers
             foreach (var file in requests.Files)
             {
                 int id = await _documentService.UploadToCloud(file, false, false, userId);
-                return Ok();
             }
-            return NotFound();
+            return Ok();
         }
 
     }
