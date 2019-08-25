@@ -15,11 +15,11 @@ namespace WebClientCore.Models.DAOs
         public async Task<Result> GetResult(int id)
         {
             var client = RequestHelper.GetHttpClient();
-            using (var response = await client.GetAsync("api/document/" + id + "/result"))
+            using (var response = await client.GetAsync("api/submission/" + id + "/result"))
             {
                 var body = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<Result>(body);
-                
+                    
                 if(result.PeerCheckResult != null){
                     Console.WriteLine(result.PeerCheckResult.Details.Count);
                     MergePosition(result.PeerCheckResult);

@@ -3,8 +3,8 @@ var myTextArea = document.getElementById('code_editor1');
 
 var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
     lineNumbers: true,
-    theme: 'icecoder',
-    mode: 'javascript',
+    theme: 'default',
+    mode: "text/typescript",
     readoreadOnly: true
 });
 

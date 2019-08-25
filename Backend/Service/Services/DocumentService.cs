@@ -21,13 +21,10 @@ namespace Service.Services
 {
     public interface IDocumentService
     {
-        List<DocumentInList> DocumentProcedure(int Id, string Name);
-        DocumentInfo Get(int Id);
         ResponseResult GetResult(int id);
         Task<int> UploadToCloud(IFormFile file, bool webcheck, bool peercheck, int userId);
-        ReturnDocumentViewModel GetAll();
+        ReturnDocumentViewModel GetAll(int start, int length);
         ReturnDocumentViewModel GetAll(int userId, int start, int length);
-        string Test();
     }
     public class DocumentService : IDocumentService
     {
@@ -60,9 +57,9 @@ namespace Service.Services
             {
                 Submission document = _mapper.Map<Submission>(file);
                 document.DocumentName = file.FileName;
-                document.Status = Root.CommonEnum.SourceCodeStatus.PENDING;
+                document.Status = Root.CommonEnum.SourceCodeStatus.PROCESSING;
                 document.Type = Root.CommonEnum.SourceCodeType.PEER;
-                document.UploadDate = DateTime.Now;
+                document.UploadDate = DateTime.UtcNow.AddHours(7);
                 document.UserId = userId;
 
                 if (webcheck && peercheck)
@@ -121,13 +118,7 @@ namespace Service.Services
             }
         }
 
-        public List<DocumentInList> DocumentProcedure(int Id, string Name)
-        {
-
-            return Mapper.Map<List<Submission>, List<DocumentInList>>(_sourceCodeRepository.GetAllQueryable().ToList());
-        }
-
-        public ReturnDocumentViewModel GetAll()
+        public ReturnDocumentViewModel GetAll(int start, int length)
         {
             var query = _sourceCodeRepository.GetAllQueryable().Where(d => d.Type != Root.CommonEnum.SourceCodeType.WEB)
             .OrderByDescending(d => d.UploadDate)
@@ -138,13 +129,16 @@ namespace Service.Services
                 Status = (int)d.Status,
                 UploadDate = d.UploadDate
             });
-            var list = query.ToList()
+            var list = query
+                .Skip(start)
+                .Take(length)
+            .ToList()
             .Select(d => new DocumentInList
             {
                 Id = d.Id,
                 Name = d.Name,
                 Status = (int)d.Status,
-                UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:MM")
+                UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:mm")
             });
             return new ReturnDocumentViewModel()
             {
@@ -172,7 +166,7 @@ namespace Service.Services
                 Id = d.Id,
                 Name = d.Name,
                 Status = (int)d.Status,
-                UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:MM")
+                UploadDate = d.UploadDate == null ? "" : d.UploadDate.Value.ToString("dd-MM-yyyy hh:mm")
             });
             return new ReturnDocumentViewModel()
             {
@@ -181,12 +175,6 @@ namespace Service.Services
                 RecordsFiltered = query.Count(),
                 RecordsTotal = query.Count()
             };
-        }
-
-        public DocumentInfo Get(int Id)
-        {
-            var document = _sourceCodeRepository.Get(x => x.DocumentId == Id);
-            return _mapper.Map<DocumentInfo>(document);
         }
 
         private void Commit()
@@ -218,11 +206,11 @@ namespace Service.Services
             var query = (from m in _methodRepository.GetAllQueryable().Where(m => m.SourceCodeId == id)
                          join rr in
                          (from r in _resultRepository.GetAllQueryable()
-                         join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
-                         from sm in rmm
-                         join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.WEB) on sm.SourceCodeId equals so.DocumentId into som
-                         from so in som
-                         select new { Result = r, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }
+                          join sm in _methodRepository.GetAllQueryable() on r.SimMethodId equals sm.Id into rmm
+                          from sm in rmm
+                          join so in _sourceCodeRepository.GetAllQueryable().Where(s => s.Type == Root.CommonEnum.SourceCodeType.WEB) on sm.SourceCodeId equals so.DocumentId into som
+                          from so in som
+                          select new { Result = r, SimMethod = sm, Type = so == null ? 0 : so.Type, Url = so == null ? "" : so.DocumentName }
                          ) on m.Id equals rr.Result.BaseMethodId into mrr
                          from rr in mrr.DefaultIfEmpty()
                          select new { Result = rr.Result, Method = m, SimMethod = rr.SimMethod, Type = rr == null ? 0 : rr.Type, Url = rr == null ? "" : rr.Url }).OrderBy(r => r.Method.Id).ToList();
@@ -337,10 +325,5 @@ namespace Service.Services
             }
         }
 
-        public string Test()
-        {
-            var keyValue = _configuration.GetValue<string>("AzureKey");
-            return keyValue;
-        }
     }
 }

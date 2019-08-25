@@ -3,7 +3,8 @@ namespace Root.CommonEnum
 {
     public enum SourceCodeStatus
     {
-        PENDING = 1,
-        DONE = 2
+        PROCESSING = 1,
+        SIMILAR = 2,
+        NOSIMILAR = 3
     }
 }

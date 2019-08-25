@@ -47,6 +47,21 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
+        /// Get list of Submission for admin
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("admin")]
+        [ProducesResponseType(typeof(ReturnDocumentViewModel), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetForAdmin([FromQuery]int start = 0, [FromQuery]int length = 10, string _ = "", int draw = 1)
+        {
+            var result = _documentService.GetAll(start, length);
+            result.Draw = draw + 1;
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Get check result of a submission
         /// </summary>
         /// <param name="id"></param>
@@ -75,7 +90,7 @@ namespace WebAPI.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400, Type = typeof(ModelStateDictionary))]
         [ProducesResponseType(404)]
@@ -97,6 +112,29 @@ namespace WebAPI.Controllers
             else
             {
                 int id = await _documentService.UploadToCloud(file, request.WebCheck, request.PeerCheck, userId);
+                return Ok();
+            }
+            return NotFound();
+        }
+
+        /// <summary>
+        /// Upload new submission
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("multi")]
+        [Authorize]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ModelStateDictionary))]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PostMulti(UploadMultiRequest requests)
+        {
+            string idInString = this.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            var userId = int.Parse(idInString);
+            foreach (var file in requests.Files)
+            {
+                int id = await _documentService.UploadToCloud(file, false, false, userId);
                 return Ok();
             }
             return NotFound();

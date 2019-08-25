@@ -18,7 +18,7 @@ namespace WebClientCore.Models.DAOs
 		{
 			var client = RequestHelper.GetHttpClient();
 			client.DefaultRequestHeaders.Add("Authorization", token);
-			using (var response = await client.GetAsync("api/document/"))
+			using (var response = await client.GetAsync("api/submission/"))
 			{
 				var body = await response.Content.ReadAsStringAsync();
 				var result = JsonConvert.DeserializeObject<List<DocumentInList>>(body);
