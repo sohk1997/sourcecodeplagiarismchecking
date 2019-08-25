@@ -27,6 +27,8 @@ class InteractivePredictor:
     def predict(self,input_filename):
         try:
             predict_lines, hash_to_string_dict = self.path_extractor.extract_paths(input_filename)
+            index = 0
+
         except ValueError as e:
             print(e)
             return

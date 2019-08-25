@@ -15,7 +15,6 @@ def nearest(method, methods):
                 y = x.astype(np.float)
 
                 dist = distance.cosine(method['Vector'], y)
-
                 if(len(heaparr) < MAX_SIMILIAR):
                         heapq.heappush(heaparr,(-dist, index, compareMethod)) 
                 else:

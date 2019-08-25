@@ -28,46 +28,81 @@ namespace WebCheck
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
                 {
-                    WebCheck checker = new Github();
-                    Console.WriteLine("Go receive");
+                    System.Console.WriteLine("Go receive");
+                    Console.Clear();
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
                     var messageContent = JsonConvert.DeserializeObject<MessageObject>(message);
                     var source = GET(messageContent.Url);
-                    var result = checker.Check(source);
-                    Console.WriteLine("Done search");
-                    Submission sourceCode = new Submission{
-                            Status = SourceCodeStatus.PENDING,
-                            Type = SourceCodeType.WEB,
-                            DocumentName = result.FileName,
-                            FileUrl = result.Url,
-                            UploadDate = DateTime.Now
+                    WebCheck checker = new Github();
+                    Submission submission = null;
+                    List<CodeDetail> codeDetails = new List<CodeDetail>();
+                    using (var context = new MyContext())
+                    {
+                        try {
+                            submission = context.SourceCode.Where(s => s.Id == Guid.Parse(messageContent.Id)).FirstOrDefault();
+                            System.Console.WriteLine("Before context");
+                            codeDetails = context.CodeDetails.Where(c => c.SourceCodeId == submission.DocumentId).ToList();
+                        }
+                        catch(Exception ex)
+                        {
+                            System.Console.WriteLine(ex.Source);
+                            System.Console.WriteLine(ex.Data);
+                            System.Console.WriteLine(ex.StackTrace);
+                        }
+                    }
+
+                    System.Console.WriteLine("Receive web search request for file " + submission.DocumentName);
+
+                    System.Console.WriteLine("Start web search for file " + submission.DocumentName);
+                    var result = checker.Check(codeDetails);
+                    System.Console.WriteLine("Done web search for file " + submission.DocumentName);
+                    System.Console.WriteLine();
+                    if (result == null)
+                    {
+                        System.Console.WriteLine("There is no similar file on the Internet for file " + submission.DocumentName);
+                        using (var context = new MyContext())
+                        {
+
+                            submission.Status = SourceCodeStatus.NO_SIMILAR;
+                            context.Update(submission);
+                            context.SaveChanges();
+                        }
+                        return;
+                    }
+                    System.Console.WriteLine("The similar file to file " + submission.DocumentName + " has URL " + result.FileName);
+                    Submission sourceCode = new Submission
+                    {
+                        Status = SourceCodeStatus.PENDING,
+                        Type = SourceCodeType.WEB,
+                        DocumentName = result.FileName,
+                        FileUrl = result.Url,
+                        UploadDate = DateTime.Now
                     };
                     using (var context = new MyContext())
                     {
                         var findResult = context.SourceCode.Where(s => s.FileUrl == result.Url).FirstOrDefault();
-                        if(findResult == null)
+                        if (findResult == null)
                         {
                             context.SourceCode.Add(sourceCode);
                             context.SaveChanges();
                         }
-                        else{
+                        else
+                        {
                             sourceCode = findResult;
                         }
                     }
-                    Console.WriteLine("Done insert");
-                    var newMessage = JsonConvert.SerializeObject(new {
+                    var newMessage = JsonConvert.SerializeObject(new
+                    {
                         id = sourceCode.Id,
                         webCheck = false,
                         peerCheck = false,
                         continueWebCheck = messageContent.Id
                     });
-                    Console.WriteLine(newMessage);
                     RabbitMQHelper.SendMessage(newMessage);
                 };
-                Console.WriteLine("Done set up");
+                System.Console.WriteLine("Done setup");
                 channel.BasicConsume("webcheck", autoAck: true, consumer: consumer);
-                Console.WriteLine("Open");
                 Console.ReadKey();
             }
         }

@@ -19,6 +19,8 @@ class Extractor:
             raise ValueError(err)
         hash_to_string_dict = {}
         result = []
+        print('Example path: ')
+        index = 0
         for i, line in enumerate(output):
             parts = line.rstrip().split(' ')
             method_name = parts[0]
@@ -29,6 +31,9 @@ class Extractor:
                 context_word1 = context_parts[0]
                 context_path = context_parts[1]
                 context_word2 = context_parts[2]
+                if(index < 3):
+                    index += 1
+                    print(context_word1 + ',' + context_path + ',' + context_word2)
                 hashed_path = str(self.java_string_hashcode(context_path))
                 hash_to_string_dict[hashed_path] = context_path
                 current_result_line_parts += ['%s,%s,%s' % (context_word1, hashed_path, context_word2)]

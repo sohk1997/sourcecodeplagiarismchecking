@@ -7,7 +7,7 @@ namespace WebCheck
     
     public interface WebCheck
     {
-        Result Check(string content);
+        Result Check(List<CodeDetail> codeDetails);
        
     }
 }

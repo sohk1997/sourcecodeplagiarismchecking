@@ -14,35 +14,38 @@ namespace WebCheck
 {
     public class Github : WebCheck
     {
-        public Result Check(string content)
+        public Result Check(List<CodeDetail> codeDetails)
         {
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-            var blockComments = @"/\*(.*?)\*/";
-            var lineComments = @"//(.*?)\r?\n";
-            var strings = @"""((\\[^\n]|[^""\n])*)""";
-            var verbatimStrings = @"@(""[^""]*"")+";
-            string str = content;
-            str = Regex.Replace(str,
-                        blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
-                        me =>
-                        {
-                            if (me.Value.StartsWith("") || me.Value.StartsWith("//"))
-                                return me.Value.StartsWith("//") ? Environment.NewLine : "";
-                            // Keep the literal strings
-                            return me.Value;
-                        }, RegexOptions.Singleline);
-            List<Block> blocks = GetBlocks(str);
             List<Item> results = new List<Item>();
-            int i = 0;
-            foreach (var block in blocks)
+            int countRequest = 0;
+            foreach (var codeDetail in codeDetails)
             {
-                block.Content = WebUtility.UrlEncode(block.Content);
-                Regex regex = new Regex("\\+{2,}");
-                block.Content = regex.Replace(block.Content,"+");      
-                while (block.Content.Length > 0)
+                var block = new Block
                 {
-                    var searchContent = block.Content.Substring(0, Math.Min(block.Content.Length, 100));
+                    Content = codeDetail.MethodString
+                };
+                string[] words = block.Content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                int index = 0;
+                while (index < words.Length)
+                {
+                    string content = "";
+                    while (index < words.Length && (content.Length + WebUtility.UrlEncode(" " + words[index]).Length <= 100 || content.Length == 0))
+                    {
+                        if (content.Length > 0)
+                        {
+                            content = content + WebUtility.UrlEncode(" " + words[index]);
+                        }
+                        else
+                        {
+                            content = WebUtility.UrlEncode(words[index]);
+                        }
+                        index++;
+                    }
+                    block.Content = content;
+                    var searchContent = block.Content;
 
+                    countRequest++;
                     string jsonData = SearchCode(searchContent);
                     if (jsonData.Length > 0)
                     {
@@ -53,6 +56,7 @@ namespace WebCheck
                             if (results.Find(it => it.html_url == item.html_url) != null)
                             {
                                 results.Find(it => it.html_url == item.html_url).appearance++;
+                                results.Find(it => it.html_url == item.html_url).score += item.score;
                             }
                             else
                             {
@@ -60,16 +64,20 @@ namespace WebCheck
                             }
                         }
                     }
-
-                    block.Content = block.Content.Remove(0, Math.Min(block.Content.Length, 100));
+                    System.Console.WriteLine("Done for searching next block");
                 }
             }
             if (results.Count == 0)
             {
                 return null;
             }
+
             //The first Item in Result List is the most similarity case
-            results = results.OrderBy(r => -r.appearance).ThenBy(r => r.score).ToList();
+            results = results.OrderBy(r => -r.appearance).ThenBy(r => -(r.score / countRequest)).ToList();
+            // for(int i = 0 ; i < Math.Min(results.Count, 5) ; i++)
+            // {
+            //     System.Console.WriteLine(results[i].html_url + " " + results[i].appearance + " " + results[i].score);
+            // }
             var matchResult = results[0];
             //Parse url code on github to raw file
             var raw = matchResult.html_url.Replace("https://github", "https://raw.githubusercontent").ReplaceFirst("/blob/", "/");
@@ -122,8 +130,10 @@ namespace WebCheck
 
                     }
                     block.Content = expression.Substring(preBracket + 1, (block.CloseBracket - preBracket));
-                    blocks.Add(block);
-
+                    if (st.Count < 2)
+                    {
+                        blocks.Add(block);
+                    }
                 }
             }
 
@@ -134,7 +144,7 @@ namespace WebCheck
         {
             string language = "java";
             HttpWebRequest request =
-                WebRequest.Create("https://api.github.com/search/code?access_token=20fa761fc1204cc6871cb7447db3a28ae40a94e5&q=" + url + " in:file+language:" + language) as HttpWebRequest;
+                WebRequest.Create("https://api.github.com/search/code?client_id=7c9c0232060af0d837e4&client_secret=148442321f490cec5846c87d69fc52465cb394fd&access_token=3ceca66dbf12323bb31bbfb5cf7f5926313afa45&q=" + url + " in:file language:" + language) as HttpWebRequest;
             request.Method = "GET";
             request.Accept = "application/vnd.github.v3.raw+json";
             request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36";
@@ -151,22 +161,24 @@ namespace WebCheck
             }
             catch (WebException ex)
             {
-                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream(), Encoding.UTF8))
-                {
-                    var hh = reader.ReadToEnd();
-                    Console.WriteLine(hh);
-                    Console.WriteLine(url);
-                }
                 if (ex.Response.Headers["Retry-After"] != null)
                 {
                     var retry = int.Parse(ex.Response.Headers["Retry-After"]);
-                    Console.WriteLine($"Wait: {retry}");
+                    System.Console.WriteLine($"Exceed maximum request. Please wait: {retry} second to continue");
 
                     Thread.Sleep(retry * 1000);
                     return SearchCode(url);
                 }
                 else
                 {
+                    // string mess = "";
+                    // using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream(), Encoding.UTF8))
+                    // {
+                    //     mess = reader.ReadToEnd();
+
+                    // }
+                    // System.Console.WriteLine(url);
+                    // System.Console.WriteLine(mess);
                     return "";
                 }
             }

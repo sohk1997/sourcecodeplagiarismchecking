@@ -15,6 +15,7 @@ from treecompare import TreeCompare
 import findnearest
 import json
 import numpy as np
+from os import system
 
 connectionConfig = {
   'user': 'root',
@@ -28,6 +29,7 @@ def mapSingleDocumentResult(element):
     result = {}
     result['DocumentId'] = element[0]
     result['FileUrl'] = element[1]
+    result['DocumentName'] = element[2]
     return result
 
 def mapResult(element):
@@ -36,6 +38,7 @@ def mapResult(element):
     result['Vector'] = element[1]
     result['MethodString'] = element[2]
     result['tree'] = element[3]
+    result['methodName'] = element[4]
     return result
 
 def mapDetail(element):
@@ -45,6 +48,7 @@ def mapDetail(element):
     y = x.astype(np.float)
     result['Vector'] = y
     result['tree'] = json.loads(element[3])
+    result['methodName'] = element[4]
     return result
 
 def mergeResult(baseList):
@@ -66,62 +70,50 @@ def get_file(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("""SELECT DocumentId,FileUrl FROM Submission WHERE Id = %(id)s""",{'id' : id})
+        cursor.execute("""SELECT DocumentId,FileUrl, DocumentName FROM Submission WHERE Id = %(id)s""",{'id' : id})
         queryResult = list(map(mapSingleDocumentResult,cursor.fetchall()))[0]
-    except mysql.connector.Error as error :
-        print(str(error))
     finally:
         if(connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
-        return queryResult['DocumentId'],queryResult['FileUrl']        
+        return queryResult['DocumentId'],queryResult['FileUrl'], queryResult['DocumentName']        
 def get_method_peer(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id, M.Vector, M.MethodString, M.ParseTree FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Type = 1 AND D.Id <> %(id)s", {'id' : id})
+        cursor.execute("SELECT M.Id, M.Vector, M.MethodString, M.ParseTree,M.MethodName FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Type = 1 AND D.Id <> %(id)s", {'id' : id})
         queryResult = map(mapResult,cursor.fetchall())
         result = list(queryResult)
-    except mysql.connector.Error as error :
-        print(str(error))
     finally:
         if(connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
         return result 
 
 def get_method_source(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
+        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree,M.MethodName FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Id = %(id)s", {'id' : id})
         queryResult = map(mapDetail,cursor.fetchall())
         result = list(queryResult)
-    except mysql.connector.Error as error :
-        print(str(error))
     finally:
         if(connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
         return result 
 
-def get_method_web():
+def get_method_web(id):
     try:
         connection = mysql.connector.connect(**connectionConfig)
         cursor = connection.cursor()
-        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Type = 2")
+        cursor.execute("SELECT M.Id,M.Vector,M.MethodString,M.ParseTree,M.MethodName FROM CodeDetail M JOIN Submission D ON M.SourceCodeId = D.DocumentId AND D.Type = 2 AND D.Id = %(id)s", {'id' : id})
         queryResult = map(mapResult,cursor.fetchall())
         result = list(queryResult)
-    except mysql.connector.Error as error :
-        print(str(error))
     finally:
         if(connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
         return result           
 
 def insert_method(method, sourceid):
@@ -134,13 +126,10 @@ def insert_method(method, sourceid):
         cursor.execute(sql_insert_query,insert_tuple)
         connection.commit()
         method['Id'] = cursor.lastrowid
-    except mysql.connector.Error as error :
-        print(str(error))
     finally:
         if(connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
 def insert_result(method,methodResult,maxMatchRatio, detail):
     try:
         connection = mysql.connector.connect(**connectionConfig)
@@ -150,13 +139,10 @@ def insert_result(method,methodResult,maxMatchRatio, detail):
         insert_tuple = (method['Id'], methodResult['Id'], str(maxMatchRatio), json.dumps(detail))
         cursor.execute(sql_insert_query,insert_tuple)
         connection.commit()
-    except mysql.connector.Error as error :
-        print(str(error))
     finally:
         if(connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
 
 def update_document(id):
     try:
@@ -170,7 +156,6 @@ def update_document(id):
         if(connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
 
 def update_document_no_sim(id):
     try:
@@ -184,7 +169,6 @@ def update_document_no_sim(id):
         if(connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
 
 def count_method(id):
     try:
@@ -200,10 +184,10 @@ def count_method(id):
         if(connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
         return result 
 
 def callback(ch, method, properties, body):
+    system('clear') 
     objectString = body.decode('ascii')
     objectData = json.loads(objectString)
     value = objectData['id']
@@ -212,10 +196,11 @@ def callback(ch, method, properties, body):
     files = glob.glob('BaseInput/*')
     for f in files:
         os.remove(f)
-    documentid,url = get_file(value)
+    documentid,url,documentname = get_file(value)
+    print('Receive checking request for file ' + documentname)
     exist = count_method(value)
     if(exist == 0):
-        print(url)
+        print('Start analyze file ' + documentname)
         # fake user agent of Safari
         fake_useragent = 'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25'
         r = request.Request(url, headers={'User-Agent': fake_useragent})
@@ -225,25 +210,30 @@ def callback(ch, method, properties, body):
         wf.close()
 
         listMethod = rawParser.parse()
+        print('Done parse AST for file ' + documentname)
+        print('Total method in file ' + str(len(listMethod)))
         matchList = []
         sim = False
         for method in listMethod:
             f = open("Input.java", "w")
+            print('')
+            print('Start parse vector for method ' + method['methodName'])
             f.write(method['processedContent'])
             f.close()
             code_vector = predictor.predict('Input.java')
+            print('Done parse vector for method ' + method['methodName'])
             if(code_vector is None):
                 continue
             method['Vector'] = code_vector[0]
-            print('Insert method')
             insert_method(method,documentid)
-            print('Insert method done')
     if(peercheck) :
         current_methods = get_method_peer(value)
         #Peer check
         for method in listMethod:
             if('Vector' not in method):
                 continue    
+            print('')
+            print('Start compare method ' + method['methodName'])
             nearMethods = findnearest.nearest(method, current_methods)
             result = {}
             maxMatchRatio = 0
@@ -256,7 +246,8 @@ def callback(ch, method, properties, body):
                     maxMatchRatio = ratio
                     matchResult = match
                     methodResult = nearMethod
-            if(maxMatchRatio >= 0.5):
+                
+            if(maxMatchRatio >= 0.7):
                 base_position = list(map(lambda element : element[0],matchResult))
                 match_position = list(map(lambda element : element[1],matchResult))
                 base_position.sort(key=lambda element: element[0])
@@ -267,10 +258,11 @@ def callback(ch, method, properties, body):
                     'SourcePositions' : base_position,
                     'SimPositions' : match_position
                 }
-                print('Insert result')
                 insert_result(method, methodResult,maxMatchRatio, detail)
                 sim = True
-                print('Insert result done')   
+                print('There a similar method for method ' + method['methodName'] + ' named ' + methodResult['methodName'] + ' with ratio ' + str(maxMatchRatio * 100))
+            else:
+                print('No match result for method ' + method['methodName'])
         if(sim):
             update_document(value) 
         else: 
@@ -284,17 +276,20 @@ def callback(ch, method, properties, body):
             "Url" : url,
             "Id" : value
         }
-        print('send message')
+        print('Send web check request for file ' + documentname)
         rabbitMQChannel.basic_publish(exchange='',routing_key='webcheck',body = str(sendingObject))
         print('send message done')
     if('continueWebCheck' in objectData):
         print('Start check on web source')
         id = objectData['continueWebCheck']
+        web_id = objectData['id']
         base_methods = get_method_source(id)
-        current_methods = get_method_web()
+        current_methods = get_method_web(web_id)
         sim = False
         #Web check after find on Internet
         for method in base_methods:    
+            print('')
+            print('Start compare method ' + method['methodName'])
             nearMethods = findnearest.nearest(method, current_methods)
             result = {}
             maxMatchRatio = 0
@@ -307,7 +302,8 @@ def callback(ch, method, properties, body):
                     maxMatchRatio = ratio
                     matchResult = match
                     methodResult = nearMethod
-            if(maxMatchRatio >= 0.5):
+                print('Method ' +nearMethod['methodName'] + ' ratio ' + str(ratio))
+            if(maxMatchRatio >= 0.7):
                 base_position = list(map(lambda element : element[0],matchResult))
                 match_position = list(map(lambda element : element[1],matchResult))
                 base_position.sort(key=lambda element: element[0])
@@ -318,17 +314,17 @@ def callback(ch, method, properties, body):
                     'SourcePositions' : base_position,
                     'SimPositions' : match_position
                 }
-                print('Insert result web check')
+                # print('Insert result web check')
                 insert_result(method, methodResult,maxMatchRatio, detail)
                 sim = True
-                print('Insert result web check done')  
-        print('Update document')
+                # print('Insert result web check done')  
         if(sim):
             update_document(id)
         else:
             update_document_no_sim(id)
+    if not webcheck and not peercheck:
+        update_document_no_sim(id)
 
-    print('Done update')        
 
 if __name__ == '__main__':
 
