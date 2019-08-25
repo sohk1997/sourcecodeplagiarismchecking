@@ -64,29 +64,22 @@ namespace WebCheck
                         using (var context = new MyContext())
                         {
 
-                            submission.Status = SourceCodeStatus.NO_SIMILAR;
+                            submission.Status = SourceCodeStatus.NOSIMILAR;
                             context.Update(submission);
                             context.SaveChanges();
                         }
                         return;
                     }
                     System.Console.WriteLine("The similar file to file " + submission.DocumentName + " has URL " + result.FileName);
-                    Submission sourceCode = new Submission
-                    {
-                        Status = SourceCodeStatus.PENDING,
-                        Type = SourceCodeType.WEB,
-                        DocumentName = result.FileName,
-                        FileUrl = result.Url,
-                        UploadDate = DateTime.Now
-                    var result = checker.Check(source);
-                    Console.WriteLine("Done search");
                     Submission sourceCode = new Submission{
                             Status = SourceCodeStatus.PROCESSING,
                             Type = SourceCodeType.WEB,
                             DocumentName = result.FileName,
                             FileUrl = result.Url,
-                            UploadDate = DateTime.Now
+                            UploadDate = DateTime.UtcNow.AddHours(7)
                     };
+                    Console.WriteLine("Done search");
+
                     using (var context = new MyContext())
                     {
                         var findResult = context.SourceCode.Where(s => s.FileUrl == result.Url).FirstOrDefault();
